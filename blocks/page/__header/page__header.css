@@ -1,0 +1,27 @@
+.page__header {
+  width: 68.75%;
+  max-width: 880px;
+  min-height: 74px;
+  padding-top: 45px;
+  margin: 0;
+  margin-left: calc((100% - 68.75%) / 2);
+  margin-right: calc((100% - 68.75%) / 2);
+
+  border-bottom: 1px solid #545454;
+}
+
+@media screen and (min-width: 1280px) {
+  .page__header {
+    margin-left: calc((100% - 880px) / 2);
+    margin-right: calc((100% - 880px) / 2);
+  }
+}
+
+@media screen and (max-width: 767.5px) {
+  .page__header {
+    width: 100%;
+    min-height: 56px;
+    margin: 0;
+    padding-top: 28px;
+  }
+}

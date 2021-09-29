@@ -1,0 +1,21 @@
+.page__main {
+  width: 68.75%;
+  max-width: 880px;
+  margin: 40px 0 66px 0;
+  margin-left: calc((100% - 68.75%) / 2);
+  margin-right: calc((100% - 68.75%) / 2);
+}
+
+@media screen and (min-width: 1280px) {
+  .page__main {
+    margin-left: calc((100% - 880px) / 2);
+    margin-right: calc((100% - 880px) / 2);
+  }
+}
+
+@media screen and (max-width: 767.5px) {
+  .page__main {
+    width: 100%;
+    margin: 42px 0 48px 0;
+  }
+}

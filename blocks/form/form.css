@@ -1,0 +1,11 @@
+.form {
+  background-color: #fff;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+
+  border-radius: 10px;
+  font-family: 'Inter-Regular';
+}

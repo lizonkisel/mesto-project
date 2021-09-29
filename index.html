@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="ru">
+  <head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mesto</title>
+    <link rel="stylesheet" href="./pages/index.css">
+  </head>
+  <body>
+    <div class="page">
+
+      <header class="header page__header">
+        <img class="header__logo" src="./images/logo.svg" alt="Логотип">
+      </header>
+
+      <main class="main page__main">
+
+        <section class="profile main__profile">
+
+          <img class="profile__avatar" src="./images/Custo.jpg" alt="Жак-Ив Кусто">
+          <div class="profile__profile-info">
+            <div class="profile__wrapper">
+              <h1 class="profile__name">Елизавета Юновидова</h1>
+              <button class="profile__edit"></button>
+            </div>
+            <p class="profile__description">Исследователь океана</p>
+          </div>
+          <button class="profile__add-button">
+          </button>
+
+        </section>
+
+        <section class="elements main__elements">
+
+          <article class="element main__element">
+            <img class="element__image" src="./images/Karachaevsk.jpg" alt="Карачевск">
+            <div class="element__description">
+              <h2 class="element__title">Карачевск</h2>
+              <button class="element__like"></button>
+            </div>
+          </article>
+
+          <article class="element main__element">
+            <img class="element__image" src="./images/Elbrus.jpg" alt="Эльбрус">
+            <div class="element__description">
+              <h2 class="element__title">Эльбрус</h2>
+              <button class="element__like"></button>
+            </div>
+          </article>
+
+          <article class="element main__element">
+            <img class="element__image" src="./images/Dombai.jpg" alt="Домбай">
+            <div class="element__description">
+              <h2 class="element__title">Домбай</h2>
+              <button class="element__like"></button>
+            </div>
+          </article>
+
+          <article class="element main__element">
+            <img class="element__image" src="./images/Karachaevsk.jpg" alt="Карачевск">
+            <div class="element__description">
+              <h2 class="element__title">Карачевск</h2>
+              <button class="element__like"></button>
+            </div>
+          </article>
+
+          <article class="element main__element">
+            <img class="element__image" src="./images/Elbrus.jpg" alt="Эльбрус">
+            <div class="element__description">
+              <h2 class="element__title">Эльбрус</h2>
+              <button class="element__like"></button>
+            </div>
+          </article>
+
+          <article class="element main__element">
+            <img class="element__image" src="./images/Dombai.jpg" alt="Домбай">
+            <div class="element__description">
+              <h2 class="element__title">Домбай</h2>
+              <button class="element__like"></button>
+            </div>
+          </article>
+
+        </section>
+
+
+        <div class="popup main__popup">
+          <div class="popup__container">
+            <form class="form popup__form">
+              <h2 class="form__title">Редактировать профиль</h2>
+              <button class="form__button-close"></button>
+              <fieldset class="form__fieldset">
+                <input class="form__item" type="text" name="user-name" placeholder="Жак-Ив Кусто" required>
+                <input class="form__item" type="text" name="user-work" placeholder="Исследователь океана" required>
+              </fieldset>
+                <input class="form__button-submit" type="submit" value="Сохранить">
+            </form>
+          </div>
+        </div>
+
+      </main>
+
+      <footer class="footer page__footer">
+        <p class="footer__text">© 2020 Mesto Russia</p>
+      </footer>
+
+    </div>
+  </body>
+</html>

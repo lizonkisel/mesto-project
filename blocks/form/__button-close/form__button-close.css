@@ -1,0 +1,23 @@
+.form__button-close {
+  position: absolute;
+  top: -40px;
+  left: 100%;
+  background-color: transparent;
+  background-image: url(../../../images/Close_icon.svg);
+  width: 32px;
+  height: 32px;
+  margin: 0;
+  padding: 0;
+  border: none;
+}
+
+@media screen and (max-width: 767.5px) {
+  .form__button-close {
+    width: 20px;
+    height: 20px;
+    background-size: 20px 20px;
+
+    top: -36px;
+    left: calc(100% - 20px);
+  }
+}
