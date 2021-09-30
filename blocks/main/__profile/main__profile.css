@@ -1,3 +1,14 @@
 .main__profile {
   max-width: 880px;
 }
+
+/* Вот это добавила, чтобы разобраться с именем. Но пока не получилось */
+ @media screen and (max-width: 767.5px) {
+  .main__profile {
+    margin: 0 auto;
+    width: calc(100% - 38px);
+    /* text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden; */
+  }
+ }

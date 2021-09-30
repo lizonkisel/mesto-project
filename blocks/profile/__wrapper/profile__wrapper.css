@@ -8,3 +8,9 @@
     position: relative;
   }
 }
+
+@media screen and (max-width: 400px) {
+  .profile__wrapper {
+    max-width: 100%;
+  }
+}

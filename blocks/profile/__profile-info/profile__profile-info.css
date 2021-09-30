@@ -9,9 +9,18 @@
   color: #fff;
 }
 
+@media screen and (min-width: 768px) {
+  .profile__profile-info {
+    max-width: calc(100% - 60px - 24px - 18px - 120px);
+  }
+
+}
+
 @media screen and (max-width: 767.5px) {
   .profile__profile-info {
+    align-items: center;
     text-align: center;
+    max-width: calc(100% - 18px - 10px - 38px);
     margin: 26px 0 36px 0;
   }
 }
