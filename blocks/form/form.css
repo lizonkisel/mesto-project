@@ -7,5 +7,6 @@
   align-items: center;
 
   border-radius: 10px;
-  font-family: 'Inter-Regular';
+  font-family: 'Inter', 'Arial', sans-serif;
+  font-weight: 400;
 }

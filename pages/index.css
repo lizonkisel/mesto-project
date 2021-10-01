@@ -7,13 +7,11 @@
 @import url(../blocks/page/__main/page__main.css);
 @import url(../blocks/page/__footer/page__footer.css);
 
-@import url(../blocks/header/header.css);
 @import url(../blocks/header/__logo/header__logo.css);
 
 @import url(../blocks/main/main.css);
 @import url(../blocks/main/__profile/main__profile.css);
 @import url(../blocks/main/__elements/main__elements.css);
-@import url(../blocks/main/__element/main__element.css);
 @import url(../blocks/main/__popup/main__popup.css);
 
 @import url(../blocks/profile/profile.css);
@@ -26,6 +24,7 @@
 @import url(../blocks/profile/__add-button/profile__add-button.css);
 
 @import url(../blocks/elements/elements.css);
+@import url(../blocks/elements/__element/elements__element.css);
 
 @import url(../blocks/element/element.css);
 @import url(../blocks/element/__image/element__image.css);
@@ -46,6 +45,4 @@
 @import url(../blocks/form/__item/form__item.css);
 @import url(../blocks/form/__button-submit/form__button-submit.css);
 
-
-@import url(../blocks/footer/footer.css);
 @import url(../blocks/footer/__text/footer__text.css);

@@ -1,10 +1,10 @@
-.main__element {
+.elements__element {
   max-width: calc(1280px/3 - 17px * 2);
   min-height: 361px;
 }
 
 @media screen and (max-width: 844px) {
-  .main__element {
+  .elements__element {
     max-width: 100%;
   }
 }

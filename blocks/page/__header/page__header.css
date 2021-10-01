@@ -7,7 +7,7 @@
   margin-left: calc((100% - 68.75%) / 2);
   margin-right: calc((100% - 68.75%) / 2);
 
-  border-bottom: 1px solid #545454;
+  border-bottom: 1px solid rgba(84, 84, 84, .7);
 }
 
 @media screen and (min-width: 1280px) {
