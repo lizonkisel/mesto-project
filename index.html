@@ -84,7 +84,7 @@
         </section>
 
 
-        <section class="popup main__popup">
+        <section class="popup main__popup popup_editProfile">
           <div class="popup__container">
             <form class="form popup__form" name="profile-data">
               <h2 class="form__title">Редактировать профиль</h2>
@@ -96,6 +96,18 @@
                 <input class="form__button-submit" type="submit" value="Сохранить">
             </form>
           </div>
+        </section>
+
+        <section class="popup main__popup popup_newPlace">
+          <form class="form popup__form" name="profile-data">
+            <h2 class="form__title">Новое место</h2>
+            <button class="form__button-close" type="button"></button>
+            <fieldset class="form__fieldset">
+              <input class="form__item form__item_type_name" type="text" name="user-name" placeholder="Название" required>
+              <input class="form__item form__item_type_work" type="text" name="user-work" placeholder="Ссылка на картинку" required>
+            </fieldset>
+              <input class="form__button-submit" type="submit" value="Сохранить">
+          </form>
         </section>
 
       </main>
