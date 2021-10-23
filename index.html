@@ -32,7 +32,7 @@
         </section>
 
         <section class="elements main__elements">
-
+<!--
           <article class="element elements__element">
             <img class="element__image" src="./images/Karachaevsk.jpg" alt="Карачевск">
             <div class="element__description">
@@ -80,7 +80,7 @@
               <button class="element__like" type="button"></button>
             </div>
           </article>
-
+-->
         </section>
 
 
@@ -103,10 +103,10 @@
             <h2 class="form__title">Новое место</h2>
             <button class="form__button-close" type="button"></button>
             <fieldset class="form__fieldset">
-              <input class="form__item form__item_type_name" type="text" name="user-name" placeholder="Название" required>
-              <input class="form__item form__item_type_work" type="text" name="user-work" placeholder="Ссылка на картинку" required>
+              <input class="form__item form__item_type_title" type="text" name="user-name" placeholder="Название" required>
+              <input class="form__item form__item_type_image" type="text" name="user-work" placeholder="Ссылка на картинку" required>
             </fieldset>
-              <input class="form__button-submit" type="submit" value="Сохранить">
+              <input class="form__button-submit" type="submit" value="Создать">
           </form>
         </section>
 
@@ -117,6 +117,18 @@
       </footer>
 
     </div>
+
+    <template id="place-template">
+      <article class="element elements__element">
+        <button class="element__delete"type="button"></button>
+        <img class="element__image" src="" alt="">
+        <div class="element__description">
+          <h2 class="element__title"></h2>
+          <button class="element__like" type="button"></button>
+        </div>
+      </article>
+    </template>
+
     <script src='./script.js'></script>
   </body>
 </html>
