@@ -1,5 +1,6 @@
 .main__popup {
   width: inherit;
+  max-width: 880px;
   height: 100%;
   margin: 0;
   padding: 0;

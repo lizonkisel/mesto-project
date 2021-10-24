@@ -32,55 +32,6 @@
         </section>
 
         <section class="elements main__elements">
-<!--
-          <article class="element elements__element">
-            <img class="element__image" src="./images/Karachaevsk.jpg" alt="Карачевск">
-            <div class="element__description">
-              <h2 class="element__title">Карачевск</h2>
-              <button class="element__like" type="button"></button>
-            </div>
-          </article>
-
-          <article class="element elements__element">
-            <img class="element__image" src="./images/Elbrus.jpg" alt="Эльбрус">
-            <div class="element__description">
-              <h2 class="element__title">Эльбрус</h2>
-              <button class="element__like" type="button"></button>
-            </div>
-          </article>
-
-          <article class="element elements__element">
-            <img class="element__image" src="./images/Dombai.jpg" alt="Домбай">
-            <div class="element__description">
-              <h2 class="element__title">Домбай</h2>
-              <button class="element__like" type="button"></button>
-            </div>
-          </article>
-
-          <article class="element elements__element">
-            <img class="element__image" src="./images/Karachaevsk.jpg" alt="Карачевск">
-            <div class="element__description">
-              <h2 class="element__title">Карачевск</h2>
-              <button class="element__like" type="button"></button>
-            </div>
-          </article>
-
-          <article class="element elements__element">
-            <img class="element__image" src="./images/Elbrus.jpg" alt="Эльбрус">
-            <div class="element__description">
-              <h2 class="element__title">Эльбрус</h2>
-              <button class="element__like" type="button"></button>
-            </div>
-          </article>
-
-          <article class="element elements__element">
-            <img class="element__image" src="./images/Dombai.jpg" alt="Домбай">
-            <div class="element__description">
-              <h2 class="element__title">Домбай</h2>
-              <button class="element__like" type="button"></button>
-            </div>
-          </article>
--->
         </section>
 
 
@@ -88,7 +39,7 @@
           <div class="popup__container">
             <form class="form popup__form" name="profile-data">
               <h2 class="form__title">Редактировать профиль</h2>
-              <button class="form__button-close" type="button"></button>
+              <button class="popup__button-close" type="button"></button>
               <fieldset class="form__fieldset">
                 <input class="form__item form__item_type_name" type="text" name="user-name" placeholder="Жак-Ив Кусто" required>
                 <input class="form__item form__item_type_work" type="text" name="user-work" placeholder="Исследователь океана" required>
@@ -101,7 +52,7 @@
         <section class="popup main__popup popup_newPlace">
           <form class="form popup__form" name="profile-data">
             <h2 class="form__title">Новое место</h2>
-            <button class="form__button-close" type="button"></button>
+            <button class="popup__button-close" type="button"></button>
             <fieldset class="form__fieldset">
               <input class="form__item form__item_type_title" type="text" name="user-name" placeholder="Название" required>
               <input class="form__item form__item_type_image" type="text" name="user-work" placeholder="Ссылка на картинку" required>
@@ -110,6 +61,13 @@
           </form>
         </section>
 
+        <section class="popup main__popup popup_photo">
+          <div class="popup__wrapper">
+            <img src="#" alt="#" class="popup__image">
+            <button class="popup__button-close" type="button"></button>
+            <h2 class="popup__title"></h2>
+          </div>
+        </section>
       </main>
 
       <footer class="footer page__footer">

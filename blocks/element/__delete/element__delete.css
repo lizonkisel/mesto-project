@@ -11,4 +11,10 @@
   right: 20px;
   margin: 0;
   padding: 0;
+
+  transition: all .2s ease-in;
+}
+
+.element__delete:hover {
+  opacity: 0.6;
 }

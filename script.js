@@ -31,7 +31,7 @@ const initialCards = [
 
 let profileEdit = document.querySelector('.profile__edit');
 let popupEditProfile = document.querySelector('.popup_editProfile');
-const popupEditProfileCloseButton = popupEditProfile.querySelector('.form__button-close');
+const popupEditProfileCloseButton = popupEditProfile.querySelector('.popup__button-close');
 
   /* Заполнение полей формы */
 
@@ -49,13 +49,19 @@ let popupEditProfileForm = popupEditProfile.querySelector('.form');
 
 const popupNewPlace = document.querySelector('.popup_newPlace');
 const profileAddButton = document.querySelector('.profile__add-button');
-const popupNewPlaceCloseButton = popupNewPlace.querySelector('.form__button-close');
+const popupNewPlaceCloseButton = popupNewPlace.querySelector('.popup__button-close');
 
 const popupNewPlaceForm = popupNewPlace.querySelector('.form');
 
 const newImage = popupNewPlace.querySelector('.form__item_type_image');
 const newTitle = popupNewPlace.querySelector('.form__item_type_title');
 
+  /* Открытие/закрытие поп-апа с фото */
+
+const popupPhoto = document.querySelector('.popup_photo');
+const popupPhotoImage = popupPhoto.querySelector('.popup__image');
+const popupPhotoCloseButton = popupPhoto.querySelector('.popup__button-close');
+const popupPhotoTitle = popupPhoto.querySelector('.popup__title');
 
 /* ФУНКЦИИ */
 
@@ -71,6 +77,8 @@ function closePopup(popupName) {
     changeProfileData();
   } else if (popupName === popupNewPlace) {
     cleanNewPlaceData();
+  } else if (popupName === popupPhoto) {
+    cleanPopupPhotoTitle();
   }
 }
 
@@ -108,6 +116,13 @@ function createNewPlace(image, title) {
   })
   newPlace.querySelector('.element__delete').addEventListener('click', deletePlace);
 
+  newPlace.querySelector('.element__image').addEventListener('click', function() {
+    openPopup(popupPhoto);
+    const photoLink = newPlace.querySelector('.element__image').getAttribute('src');
+    const photoTitle = newPlace.querySelector('.element__title').textContent;
+    changePopupPhoto(photoLink, photoTitle);
+  })
+
   elements.prepend(newPlace);
 
   closePopup(popupNewPlace);
@@ -129,6 +144,17 @@ function deletePlace(evt) {
   const eventTarget = evt.target;
   let deletablePlace = eventTarget.closest('.element');
   deletablePlace.remove();
+}
+
+  /* Открытие/закрытие поп-апа с фото */
+
+function changePopupPhoto(photoLink, photoTitle) {
+  popupPhotoImage.setAttribute('src', photoLink);
+  popupPhotoTitle.insertAdjacentText('afterbegin', photoTitle);
+}
+
+function cleanPopupPhotoTitle() {
+  popupPhotoTitle.textContent = '';
 }
 
 
@@ -154,6 +180,10 @@ popupNewPlaceCloseButton.addEventListener('click', function() {
 });
 
 popupNewPlaceForm.addEventListener('submit', wrapperCreateNewPlace);
+
+popupPhotoCloseButton.addEventListener('click', function() {
+  closePopup(popupPhoto);
+})
 
 console.log(document.documentElement.clientWidth);
 console.log(document.body.clientWidth);
