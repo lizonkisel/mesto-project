@@ -1,10 +1,12 @@
 .elements__element {
-  max-width: calc(1280px/3 - 17px * 2);
+  max-width: calc(1263px/3 - 17px * 2);
   min-height: 361px;
 }
 
 @media screen and (max-width: 844px) {
   .elements__element {
     max-width: 100%;
+    /* max-width: 450px; В таком случае карточка прижимается по левому краю. Но выглядит это эстетичнее.
+    Подумать, как можно переписать код, чтобы карточки вставали по центру. Но в последнюю очередь */
   }
 }
