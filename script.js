@@ -29,25 +29,25 @@ const initialCards = [
 
   /* Открыть/закрыть поп-ап "Редактировать профиль" */
 
-let profileEdit = document.querySelector('.profile__edit');
-let popupEditProfile = document.querySelector('.popup_editProfile');
+const profileEdit = document.querySelector('.profile__edit');
+const popupEditProfile = document.querySelector('.popup_edit-profile');
 const popupEditProfileCloseButton = popupEditProfile.querySelector('.popup__button-close');
 
   /* Заполнение полей формы */
 
-let profileName = document.querySelector('.profile__name');
-let profileDescription = document.querySelector('.profile__description');
+const profileName = document.querySelector('.profile__name');
+const profileDescription = document.querySelector('.profile__description');
 
-let popupEditProfileName = popupEditProfile.querySelector('.form__item_type_name');
-let popupEditProfileDescription = popupEditProfile.querySelector('.form__item_type_work');
+const popupEditProfileName = popupEditProfile.querySelector('.form__item_type_name');
+const popupEditProfileDescription = popupEditProfile.querySelector('.form__item_type_work');
 
   /* Изменение данных профиля */
 
-let popupEditProfileForm = popupEditProfile.querySelector('.form');
+const popupEditProfileForm = popupEditProfile.querySelector('.form');
 
   /* Создание нового места */
 
-const popupNewPlace = document.querySelector('.popup_newPlace');
+const popupNewPlace = document.querySelector('.popup_new-place');
 const profileAddButton = document.querySelector('.profile__add-button');
 const popupNewPlaceCloseButton = popupNewPlace.querySelector('.popup__button-close');
 
@@ -84,7 +84,6 @@ function closePopup(popupName) {
 
   /* Заполнение полей формы */
 
-    /* Эту функцию, по-хорошему, надо переименовать */
 function changeProfileData() {
   popupEditProfileName.value = profileName.textContent;
   popupEditProfileDescription.value = profileDescription.textContent;
@@ -92,7 +91,7 @@ function changeProfileData() {
 
   /* Изменение данных профиля */
 
-function formSubmit(form) {
+function submitForm(form) {
   form.preventDefault();
   profileName.textContent = popupEditProfileName.value;
   profileDescription.textContent = popupEditProfileDescription.value;
@@ -133,7 +132,7 @@ function cleanNewPlaceData() {
   newTitle.value = '';
 }
 
-function wrapperCreateNewPlace(evt) {
+function createNewPlaceWrapper(evt) {
   evt.preventDefault();
   createNewPlace(newImage.value, newTitle.value);
 }
@@ -167,28 +166,23 @@ for (let i = 0; i < initialCards.length; i++) {
 profileEdit.addEventListener('click', function() {
   openPopup(popupEditProfile);
 });
+
 popupEditProfileCloseButton.addEventListener('click', function() {
   closePopup(popupEditProfile);
 });
-popupEditProfileForm.addEventListener('submit', formSubmit);
+
+popupEditProfileForm.addEventListener('submit', submitForm);
 
 profileAddButton.addEventListener('click', function() {
   openPopup(popupNewPlace);
 });
+
 popupNewPlaceCloseButton.addEventListener('click', function() {
   closePopup(popupNewPlace);
 });
 
-popupNewPlaceForm.addEventListener('submit', wrapperCreateNewPlace);
+popupNewPlaceForm.addEventListener('submit', createNewPlaceWrapper);
 
 popupPhotoCloseButton.addEventListener('click', function() {
   closePopup(popupPhoto);
 })
-
-console.log(document.documentElement.clientWidth);
-console.log(document.body.clientWidth);
-console.log(document.documentElement.scrollWidth);
-console.log(window.innerWidth);
-console.log(window.outerWidth)
-
-

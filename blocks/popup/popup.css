@@ -13,35 +13,3 @@
   opacity: 0;
   transition: visibility 0.3s, opacity 0.3s linear;
 }
-
-.popup-photo {
-
-}
-
-.popup__wrapper {
-  display: flex;
-  flex-direction: column;
-  position: relative;
-}
-
-.popup__image {
-  max-width: 75vw;
-  max-height: 75vh;
-}
-
-.popup__title {
-  position: absolute;
-  bottom: -25px;
-  left: 0;
-
-  align-self: flex-start;
-
-  font-size: 12px;
-  line-height: 15px;
-  font-family: 'Inter', 'Arial', sans-serif;
-  font-weight: 400;
-  color: #FFFFFF;
-
-  margin: 0 0 0 0;
-  padding: 0;
-}
