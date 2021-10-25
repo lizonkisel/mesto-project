@@ -67,19 +67,12 @@ const popupPhotoTitle = popupPhoto.querySelector('.popup__title');
 
   /* Открыть/закрыть поп-ап "Редактировать профиль" */
 
-function openPopup(popupName) {
-  popupName.classList.add('popup_opened');
+function openPopup(popup) {
+  popup.classList.add('popup_opened');
 }
 
-function closePopup(popupName) {
-  popupName.classList.remove('popup_opened');
-  if (popupName === popupEditProfile) {
-    changeProfileData();
-  } else if (popupName === popupNewPlace) {
-    cleanNewPlaceData();
-  } else if (popupName === popupPhoto) {
-    cleanPopupPhotoTitle();
-  }
+function closePopup(popup) {
+  popup.classList.remove('popup_opened');
 }
 
   /* Заполнение полей формы */
@@ -91,22 +84,23 @@ function changeProfileData() {
 
   /* Изменение данных профиля */
 
-function submitForm(form) {
-  form.preventDefault();
+function submitFormEditProfile(evt) {
+  evt.preventDefault();
   profileName.textContent = popupEditProfileName.value;
   profileDescription.textContent = popupEditProfileDescription.value;
 
   closePopup(popupEditProfile);
+  changeProfileData();
 }
 
   /* Создание нового места */
 
 function createNewPlace(image, title) {
   const templateNewPlace = document.querySelector('#place-template').content;
-  const elements = document.querySelector('.elements');
 
-  let newPlace = templateNewPlace.querySelector('.element').cloneNode(true);
+  const newPlace = templateNewPlace.querySelector('.element').cloneNode(true);
   newPlace.querySelector('.element__image').src = image;
+  newPlace.querySelector('.element__image').alt = title;
   newPlace.querySelector('.element__title').textContent = title;
   newPlace.querySelector('.element__like').addEventListener('click', function(evt) {
     const eventTarget = evt.target;
@@ -117,14 +111,20 @@ function createNewPlace(image, title) {
 
   newPlace.querySelector('.element__image').addEventListener('click', function() {
     openPopup(popupPhoto);
-    const photoLink = newPlace.querySelector('.element__image').getAttribute('src');
-    const photoTitle = newPlace.querySelector('.element__title').textContent;
+    const photoLink = image;
+    const photoTitle = title;
     changePopupPhoto(photoLink, photoTitle);
   })
 
-  elements.prepend(newPlace);
+  return newPlace;
+}
 
+function renderCard(image, title) {
+  const elements = document.querySelector('.elements');
+  newCard = createNewPlace(image, title);
+  elements.prepend(newCard);
   closePopup(popupNewPlace);
+  cleanNewPlaceData();
 }
 
 function cleanNewPlaceData() {
@@ -132,16 +132,16 @@ function cleanNewPlaceData() {
   newTitle.value = '';
 }
 
-function createNewPlaceWrapper(evt) {
+function submitCreateNewPlace(evt) {
   evt.preventDefault();
-  createNewPlace(newImage.value, newTitle.value);
+  renderCard(newImage.value, newTitle.value);
 }
 
   /* Удаление карточки */
 
 function deletePlace(evt) {
   const eventTarget = evt.target;
-  let deletablePlace = eventTarget.closest('.element');
+  const deletablePlace = eventTarget.closest('.element');
   deletablePlace.remove();
 }
 
@@ -149,6 +149,7 @@ function deletePlace(evt) {
 
 function changePopupPhoto(photoLink, photoTitle) {
   popupPhotoImage.setAttribute('src', photoLink);
+  popupPhotoImage.setAttribute('alt', photoTitle);
   popupPhotoTitle.insertAdjacentText('afterbegin', photoTitle);
 }
 
@@ -159,9 +160,9 @@ function cleanPopupPhotoTitle() {
 
 /* ИСПОЛНЯЕМЫЙ КОД */
 
-for (let i = 0; i < initialCards.length; i++) {
-  createNewPlace(initialCards[i].link, initialCards[i].name);
-}
+initialCards.forEach(function(item) {
+  renderCard(item.link, item.name);
+})
 
 profileEdit.addEventListener('click', function() {
   openPopup(popupEditProfile);
@@ -169,9 +170,10 @@ profileEdit.addEventListener('click', function() {
 
 popupEditProfileCloseButton.addEventListener('click', function() {
   closePopup(popupEditProfile);
+  changeProfileData();
 });
 
-popupEditProfileForm.addEventListener('submit', submitForm);
+popupEditProfileForm.addEventListener('submit', submitFormEditProfile);
 
 profileAddButton.addEventListener('click', function() {
   openPopup(popupNewPlace);
@@ -179,10 +181,12 @@ profileAddButton.addEventListener('click', function() {
 
 popupNewPlaceCloseButton.addEventListener('click', function() {
   closePopup(popupNewPlace);
+  cleanNewPlaceData();
 });
 
-popupNewPlaceForm.addEventListener('submit', createNewPlaceWrapper);
+popupNewPlaceForm.addEventListener('submit', submitCreateNewPlace);
 
 popupPhotoCloseButton.addEventListener('click', function() {
   closePopup(popupPhoto);
+  cleanPopupPhotoTitle();
 })
