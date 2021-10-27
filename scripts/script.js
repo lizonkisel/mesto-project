@@ -90,7 +90,6 @@ function submitFormEditProfile(evt) {
   profileDescription.textContent = popupEditProfileDescription.value;
 
   closePopup(popupEditProfile);
-  changeProfileData();
 }
 
   /* Создание нового места */
@@ -110,6 +109,7 @@ function createNewPlace(image, title) {
   newPlace.querySelector('.element__delete').addEventListener('click', deletePlace);
 
   newPlace.querySelector('.element__image').addEventListener('click', function() {
+    cleanPopupPhotoTitle();
     openPopup(popupPhoto);
     const photoLink = image;
     const photoTitle = title;
@@ -121,7 +121,7 @@ function createNewPlace(image, title) {
 
 function renderCard(image, title) {
   const elements = document.querySelector('.elements');
-  newCard = createNewPlace(image, title);
+  const newCard = createNewPlace(image, title);
   elements.prepend(newCard);
   closePopup(popupNewPlace);
   cleanNewPlaceData();
@@ -165,12 +165,12 @@ initialCards.forEach(function(item) {
 })
 
 profileEdit.addEventListener('click', function() {
+  changeProfileData();
   openPopup(popupEditProfile);
 });
 
 popupEditProfileCloseButton.addEventListener('click', function() {
   closePopup(popupEditProfile);
-  changeProfileData();
 });
 
 popupEditProfileForm.addEventListener('submit', submitFormEditProfile);
@@ -181,12 +181,10 @@ profileAddButton.addEventListener('click', function() {
 
 popupNewPlaceCloseButton.addEventListener('click', function() {
   closePopup(popupNewPlace);
-  cleanNewPlaceData();
 });
 
 popupNewPlaceForm.addEventListener('submit', submitCreateNewPlace);
 
 popupPhotoCloseButton.addEventListener('click', function() {
   closePopup(popupPhoto);
-  cleanPopupPhotoTitle();
 })
