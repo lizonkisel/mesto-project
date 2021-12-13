@@ -231,3 +231,5 @@ buttonEditProfilePhoto.addEventListener('click', function () {
   openPopup( popupEditProfilePhoto);
 })
 
+/* Artefact */
+
