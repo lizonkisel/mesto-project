@@ -63,6 +63,16 @@ const popupPhotoImage = popupPhoto.querySelector('.popup__image');
 const popupPhotoCloseButton = popupPhoto.querySelector('.popup__button-close');
 const popupPhotoTitle = popupPhoto.querySelector('.popup__title');
 
+  /* Закрыть поп-ап при нажатии на 'esc' или оверлей*/
+
+const popups = document.querySelectorAll('.popup');
+
+  /* Открыть/закрыть поп-ап "Редактировать фото профиля" */
+
+const popupEditProfilePhoto = document.querySelector('.popup_edit-profile-photo');
+const buttonEditProfilePhoto = document.querySelector('.profile__avatar-mask');
+
+
 /* ФУНКЦИИ */
 
   /* Открыть/закрыть поп-ап "Редактировать профиль" */
@@ -157,6 +167,14 @@ function cleanPopupPhotoTitle() {
   popupPhotoTitle.textContent = '';
 }
 
+  /* Закрыть поп-ап при нажатии на 'esc' */
+
+function closeByEsc(evtKey, openedPopup) {
+  if (evtKey === 'Escape') {
+    closePopup(openedPopup);
+  }
+}
+
 
 /* ИСПОЛНЯЕМЫЙ КОД */
 
@@ -188,3 +206,28 @@ popupNewPlaceForm.addEventListener('submit', submitCreateNewPlace);
 popupPhotoCloseButton.addEventListener('click', function() {
   closePopup(popupPhoto);
 })
+
+
+document.addEventListener("keydown", function(evt) {
+  const openedPopup = document.querySelector('.popup_opened');
+  if (openedPopup !== null) {
+    evtKey = evt.key;
+    closeByEsc(evtKey, openedPopup);
+  }
+})
+
+popups.forEach(function(popup) {
+  popup.addEventListener("click", function(evt) {
+    evtKey = evt.key;
+    if (popup.classList.contains('popup_opened') & (evt.target === evt.currentTarget)) {
+      openedPopup = popup;
+      closePopup(openedPopup);
+    }
+  })
+})
+
+
+buttonEditProfilePhoto.addEventListener('click', function () {
+  openPopup( popupEditProfilePhoto);
+})
+
