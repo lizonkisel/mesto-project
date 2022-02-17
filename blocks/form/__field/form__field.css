@@ -1,0 +1,7 @@
+.form__field {
+  margin-bottom: 30px;
+}
+
+.form__field:last-of-type {
+  margin-bottom: 0;
+}

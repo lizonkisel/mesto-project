@@ -7,7 +7,7 @@
   min-height: 27px;
   border: 0;
   border-bottom: 1px solid rgba(0, 0, 0, 0.2);
-  margin-bottom: 30px;
+  /* margin-bottom: 30px; */
 }
 
 .form__item::placeholder {
@@ -17,7 +17,7 @@
   opacity: 1;
 }
 
-.form__item:last-of-type {
+/* .form__item:last-of-type {
   margin-bottom: 0;
 }
 
@@ -25,4 +25,8 @@
   .form__item {
     margin-bottom: 30px;
   }
+} */
+
+.form__item:focus {
+  outline: none;
 }

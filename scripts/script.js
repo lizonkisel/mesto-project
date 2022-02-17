@@ -62,12 +62,71 @@ const popupPhotoTitle = popupPhoto.querySelector('.popup__title');
 
   /* Закрыть поп-ап при нажатии на 'esc' или оверлей*/
 
-const popups = document.querySelectorAll('.popup');
+const popups = Array.from(document.querySelectorAll('.popup'));
 
   /* Открыть/закрыть поп-ап "Редактировать фото профиля" */
 
 const popupEditProfilePhoto = document.querySelector('.popup_edit-profile-photo');
 const buttonEditProfilePhoto = document.querySelector('.profile__avatar-mask');
+
+/* Рефакторинг */
+
+  /* Запускаем процесс выбора форм и добавления слушателей полям  */
+
+function startValidation() {
+  const forms = Array.from(document.querySelectorAll('.form'));
+  forms.forEach(function(form) {
+    setInputListeners(form);
+    form.addEventListener('submit', function(evt) {
+      evt.preventDefault();
+    })
+  })
+}
+
+function setInputListeners(form) {
+  const inputs = Array.from(form.querySelectorAll('.form__item'));
+  toggleButtonState(form, inputs);
+  inputs.forEach(function(input) {
+    input.addEventListener('input', function(evt) {
+      checkValidation(form, input);
+      toggleButtonState(form, inputs);
+    })
+  })
+}
+
+function toggleButtonState(form, inputs) {
+  const submitButton = form.querySelector('.form__button-submit');
+  if (hasInvalidInput(inputs)) {
+    submitButton.classList.add('form__button-submit_disabled');
+    submitButton.disabled = true;
+  } else {
+    submitButton.classList.remove('form__button-submit_disabled');
+    submitButton.disabled = false;
+  }
+}
+
+function hasInvalidInput(inputs) {
+  return inputs.some(function(input) {
+    return !input.validity.valid;
+  })
+}
+
+function checkValidation(form, input) {
+  const inputError = form.querySelector(`.${input.name}-error`);
+  const inputErrorText = input.validationMessage;
+  if(!input.validity.valid) {
+    input.classList.add('form__item_invalid');
+    inputError.textContent = inputErrorText;
+
+  } else {
+    input.classList.remove('form__item_invalid');
+    inputError.textContent = '';
+  }
+}
+
+startValidation();
+
+/* Рефакторинг (конец) */
 
 
 /* ФУНКЦИИ */
@@ -158,14 +217,6 @@ function cleanPopupPhotoTitle() {
   popupPhotoTitle.textContent = '';
 }
 
-  /* Закрыть поп-ап при нажатии на 'esc' */
-
-function closeByEsc(evtKey, openedPopup) {
-  if (evtKey === 'Escape') {
-    closePopup(openedPopup);
-  }
-}
-
 
 /* ИСПОЛНЯЕМЫЙ КОД */
 
@@ -200,16 +251,14 @@ popupNewPlaceForm.addEventListener('submit', submitCreateNewPlace);
 
 document.addEventListener("keydown", function(evt) {
   const openedPopup = document.querySelector('.popup_opened');
-  if (openedPopup !== null) {
-    evtKey = evt.key;
-    closeByEsc(evtKey, openedPopup);
+  if (evt.key === 'Escape') {
+    closePopup(openedPopup);
   }
 })
 
 popups.forEach(function(popup) {
   popup.addEventListener("click", function(evt) {
-    evtKey = evt.key;
-    if (popup.classList.contains('popup_opened') & (evt.target === evt.currentTarget)) {
+    if (popup.classList.contains('popup_opened') && (evt.target === evt.currentTarget)) {
       closePopup(popup);
     }
   })
