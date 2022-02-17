@@ -1,6 +1,6 @@
 .popup__form {
   min-width: 430px;
-  min-height: 330px;
+  /* min-height: 330px; */
 
   margin: auto;
 }
