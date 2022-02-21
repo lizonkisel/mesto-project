@@ -1,26 +1,26 @@
 const initialCards = [
   {
-    name: 'Архыз',
+    title: 'Архыз',
     link: 'https://pictures.s3.yandex.net/frontend-developer/cards-compressed/arkhyz.jpg'
   },
   {
-    name: 'Челябинская область',
+    title: 'Челябинская область',
     link: 'https://pictures.s3.yandex.net/frontend-developer/cards-compressed/chelyabinsk-oblast.jpg'
   },
   {
-    name: 'Иваново',
+    title: 'Иваново',
     link: 'https://pictures.s3.yandex.net/frontend-developer/cards-compressed/ivanovo.jpg'
   },
   {
-    name: 'Камчатка',
+    title: 'Камчатка',
     link: 'https://pictures.s3.yandex.net/frontend-developer/cards-compressed/kamchatka.jpg'
   },
   {
-    name: 'Холмогорский район',
+    title: 'Холмогорский район',
     link: 'https://pictures.s3.yandex.net/frontend-developer/cards-compressed/kholmogorsky-rayon.jpg'
   },
   {
-    name: 'Байкал',
+    title: 'Байкал',
     link: 'https://pictures.s3.yandex.net/frontend-developer/cards-compressed/baikal.jpg'
   }
 ];
@@ -54,12 +54,6 @@ const popupNewPlaceForm = popupNewPlace.querySelector('.form');
 const newImage = popupNewPlace.querySelector('.form__item_type_image');
 const newTitle = popupNewPlace.querySelector('.form__item_type_title');
 
-  /* Открытие/закрытие поп-апа с фото */
-
-const popupPhoto = document.querySelector('.popup_photo');
-const popupPhotoImage = popupPhoto.querySelector('.popup__image');
-const popupPhotoTitle = popupPhoto.querySelector('.popup__title');
-
   /* Закрыть поп-ап при нажатии на 'esc' или оверлей*/
 
 const popups = Array.from(document.querySelectorAll('.popup'));
@@ -69,38 +63,49 @@ const popups = Array.from(document.querySelectorAll('.popup'));
 const popupEditProfilePhoto = document.querySelector('.popup_edit-profile-photo');
 const buttonEditProfilePhoto = document.querySelector('.profile__avatar-mask');
 
-/* Рефакторинг */
+/* Валидация поп-апов */
 
   /* Запускаем процесс выбора форм и добавления слушателей полям  */
 
-function startValidation() {
-  const forms = Array.from(document.querySelectorAll('.form'));
+const validationConfig = {
+  formSelector: '.form',
+  inputSelector: '.form__item',
+  submitButtonSelector: '.form__button-submit',
+  inactiveButtonClass: 'form__button-submit_disabled',
+  errorClass: 'form__item_invalid'
+}
+
+function enableValidation(config) {
+  const forms = Array.from(document.querySelectorAll(config.formSelector));
+  console.log(forms);
   forms.forEach(function(form) {
-    setInputListeners(form);
+    console.log(form);
+    setInputListeners(config, form);
     form.addEventListener('submit', function(evt) {
       evt.preventDefault();
     })
   })
 }
 
-function setInputListeners(form) {
-  const inputs = Array.from(form.querySelectorAll('.form__item'));
-  toggleButtonState(form, inputs);
+function setInputListeners(config, form) {
+  const inputs = Array.from(form.querySelectorAll(config.inputSelector));
+  console.log(inputs);
+  toggleButtonState(config, form, inputs);
   inputs.forEach(function(input) {
     input.addEventListener('input', function(evt) {
-      checkValidation(form, input);
-      toggleButtonState(form, inputs);
+      checkValidation(config, form, input);
+      toggleButtonState(config, form, inputs);
     })
   })
 }
 
-function toggleButtonState(form, inputs) {
-  const submitButton = form.querySelector('.form__button-submit');
+function toggleButtonState(config, form, inputs) {
+  const submitButton = form.querySelector(config.submitButtonSelector);
   if (hasInvalidInput(inputs)) {
-    submitButton.classList.add('form__button-submit_disabled');
+    submitButton.classList.add(config.inactiveButtonClass);
     submitButton.disabled = true;
   } else {
-    submitButton.classList.remove('form__button-submit_disabled');
+    submitButton.classList.remove(config.inactiveButtonClass);
     submitButton.disabled = false;
   }
 }
@@ -111,20 +116,18 @@ function hasInvalidInput(inputs) {
   })
 }
 
-function checkValidation(form, input) {
+function checkValidation(config, form, input) {
   const inputError = form.querySelector(`.${input.name}-error`);
   const inputErrorText = input.validationMessage;
   if(!input.validity.valid) {
-    input.classList.add('form__item_invalid');
+    input.classList.add(config.errorClass);
     inputError.textContent = inputErrorText;
 
   } else {
-    input.classList.remove('form__item_invalid');
+    input.classList.remove(config.errorClass);
     inputError.textContent = '';
   }
 }
-
-startValidation();
 
 /* Рефакторинг (конец) */
 
@@ -167,54 +170,76 @@ function createNewPlace(image, title) {
   newPlace.querySelector('.element__image').src = image;
   newPlace.querySelector('.element__image').alt = title;
   newPlace.querySelector('.element__title').textContent = title;
-  newPlace.querySelector('.element__like').addEventListener('click', function(evt) {
-    const eventTarget = evt.target;
-    eventTarget.classList.toggle('element__like_active');
-  })
-  newPlace.querySelector('.element__delete').addEventListener('click', deletePlace);
-
-  newPlace.querySelector('.element__image').addEventListener('click', function() {
-    cleanPopupPhotoTitle();
-    openPopup(popupPhoto);
-    const photoLink = image;
-    const photoTitle = title;
-    changePopupPhoto(photoLink, photoTitle);
-  })
+  newPlace.addEventListener('click', function(evt) {
+    deletePlace(evt, newPlace);
+    toggleLike(evt);
+    fillPopupPhoto(evt, image, title);
+  });
 
   return newPlace;
+}
+
+  /* Удаление карточки */
+
+function deletePlace(evt, newPlace) {
+  if (evt.target.classList.contains('element__delete')) {
+    newPlace.remove();
+  }
+}
+
+  /* Переключение лайка */
+
+function toggleLike(evt) {
+  if (evt.target.classList.contains('element__like')) {
+    evt.target.classList.toggle('element__like_active');
+  }
+}
+
+  /* Напонить поп-ап с фото */
+
+function fillPopupPhoto(evt, image, title) {
+  const popupPhoto = document.querySelector('.popup_photo');
+  const popupPhotoImage = popupPhoto.querySelector('.popup__image');
+  const popupPhotoTitle = popupPhoto.querySelector('.popup__title');
+  if (evt.target.classList.contains('element__image')) {
+    cleanTitle(popupPhotoTitle);
+    changeImagePopupPhoto(image, title, popupPhotoImage);
+    changeTitlePopupPhoto(title, popupPhotoTitle);
+    openPopup(popupPhoto);
+  }
+}
+
+  /* Очистить название */
+
+function cleanTitle(title) {
+  title.textContent = '';
+}
+
+  /* Сменить изображение в поп-апе с фото */
+
+function changeImagePopupPhoto(image, title, popupPhotoImage) {
+  popupPhotoImage.setAttribute('src', image);
+  popupPhotoImage.setAttribute('alt',  title);
+}
+
+  /* Сменить подпись в поп-апе с фото */
+
+function changeTitlePopupPhoto(title, popupPhotoTitle) {
+  popupPhotoTitle.insertAdjacentText('afterbegin',  title);
 }
 
 function renderCard(image, title) {
   const elements = document.querySelector('.elements');
   const newCard = createNewPlace(image, title);
   elements.prepend(newCard);
-  closePopup(popupNewPlace);
-  popupNewPlaceForm.reset();
 }
 
 function submitCreateNewPlace(evt) {
   evt.preventDefault();
   renderCard(newImage.value, newTitle.value);
-}
-
-  /* Удаление карточки */
-
-function deletePlace(evt) {
-  const eventTarget = evt.target;
-  const deletablePlace = eventTarget.closest('.element');
-  deletablePlace.remove();
-}
-
-  /* Открытие/закрытие поп-апа с фото */
-
-function changePopupPhoto(photoLink, photoTitle) {
-  popupPhotoImage.setAttribute('src', photoLink);
-  popupPhotoImage.setAttribute('alt', photoTitle);
-  popupPhotoTitle.insertAdjacentText('afterbegin', photoTitle);
-}
-
-function cleanPopupPhotoTitle() {
-  popupPhotoTitle.textContent = '';
+  closePopup(popupNewPlace);
+  popupNewPlaceForm.reset();
+  // toggleButtonState(popupNewPlaceForm, inputs)
 }
 
 
@@ -223,7 +248,7 @@ function cleanPopupPhotoTitle() {
   /* Отрисовываем карточки */
 
 initialCards.forEach(function(item) {
-  renderCard(item.link, item.name);
+  renderCard(item.link, item.title);
 })
   /* Открываем поп-апы */
 
@@ -270,3 +295,5 @@ document.addEventListener('click', function(evt) {
     closePopup(parentPopup);
   }
 })
+
+enableValidation(validationConfig);
