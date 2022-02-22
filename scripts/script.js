@@ -1,3 +1,5 @@
+import {validationConfig, enableValidation, setInputListeners, toggleButtonState, hasInvalidInput, checkValidation} from './validate.js';
+
 const initialCards = [
   {
     title: 'Архыз',
@@ -67,7 +69,7 @@ const buttonEditProfilePhoto = document.querySelector('.profile__avatar-mask');
 
   /* Запускаем процесс выбора форм и добавления слушателей полям  */
 
-const validationConfig = {
+/* const validationConfig = {
   formSelector: '.form',
   inputSelector: '.form__item',
   submitButtonSelector: '.form__button-submit',
@@ -127,7 +129,7 @@ function checkValidation(config, form, input) {
     input.classList.remove(config.errorClass);
     inputError.textContent = '';
   }
-}
+} */
 
 /* Рефакторинг (конец) */
 
