@@ -3,6 +3,8 @@
   justify-content: space-between;
   align-items: center;
   position: relative;
+
+  column-gap: 30px;
 }
 
 @media screen and (max-width: 767.5px) {
