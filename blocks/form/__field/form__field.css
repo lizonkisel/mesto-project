@@ -1,5 +1,6 @@
 .form__field {
-  margin-bottom: 30px;
+  position: relative;
+  margin-bottom: 35px;
 }
 
 .form__field:last-of-type {
