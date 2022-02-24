@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="ru">
+  <head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mesto</title>
+    <!-- <link rel="stylesheet" href="./pages/index.css"> -->
+  </head>
+  <body>
+    <div class="page">
+
+      <header class="header page__header">
+        <img class="header__logo" src="<%=require('./images/logo.svg')%>" alt="Логотип">
+      </header>
+
+      <main class="main page__main">
+
+        <section class="profile main__profile">
+          <img class="profile__avatar" src="<%=require('./images/Custo.jpg')%>" alt="Жак-Ив Кусто">
+          <div class="profile__avatar-mask">
+            <img class="profile__avatar-edit-icon" src="<%=require('./images/Edit_photo_icon.svg')%>" alt="Иконка редактирования фото">
+          </div>
+          <div class="profile__profile-info">
+            <div class="profile__wrapper">
+              <h1 class="profile__name">Жак-Ив Кусто</h1>
+              <button class="profile__edit-button" type="button"></button>
+            </div>
+            <p class="profile__description">Исследователь океана</p>
+          </div>
+          <button class="profile__add-button" type="button">
+          </button>
+
+        </section>
+
+        <section class="elements main__elements">
+        </section>
+
+
+        <section class="popup main__popup popup_edit-profile">
+          <form class="form popup__form" name="profile-data" novalidate>
+            <h2 class="form__title">Редактировать профиль</h2>
+            <button class="popup__button-close" type="button"></button>
+            <fieldset class="form__fieldset">
+              <label class="form__field">
+                <input class="form__item form__item_type_name" type="text" name="name" placeholder="Жак-Ив Кусто" minlength="2" maxlength="40" required>
+                <span class="form__error name-error"></span>
+              </label>
+              <label class="form__field">
+                <input class="form__item form__item_type_work" type="text" name="work" placeholder="Исследователь океана" minlength="2" maxlength="200" required>
+                <span class="form__error work-error"></span>
+              </label>
+            </fieldset>
+            <button class="form__button-submit" type="submit">Сохранить</button>
+          </form>
+        </section>
+
+        <section class="popup main__popup popup_new-place">
+          <form class="form popup__form" name="new-place" novalidate>
+            <h2 class="form__title">Новое место</h2>
+            <button class="popup__button-close" type="button"></button>
+            <fieldset class="form__fieldset">
+              <label class="form__field">
+                <input class="form__item form__item_type_title" type="text" name="title" placeholder="Название" minlength="2" maxlength="30" required>
+                <span class="form__error title-error"></span>
+              </label>
+              <label class="form__field">
+                <input class="form__item form__item_type_image" type="url" name="image" placeholder="Ссылка на картинку" required>
+                <span class="form__error image-error"></span>
+              </label>
+            </fieldset>
+            <button class="form__button-submit" type="submit">Создать</button>
+          </form>
+        </section>
+
+        <section class="popup main__popup popup_edit-profile-photo">
+          <form class="form popup__form" name="edit-photo">
+            <h2 class="form__title">Обновить аватар</h2>
+            <button class="popup__button-close" type="button"></button>
+            <fieldset class="form__fieldset">
+              <input class="form__item form__item_type_user-photo" type="text" name="user-photo" placeholder="Ссылка на фото" required>
+            </fieldset>
+            <button class="form__button-submit" type="submit">Сохранить</button>
+          </form>
+        </section>
+
+        <section class="popup main__popup popup_photo">
+          <div class="popup__wrapper">
+            <img src="#" alt="#" class="popup__image">
+            <button class="popup__button-close" type="button"></button>
+            <h2 class="popup__title"></h2>
+          </div>
+        </section>
+      </main>
+
+      <footer class="footer page__footer">
+        <p class="footer__text">&copy; 2020 Mesto Russia</p>
+      </footer>
+
+    </div>
+
+    <template id="place-template">
+      <article class="element elements__element">
+        <button class="element__delete" type="button"></button>
+        <img class="element__image" src="" alt="">
+        <div class="element__description">
+          <h2 class="element__title"></h2>
+          <button class="element__like" type="button"></button>
+        </div>
+      </article>
+    </template>
+
+    <!-- <script type="module" src='./src/components/index.js'></script> -->
+  </body>
+</html>
