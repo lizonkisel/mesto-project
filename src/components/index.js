@@ -1,3 +1,4 @@
+import '../index.css';
 import {initialCards, renderCard} from './card.js';
 import {openPopup, closePopup} from './utils.js';
 import {validationConfig, enableValidation, toggleButtonState, checkValidation} from './validate.js';
