@@ -24,6 +24,10 @@ const popups = Array.from(document.querySelectorAll('.popup'));
 
 const popupEditProfilePhoto = document.querySelector('.popup_edit-profile-photo');
 
+  /* Все поля поп-апа "Редактировать профиль" */
+
+const editProfileInputs = Array.from(popupEditProfile.querySelectorAll(validationConfig.inputSelector));
+
 
 /* ИСПОЛНЯЕМЫЙ КОД */
 
@@ -32,15 +36,15 @@ const popupEditProfilePhoto = document.querySelector('.popup_edit-profile-photo'
 initialCards.forEach(function(item) {
   renderCard(item.link, item.title);
 })
+
   /* Вешаем обработчик слушателя события для поп-апа "Редактировать профиль" */
 
 profileEditButton.addEventListener('click', function() {
   changeProfileData(popupEditProfile);
-  const inputs = Array.from(popupEditProfile.querySelectorAll(validationConfig.inputSelector));
-  inputs.forEach(function(input) {
+  editProfileInputs.forEach(function(input) {
     checkValidation(validationConfig, popupEditProfile, input);
   })
-  toggleButtonState(validationConfig, popupEditProfile, inputs);
+  toggleButtonState(validationConfig, popupEditProfile, editProfileInputs);
 
   openPopup(popupEditProfile);
 });
@@ -63,33 +67,17 @@ popupEditProfileForm.addEventListener('submit', submitFormEditProfile);
 
 popupNewPlaceForm.addEventListener('submit', submitCreateNewPlace);
 
-
-  /* Закрываем поп-апы по нажатию на "Escape" */
-
-document.addEventListener("keydown", function(evt) {
-  const openedPopup = document.querySelector('.popup_opened');
-  if (evt.key === 'Escape') {
-    closePopup(openedPopup);
-  }
-})
-
-  /* Закрываем поп-апы по клику на оверлей */
+  /* Закрываем поп-апы по клику на оверлей и крестик */
 
 popups.forEach(function(popup) {
-  popup.addEventListener("click", function(evt) {
-    if (popup.classList.contains('popup_opened') && (evt.target === evt.currentTarget)) {
+  popup.addEventListener("mousedown", function(evt) {
+    if (evt.target.classList.contains('popup_opened')) {
+      closePopup(popup);
+    }
+    if (evt.target.classList.contains('popup__button-close')) {
       closePopup(popup);
     }
   })
-})
-
-  /* Закрываем поп-апы по клику на крестик */
-
-document.addEventListener('click', function(evt) {
-  if (evt.target.classList.contains('popup__button-close')) {
-    const parentPopup = evt.target.closest(".popup");
-    closePopup(parentPopup);
-  }
 })
 
   /* Запускаем валидацию полей */
