@@ -1,6 +1,7 @@
-import {fillPopupPhoto} from './modal.js'
+import {fillPopupPhoto} from './modal.js';
+import {getCardsFromServer} from './api.js';
 
-const initialCards = [
+/* const initialCards = [
   {
     title: 'Архыз',
     link: 'https://pictures.s3.yandex.net/frontend-developer/cards-compressed/arkhyz.jpg'
@@ -25,20 +26,21 @@ const initialCards = [
     title: 'Байкал',
     link: 'https://pictures.s3.yandex.net/frontend-developer/cards-compressed/baikal.jpg'
   }
-];
+]; */
 
 const elements = document.querySelector('.elements');
 
   /* Отрисовать карточку */
 
-function renderCard(image, title) {
-  const newCard = createNewPlace(image, title);
+
+function renderCard(image, title, likes) {
+  const newCard = createNewPlace(image, title, likes);
   elements.prepend(newCard);
 }
 
   /* Создать карточку нового места */
 
-function createNewPlace(image, title) {
+function createNewPlace(image, title, likes) {
   const templateNewPlace = document.querySelector('#place-template').content;
   const newPlace = templateNewPlace.querySelector('.element').cloneNode(true);
   newPlace.querySelector('.element__title').textContent = title;
@@ -54,6 +56,10 @@ function createNewPlace(image, title) {
   newPlaceLike.addEventListener('click', function() {
     toggleLike(newPlaceLike);
   });
+
+  const newPlaceLikeAmount = newPlace.querySelector('.element__like-amount');
+  newPlaceLikeAmount.textContent = likes.length;
+
 
   const newPlaceDelete = newPlace.querySelector('.element__delete');
   newPlaceDelete.addEventListener('click', function() {
@@ -75,4 +81,13 @@ function toggleLike(like) {
   like.classList.toggle('element__like_active');
 }
 
-export {initialCards, renderCard};
+function getAmountOfLikes(likes) {
+  getCardsFromServer()
+  .then(res => {
+    return res.forEach(function(card) {
+
+    })
+  })
+}
+
+export {renderCard};
