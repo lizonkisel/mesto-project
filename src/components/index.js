@@ -1,11 +1,11 @@
 import '../index.css';
-import {initialCards, renderCard} from './card.js';
+import {renderCard} from './card.js';
 import {openPopup, closePopup} from './utils.js';
 import {validationConfig, enableValidation, toggleButtonState, checkValidation} from './validate.js';
-import {popupEditProfile, popupNewPlace, popupNewPlaceForm, changeProfileData, submitFormEditProfile, submitCreateNewPlace} from './modal.js';
+import {popupEditProfile, popupNewPlace, popupNewPlaceForm, changePopupEditProfileData, setProfileData, submitFormEditProfile, submitCreateNewPlace} from './modal.js';
+import {getCardsFromServer, getProfileDatafromServer} from './api.js';
 
 /* ПЕРЕМЕННЫЕ */
-
   /* Кнопки открытия поп-апов */
 
 const profileEditButton = document.querySelector('.profile__edit-button');
@@ -33,14 +33,27 @@ const editProfileInputs = Array.from(popupEditProfile.querySelectorAll(validatio
 
   /* Отрисовываем карточки */
 
+/* const initialCards = getInitialCards();
+
+console.log(initialCards);
+
 initialCards.forEach(function(item) {
   renderCard(item.link, item.title);
+}) */
+setProfileData();
+
+getCardsFromServer()
+.then(function(res) {
+  return res.forEach(function(item) {
+    renderCard(item.link, item.name, item.likes);
+
+  })
 })
 
   /* Вешаем обработчик слушателя события для поп-апа "Редактировать профиль" */
 
 profileEditButton.addEventListener('click', function() {
-  changeProfileData(popupEditProfile);
+  changePopupEditProfileData();
   editProfileInputs.forEach(function(input) {
     checkValidation(validationConfig, popupEditProfile, input);
   })
