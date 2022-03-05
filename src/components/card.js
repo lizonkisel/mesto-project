@@ -1,5 +1,6 @@
-import {fillPopupPhoto} from './modal.js';
-import {getCardsFromServer} from './api.js';
+import {fillPopupPhoto, profileName, popupDeleteCard, deleteCardEveryWhere} from './modal.js';
+import {getCardsFromServer, deleteCardFromServer} from './api.js';
+import { openPopup } from './utils.js';
 
 /* const initialCards = [
   {
@@ -33,23 +34,27 @@ const elements = document.querySelector('.elements');
   /* Отрисовать карточку */
 
 
-function renderCard(image, title, likes) {
-  const newCard = createNewPlace(image, title, likes);
+function renderCard(card) {
+  const newCard = createNewPlace(card);
   elements.prepend(newCard);
 }
 
   /* Создать карточку нового места */
 
-function createNewPlace(image, title, likes) {
+function createNewPlace(card) {
+
   const templateNewPlace = document.querySelector('#place-template').content;
   const newPlace = templateNewPlace.querySelector('.element').cloneNode(true);
-  newPlace.querySelector('.element__title').textContent = title;
+  newPlace.querySelector('.element__title').textContent = card.name;
+
+  newPlace.setAttribute("data-card-id", card._id);
+
 
   const newPlaceImage = newPlace.querySelector('.element__image');
-  newPlaceImage.src = image;
-  newPlaceImage.alt = title;
+  newPlaceImage.src = card.link;
+  newPlaceImage.alt = card.name;
   newPlaceImage.addEventListener('click', function(evt) {
-    fillPopupPhoto(image, title);
+    fillPopupPhoto(card.link, card.name);
   });
 
   const newPlaceLike = newPlace.querySelector('.element__like');
@@ -58,21 +63,20 @@ function createNewPlace(image, title, likes) {
   });
 
   const newPlaceLikeAmount = newPlace.querySelector('.element__like-amount');
-  newPlaceLikeAmount.textContent = likes.length;
+  newPlaceLikeAmount.textContent = card.likes.length || 0;
 
 
   const newPlaceDelete = newPlace.querySelector('.element__delete');
-  newPlaceDelete.addEventListener('click', function() {
-    deletePlace(newPlace);
-  })
+  if (card.owner.name === profileName.textContent) {
+    newPlaceDelete.addEventListener('click', function() {
+      openPopup(popupDeleteCard);
+      popupDeleteCard.setAttribute("data-card-id", card._id);
+    })
+  } else {
+    newPlaceDelete.remove();
+  }
 
   return newPlace;
-}
-
-  /* Удалить карточку */
-
-function deletePlace(place) {
-  place.remove();
 }
 
   /* Переключить лайк */

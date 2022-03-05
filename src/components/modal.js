@@ -1,7 +1,7 @@
 import {openPopup, closePopup, cleanTitle} from './utils.js';
 import {validationConfig, toggleButtonState} from './validate.js'
 import {renderCard} from './card.js';
-import {changeNameOnServer, getProfileDatafromServer, postNewPlaceOnServer} from './api.js';
+import {changeNameOnServer, getProfileDatafromServer, postNewPlaceOnServer, deleteCardFromServer} from './api.js';
 
 const popupPhoto = document.querySelector('.popup_photo');
 const popupPhotoImage = popupPhoto.querySelector('.popup__image');
@@ -49,20 +49,9 @@ function changePopupEditProfileData() {
   popupEditProfileDescription.value = profileDescription.textContent;
 }
 
-function setProfileData() {
-  getProfileDatafromServer()
-  .then(function(res) {
-    if (res.ok) {
-      return res.json();
-    } else {
-      return Promise.reject(res.status);
-    }
-  })
-  .then(res => {
-    profileName.textContent = res.name;
-    profileDescription.textContent = res.about;
-  })
-  .catch(error => console.log(`Ошибка ${error}`))
+function setProfileData(res) {
+  profileName.textContent = res.name;
+  profileDescription.textContent = res.about;
 }
 
   /* Сохранить данные редактирования профиля */
@@ -78,7 +67,7 @@ function submitFormEditProfile(evt) {
       return Promise.reject(res.status);
     }
   })
-  .then(() => setProfileData())
+  .then((res) => setProfileData(res))
   .catch(error => console.log(`Ошибка ${error}`));
 
   closePopup(popupEditProfile);
@@ -88,11 +77,34 @@ function submitFormEditProfile(evt) {
 
 function submitCreateNewPlace(evt) {
   evt.preventDefault();
-  renderCard(popupNewPlaceImage.value, popupNewPlaceTitle.value, '');
   postNewPlaceOnServer(popupNewPlaceImage, popupNewPlaceTitle);
+  // renderCard(popupNewPlaceImage.value, popupNewPlaceTitle.value);
+  // postNewPlaceOnServer(popupNewPlaceImage, popupNewPlaceTitle);
   closePopup(popupNewPlace);
   popupNewPlaceForm.reset();
   toggleButtonState(validationConfig, popupNewPlaceForm, popupNewPlaceInputs);
 }
 
-export {fillPopupPhoto, popupEditProfile, popupNewPlace, popupNewPlaceForm, changePopupEditProfileData, setProfileData, submitFormEditProfile, submitCreateNewPlace, profileName, profileDescription};
+const popupDeleteCard = document.querySelector('.popup_delete-card');
+
+popupDeleteCard.addEventListener('submit', deleteCardEveryWhere);
+
+function deleteCardEveryWhere(evt) {
+  evt.preventDefault();
+  const id = popupDeleteCard.dataset.cardId;
+  deleteCardFromServer(id);
+  deletePlace(document.querySelector(`[data-card-id='${id}']`));
+  closePopup(popupDeleteCard);
+}
+
+
+/* Удалить карточку */
+
+function deletePlace(place) {
+  place.remove();
+}
+
+
+
+
+export {fillPopupPhoto, popupEditProfile, popupNewPlace, popupNewPlaceForm, changePopupEditProfileData, setProfileData, submitFormEditProfile, submitCreateNewPlace, profileName, profileDescription, popupDeleteCard, deleteCardEveryWhere};

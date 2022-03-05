@@ -40,15 +40,21 @@ console.log(initialCards);
 initialCards.forEach(function(item) {
   renderCard(item.link, item.title);
 }) */
-setProfileData();
 
-getCardsFromServer()
+// setProfileData();
+
+getProfileDatafromServer()
+.then(res => {
+  setProfileData(res);
+  getCardsFromServer();
+})
+
+/* getCardsFromServer()
 .then(function(res) {
   return res.forEach(function(item) {
-    renderCard(item.link, item.name, item.likes);
-
+    renderCard(item);
   })
-})
+}) */
 
   /* Вешаем обработчик слушателя события для поп-апа "Редактировать профиль" */
 
