@@ -20,6 +20,11 @@ export function getCardsFromServer() {
       return Promise.reject(res.status);
     }
   })
+  .then(function(res) {
+    return res.forEach(function(item) {
+      renderCard(item);
+    })
+  })
   .catch(function(error) {
     console.log(`Ошибка ${error}`);
   })
@@ -50,8 +55,19 @@ export function getProfileDatafromServer() {
         authorization: config.authorization,
         'Content-Type': 'application/json'
       }
-    }
-  )
+    })
+    .then(function(res) {
+      if (res.ok) {
+        return res.json();
+      } else {
+        return Promise.reject(res.status);
+      }
+    })
+    /* .then(res => {
+      setProfileData(res);
+      getCardsFromServer();
+    }) */
+    .catch(error => {console.log(`Ошибка ${error}`)})
 }
 
 export function postNewPlaceOnServer(image, name) {
@@ -70,9 +86,31 @@ export function postNewPlaceOnServer(image, name) {
     if (res.ok) {
       return res.json()
     } else {
-      Promise.reject(error)
+      return Promise.reject(res)
     }
   })
-  .then(res => console.log(res))
+  .then(res => {
+    renderCard(res);
+  })
   .catch(error => console.log(`Ошибка:${error.status} ${error.statusText}`))
+}
+
+export function deleteCardFromServer(cardId) {
+  return fetch(`${config.baseUrl}cards/${cardId}`, {
+    method: 'DELETE',
+    headers: {
+      authorization: config.authorization
+    }
+  })
+  .then((res) => {
+    if (res.ok) {
+      return res.json();
+    } else {
+      return Promise.reject(res);
+    }
+  })
+  .then(res => {console.log(res)})
+  .catch((error) => {
+    console.log(`Ошибка:${error.status} ${error.statusText}`)
+  })
 }
