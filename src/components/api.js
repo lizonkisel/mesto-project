@@ -6,7 +6,7 @@ const config = {
   authorization: 'ecd6f0c2-01ba-4d99-a774-de79c1d44e1d',
 }
 
-export function getCardsFromServer() {
+export function getCardsFromServer(me) {
   return fetch(`${config.baseUrl}/cards`, {
     method: 'GET',
     headers: {
@@ -22,7 +22,7 @@ export function getCardsFromServer() {
   })
   .then(function(res) {
     return res.forEach(function(item) {
-      renderCard(item);
+      renderCard(item, me);
     })
   })
   .catch(function(error) {
@@ -113,4 +113,54 @@ export function deleteCardFromServer(cardId) {
   .catch((error) => {
     console.log(`Ошибка:${error.status} ${error.statusText}`)
   })
+}
+
+export function putLike(card) {
+  const cardId = card._id;
+  console.log(cardId);
+  return fetch(`${config.baseUrl}cards/likes/${cardId}`, {
+    method: 'PUT',
+    headers: {
+      authorization: config.authorization,
+    }
+  })
+  .then(res => {
+    if (res.ok) {
+      return res.json();
+    } else {
+      return Promise.reject(res);
+    }
+  })
+  .then(res => {
+    console.log(res);
+    getLikesAmount(res)
+  })
+  .catch(err => {console.log(err)})
+}
+
+export function deleteLike(card) {
+  const cardId = card._id;
+  return fetch(`${config.baseUrl}cards/likes/${cardId}`, {
+    method: 'DELETE',
+    headers: {
+      authorization: config.authorization,
+    }
+  })
+  .then(res => {
+    if (res.ok) {
+      return res.json();
+    } else {
+      return Promise.reject(res);
+    }
+  })
+  .then(res => {
+    console.log(res);
+    getLikesAmount(res)
+  })
+  .catch(err => {console.log(err)})
+}
+
+function getLikesAmount(card) {
+  const place = document.querySelector(`.element[data-card-id='${card._id}']`);
+  place.querySelector('.element__like-amount').textContent = card.likes.length;
 }
