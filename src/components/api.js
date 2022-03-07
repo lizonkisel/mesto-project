@@ -1,5 +1,5 @@
 import { renderCard } from "./card.js";
-import {profileName, profileDescription, setProfileData} from './modal.js';
+import {profileName, profileDescription, setProfileData, profileAvatar, popupEditProfilePhotoForm, setAvatar} from './modal.js';
 
 const config = {
   baseUrl: 'https://nomoreparties.co/v1/plus-cohort7/',
@@ -45,7 +45,6 @@ export function changeNameOnServer(inputName, inputDesc) {
       about:  inputDesc.value
     })
   })
-
 }
 
 export function getProfileDatafromServer() {
@@ -163,4 +162,28 @@ export function deleteLike(card) {
 function getLikesAmount(card) {
   const place = document.querySelector(`.element[data-card-id='${card._id}']`);
   place.querySelector('.element__like-amount').textContent = card.likes.length;
+}
+
+export function changeAvatarOnServer(link) {
+  return fetch(`${config.baseUrl}users/me/avatar`, {
+    method: 'PATCH',
+    headers: {
+      authorization: config.authorization,
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({
+      avatar: link
+    })
+  })
+  .then(res => {
+    if (res.ok) {
+      return res.json();
+    } else {
+      return Promise.reject(res);
+    }
+  })
+  .then(res => {
+    setAvatar(profileAvatar, res.avatar)
+  })
+  .catch(err => {console.log(err)})
 }
