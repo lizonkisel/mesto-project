@@ -46,7 +46,7 @@ initialCards.forEach(function(item) {
 getProfileDatafromServer()
 .then(res => {
   setProfileData(res);
-  getCardsFromServer();
+  getCardsFromServer(res);
 })
 
 /* getCardsFromServer()

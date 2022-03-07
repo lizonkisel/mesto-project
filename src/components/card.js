@@ -1,5 +1,5 @@
 import {fillPopupPhoto, profileName, popupDeleteCard, deleteCardEveryWhere} from './modal.js';
-import {getCardsFromServer, deleteCardFromServer} from './api.js';
+import {getCardsFromServer, getProfileDatafromServer, deleteCardFromServer, putLike, deleteLike} from './api.js';
 import { openPopup } from './utils.js';
 
 /* const initialCards = [
@@ -34,14 +34,14 @@ const elements = document.querySelector('.elements');
   /* Отрисовать карточку */
 
 
-function renderCard(card) {
-  const newCard = createNewPlace(card);
+function renderCard(card, me = '') {
+  const newCard = createNewPlace(card, me);
   elements.prepend(newCard);
 }
 
   /* Создать карточку нового места */
 
-function createNewPlace(card) {
+function createNewPlace(card, me) {
 
   const templateNewPlace = document.querySelector('#place-template').content;
   const newPlace = templateNewPlace.querySelector('.element').cloneNode(true);
@@ -57,14 +57,14 @@ function createNewPlace(card) {
     fillPopupPhoto(card.link, card.name);
   });
 
-  const newPlaceLike = newPlace.querySelector('.element__like');
-  newPlaceLike.addEventListener('click', function() {
-    toggleLike(newPlaceLike);
-  });
-
   const newPlaceLikeAmount = newPlace.querySelector('.element__like-amount');
   newPlaceLikeAmount.textContent = card.likes.length || 0;
 
+  const newPlaceLike = newPlace.querySelector('.element__like');
+  newPlaceLike.addEventListener('click', function() {
+    toggleLike(newPlaceLike, card);
+  });
+  checkLikes(card, me, newPlaceLike);
 
   const newPlaceDelete = newPlace.querySelector('.element__delete');
   if (card.owner.name === profileName.textContent) {
@@ -81,16 +81,21 @@ function createNewPlace(card) {
 
   /* Переключить лайк */
 
-function toggleLike(like) {
+function toggleLike(like, card) {
   like.classList.toggle('element__like_active');
+  if (like.classList.contains('element__like_active')) {
+    putLike(card);
+  } else {
+    deleteLike(card);
+  }
 }
 
-function getAmountOfLikes(likes) {
-  getCardsFromServer()
-  .then(res => {
-    return res.forEach(function(card) {
-
-    })
+function checkLikes(card, me, newPlaceLike) {
+  me = me._id;
+  card.likes.some(function(likeAuthor) {
+    if (likeAuthor._id === me) {
+      newPlaceLike.classList.add('element__like_active');
+    }
   })
 }
 
