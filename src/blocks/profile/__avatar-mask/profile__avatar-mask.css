@@ -17,3 +17,10 @@
   visibility: visible;
   opacity: 1;
 }
+
+@media screen and (max-width: 767.5px) {
+  .profile__avatar-mask {
+    top: 0;
+    left: auto;
+  }
+}

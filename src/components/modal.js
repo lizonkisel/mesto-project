@@ -1,7 +1,7 @@
 import {openPopup, closePopup, cleanTitle} from './utils.js';
 import {validationConfig, toggleButtonState} from './validate.js'
 import {renderCard} from './card.js';
-import {changeNameOnServer, getProfileDatafromServer, postNewPlaceOnServer, deleteCardFromServer} from './api.js';
+import {changeNameOnServer, getProfileDatafromServer, postNewPlaceOnServer, deleteCardFromServer, changeAvatarOnServer} from './api.js';
 
 const popupPhoto = document.querySelector('.popup_photo');
 const popupPhotoImage = popupPhoto.querySelector('.popup__image');
@@ -105,6 +105,27 @@ function deletePlace(place) {
 }
 
 
+/* Поп-ап редактирования фото профиля */
+
+const popupEditProfilePhoto = document.querySelector('.popup_edit-profile-photo');
+const popupEditProfilePhotoForm = popupEditProfilePhoto.querySelector('.form');
+const popupEditProfilePhotoInput = popupEditProfilePhotoForm.querySelector('.form__item_type_user-photo');
+const profileAvatar = document.querySelector('.profile__avatar');
+
+function submitEditProfilePhoto(evt) {
+  evt.preventDefault();
+
+  const popupEditProfilePhotoLink = popupEditProfilePhotoInput.value;
+  changeAvatarOnServer(popupEditProfilePhotoLink);
+  closePopup(popupEditProfilePhoto);
+  popupEditProfilePhotoForm.reset();
+  toggleButtonState(validationConfig, popupEditProfilePhotoForm, [popupEditProfilePhotoInput]);
+}
+
+function setAvatar(profileAvatar, avatar) {
+  profileAvatar.src = avatar;
+}
 
 
-export {fillPopupPhoto, popupEditProfile, popupNewPlace, popupNewPlaceForm, changePopupEditProfileData, setProfileData, submitFormEditProfile, submitCreateNewPlace, profileName, profileDescription, popupDeleteCard, deleteCardEveryWhere};
+
+export {fillPopupPhoto, popupEditProfile, popupNewPlace, popupNewPlaceForm, changePopupEditProfileData, setProfileData, submitFormEditProfile, submitCreateNewPlace, profileName, profileDescription, popupDeleteCard, deleteCardEveryWhere, popupEditProfilePhoto, popupEditProfilePhotoForm, submitEditProfilePhoto, setAvatar, profileAvatar};

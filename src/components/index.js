@@ -2,7 +2,7 @@ import '../index.css';
 import {renderCard} from './card.js';
 import {openPopup, closePopup} from './utils.js';
 import {validationConfig, enableValidation, toggleButtonState, checkValidation} from './validate.js';
-import {popupEditProfile, popupNewPlace, popupNewPlaceForm, changePopupEditProfileData, setProfileData, submitFormEditProfile, submitCreateNewPlace} from './modal.js';
+import {popupEditProfile, popupNewPlace, popupNewPlaceForm, changePopupEditProfileData, setProfileData, submitFormEditProfile, submitCreateNewPlace, popupEditProfilePhoto, popupEditProfilePhotoForm, submitEditProfilePhoto, profileAvatar, setAvatar} from './modal.js';
 import {getCardsFromServer, getProfileDatafromServer} from './api.js';
 
 /* ПЕРЕМЕННЫЕ */
@@ -19,10 +19,6 @@ const popupEditProfileForm = popupEditProfile.querySelector('.form');
   /* Все поп-апы на странице*/
 
 const popups = Array.from(document.querySelectorAll('.popup'));
-
-  /* Поп-ап редактировнаия фото профиля */
-
-const popupEditProfilePhoto = document.querySelector('.popup_edit-profile-photo');
 
   /* Все поля поп-апа "Редактировать профиль" */
 
@@ -46,6 +42,7 @@ initialCards.forEach(function(item) {
 getProfileDatafromServer()
 .then(res => {
   setProfileData(res);
+  setAvatar(profileAvatar, res.avatar)
   getCardsFromServer(res);
 })
 
@@ -79,6 +76,8 @@ profileAddButton.addEventListener('click', function() {
 buttonEditProfilePhoto.addEventListener('click', function () {
   openPopup(popupEditProfilePhoto);
 })
+
+popupEditProfilePhotoForm.addEventListener('submit', submitEditProfilePhoto);
 
   /* Отправляем формы */
 

@@ -17,7 +17,7 @@
       <main class="main page__main">
 
         <section class="profile main__profile">
-          <img class="profile__avatar" src="<%=require('./images/Custo.jpg')%>" alt="Жак-Ив Кусто">
+          <img class="profile__avatar" src="" alt="Жак-Ив Кусто">
           <div class="profile__avatar-mask">
             <img class="profile__avatar-edit-icon" src="<%=require('./images/Edit_photo_icon.svg')%>" alt="Иконка редактирования фото">
           </div>
@@ -78,7 +78,10 @@
             <h2 class="form__title">Обновить аватар</h2>
             <button class="popup__button-close" type="button"></button>
             <fieldset class="form__fieldset">
-              <input class="form__item form__item_type_user-photo" type="text" name="user-photo" placeholder="Ссылка на фото" required>
+              <label class="form__field">
+                <input class="form__item form__item_type_user-photo" type="url" name="user-photo" placeholder="Ссылка на фото" required>
+                <span class="form__error user-photo-error"></span>
+              </label>
             </fieldset>
             <button class="form__button-submit" type="submit">Сохранить</button>
           </form>
