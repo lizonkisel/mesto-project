@@ -25,4 +25,13 @@ function closeByEscape(evt) {
   }
 }
 
-export {openPopup, closePopup, cleanTitle};
+const loadingText = 'Сохранение...';
+
+function changeLoadingText(isLoading, popup) {
+  console.log(isLoading);
+  if (isLoading === true) {
+    popup.querySelector('.form__button-submit').textContent = loadingText;
+  }
+}
+
+export {openPopup, closePopup, cleanTitle, changeLoadingText};

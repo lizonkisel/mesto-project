@@ -1,4 +1,4 @@
-import {openPopup, closePopup, cleanTitle} from './utils.js';
+import {openPopup, closePopup, cleanTitle, changeLoadingText} from './utils.js';
 import {validationConfig, toggleButtonState} from './validate.js'
 import {renderCard} from './card.js';
 import {changeNameOnServer, getProfileDatafromServer, postNewPlaceOnServer, deleteCardFromServer, changeAvatarOnServer} from './api.js';
@@ -59,30 +59,41 @@ function setProfileData(res) {
 function submitFormEditProfile(evt) {
   evt.preventDefault();
 
-  changeNameOnServer(popupEditProfileName, popupEditProfileDescription)
-  .then(function(res) {
-    if (res.ok) {
-      return res.json();
-    } else {
-      return Promise.reject(res.status);
-    }
-  })
-  .then((res) => setProfileData(res))
-  .catch(error => console.log(`Ошибка ${error}`));
+  let isLoading = true;
+  changeLoadingText(isLoading, popupEditProfile);
 
-  closePopup(popupEditProfile);
+  changeNameOnServer(popupEditProfileName, popupEditProfileDescription)
+  .then((res) => { setProfileData(res) })
+  .then(() => {
+    let isLoading = false;
+    changeLoadingText(isLoading, popupEditProfile);
+    closePopup(popupEditProfile);
+    popupEditProfile.querySelector('.form__button-submit').textContent = "Сохранить";
+  })
+  .catch(error => console.log(`Ошибка ${error}`))
 }
 
   /* Сохранить данные создания нового места */
 
 function submitCreateNewPlace(evt) {
   evt.preventDefault();
-  postNewPlaceOnServer(popupNewPlaceImage, popupNewPlaceTitle);
-  // renderCard(popupNewPlaceImage.value, popupNewPlaceTitle.value);
-  // postNewPlaceOnServer(popupNewPlaceImage, popupNewPlaceTitle);
-  closePopup(popupNewPlace);
-  popupNewPlaceForm.reset();
-  toggleButtonState(validationConfig, popupNewPlaceForm, popupNewPlaceInputs);
+
+  let isLoading = true;
+  changeLoadingText(isLoading, popupNewPlace);
+
+  postNewPlaceOnServer(popupNewPlaceImage, popupNewPlaceTitle)
+  .then(res => {
+    renderCard(res);
+  })
+  .then(() => {
+    let isLoading = false;
+    changeLoadingText(isLoading, popupNewPlace);
+    closePopup(popupNewPlace);
+    popupNewPlaceForm.reset();
+    toggleButtonState(validationConfig, popupNewPlaceForm, popupNewPlaceInputs);
+    popupNewPlace.querySelector('.form__button-submit').textContent = "Создать";
+  })
+  .catch(error => console.log(`Ошибка:${error.status} ${error.statusText}`))
 }
 
 const popupDeleteCard = document.querySelector('.popup_delete-card');
@@ -115,11 +126,26 @@ const profileAvatar = document.querySelector('.profile__avatar');
 function submitEditProfilePhoto(evt) {
   evt.preventDefault();
 
+  let isLoading = true;
+  changeLoadingText(isLoading, popupEditProfilePhoto);
+
   const popupEditProfilePhotoLink = popupEditProfilePhotoInput.value;
-  changeAvatarOnServer(popupEditProfilePhotoLink);
-  closePopup(popupEditProfilePhoto);
-  popupEditProfilePhotoForm.reset();
-  toggleButtonState(validationConfig, popupEditProfilePhotoForm, [popupEditProfilePhotoInput]);
+  console.log(popupEditProfilePhotoLink);
+  changeAvatarOnServer(popupEditProfilePhotoLink)
+  .then(res => {
+    setAvatar(profileAvatar, res.avatar)
+  })
+  .then(() => {
+    let isLoading = false;
+    changeLoadingText(isLoading, popupEditProfilePhoto);
+    closePopup(popupEditProfilePhoto);
+    popupEditProfilePhoto.querySelector('.form__button-submit').textContent = "Сохранить";
+    popupEditProfilePhotoForm.reset();
+    toggleButtonState(validationConfig, popupEditProfilePhotoForm, [popupEditProfilePhotoInput]);
+  })
+  .catch(err => {console.log(err)})
+
+  // closePopup(popupEditProfilePhoto);
 }
 
 function setAvatar(profileAvatar, avatar) {
