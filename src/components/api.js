@@ -45,6 +45,13 @@ export function changeNameOnServer(inputName, inputDesc) {
       about:  inputDesc.value
     })
   })
+  .then(function(res) {
+    if (res.ok) {
+      return res.json();
+    } else {
+      return Promise.reject(res.status);
+    }
+  })
 }
 
 export function getProfileDatafromServer() {
@@ -88,10 +95,6 @@ export function postNewPlaceOnServer(image, name) {
       return Promise.reject(res)
     }
   })
-  .then(res => {
-    renderCard(res);
-  })
-  .catch(error => console.log(`Ошибка:${error.status} ${error.statusText}`))
 }
 
 export function deleteCardFromServer(cardId) {
@@ -182,8 +185,4 @@ export function changeAvatarOnServer(link) {
       return Promise.reject(res);
     }
   })
-  .then(res => {
-    setAvatar(profileAvatar, res.avatar)
-  })
-  .catch(err => {console.log(err)})
 }
