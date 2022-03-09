@@ -1,21 +1,32 @@
-import {openPopup, closePopup, cleanTitle, changeLoadingText} from './utils.js';
+import {openPopup, closePopup, cleanTitle, changeSubmitText} from './utils.js';
 import {validationConfig, toggleButtonState} from './validate.js'
 import {renderCard} from './card.js';
-import {changeNameOnServer, getProfileDatafromServer, postNewPlaceOnServer, deleteCardFromServer, changeAvatarOnServer} from './api.js';
+import {changeNameOnServer, postNewPlaceOnServer, changeAvatarOnServer} from './api.js';
 
 const popupPhoto = document.querySelector('.popup_photo');
 const popupPhotoImage = popupPhoto.querySelector('.popup__image');
 const popupPhotoTitle = popupPhoto.querySelector('.popup__title');
 
 const popupEditProfile = document.querySelector('.popup_edit-profile');
+const popupEditProfileForm = popupEditProfile.querySelector('.form');
 const popupEditProfileName = popupEditProfile.querySelector('.form__item_type_name');
 const popupEditProfileDescription = popupEditProfile.querySelector('.form__item_type_work');
+const popupEditProfileInputs = Array.from(popupEditProfile.querySelectorAll(validationConfig.inputSelector));
 
 const popupNewPlace = document.querySelector('.popup_new-place');
 const popupNewPlaceForm = popupNewPlace.querySelector('.form');
 const popupNewPlaceImage = popupNewPlace.querySelector('.form__item_type_image');
 const popupNewPlaceTitle = popupNewPlace.querySelector('.form__item_type_title');
 const popupNewPlaceInputs = Array.from(popupNewPlaceForm.querySelectorAll(validationConfig.inputSelector));
+
+const popupDeleteCard = document.querySelector('.popup_delete-card');
+const popupDeleteCardForm = popupDeleteCard.querySelector('.form');
+
+const popupEditProfilePhoto = document.querySelector('.popup_edit-profile-photo');
+const popupEditProfilePhotoForm = popupEditProfilePhoto.querySelector('.form');
+const popupEditProfilePhotoInput = popupEditProfilePhotoForm.querySelector('.form__item_type_user-photo');
+const profileAvatar = document.querySelector('.profile__avatar');
+
 
   /* Наполнить поп-ап с фото */
 
@@ -49,9 +60,11 @@ function changePopupEditProfileData() {
   popupEditProfileDescription.value = profileDescription.textContent;
 }
 
-function setProfileData(res) {
-  profileName.textContent = res.name;
-  profileDescription.textContent = res.about;
+  /* Установить данные профиля после их получения с сервера */
+
+function setProfileData(newName) {
+  profileName.textContent = newName.name;
+  profileDescription.textContent = newName.about;
 }
 
   /* Сохранить данные редактирования профиля */
@@ -59,16 +72,13 @@ function setProfileData(res) {
 function submitFormEditProfile(evt) {
   evt.preventDefault();
 
-  let isLoading = true;
-  changeLoadingText(isLoading, popupEditProfile);
+  changeSubmitText(true, popupEditProfile);
 
   changeNameOnServer(popupEditProfileName, popupEditProfileDescription)
-  .then((res) => { setProfileData(res) })
-  .then(() => {
-    let isLoading = false;
-    changeLoadingText(isLoading, popupEditProfile);
+  .then((newName) => {
+    setProfileData(newName);
     closePopup(popupEditProfile);
-    popupEditProfile.querySelector('.form__button-submit').textContent = "Сохранить";
+    changeSubmitText(false, popupEditProfile);
   })
   .catch(error => console.log(`Ошибка ${error}`))
 }
@@ -78,80 +88,46 @@ function submitFormEditProfile(evt) {
 function submitCreateNewPlace(evt) {
   evt.preventDefault();
 
-  let isLoading = true;
-  changeLoadingText(isLoading, popupNewPlace);
+  changeSubmitText(true, popupNewPlace);
 
   postNewPlaceOnServer(popupNewPlaceImage, popupNewPlaceTitle)
-  .then(res => {
-    renderCard(res);
-  })
-  .then(() => {
-    let isLoading = false;
-    changeLoadingText(isLoading, popupNewPlace);
+  .then(card => {
+    renderCard(card);
     closePopup(popupNewPlace);
     popupNewPlaceForm.reset();
+    changeSubmitText(false, popupNewPlace);
     toggleButtonState(validationConfig, popupNewPlaceForm, popupNewPlaceInputs);
-    popupNewPlace.querySelector('.form__button-submit').textContent = "Создать";
   })
   .catch(error => console.log(`Ошибка:${error.status} ${error.statusText}`))
 }
 
-const popupDeleteCard = document.querySelector('.popup_delete-card');
-
-popupDeleteCard.addEventListener('submit', deleteCardEveryWhere);
-
-function deleteCardEveryWhere(evt) {
-  evt.preventDefault();
-  const id = popupDeleteCard.dataset.cardId;
-  deleteCardFromServer(id);
-  deletePlace(document.querySelector(`[data-card-id='${id}']`));
-  closePopup(popupDeleteCard);
-}
-
-
-/* Удалить карточку */
-
-function deletePlace(place) {
-  place.remove();
-}
-
-
-/* Поп-ап редактирования фото профиля */
-
-const popupEditProfilePhoto = document.querySelector('.popup_edit-profile-photo');
-const popupEditProfilePhotoForm = popupEditProfilePhoto.querySelector('.form');
-const popupEditProfilePhotoInput = popupEditProfilePhotoForm.querySelector('.form__item_type_user-photo');
-const profileAvatar = document.querySelector('.profile__avatar');
+  /* Сохранить новое фото профиля */
 
 function submitEditProfilePhoto(evt) {
   evt.preventDefault();
 
-  let isLoading = true;
-  changeLoadingText(isLoading, popupEditProfilePhoto);
+  changeSubmitText(true, popupEditProfilePhoto);
 
   const popupEditProfilePhotoLink = popupEditProfilePhotoInput.value;
-  console.log(popupEditProfilePhotoLink);
+
   changeAvatarOnServer(popupEditProfilePhotoLink)
-  .then(res => {
-    setAvatar(profileAvatar, res.avatar)
-  })
-  .then(() => {
-    let isLoading = false;
-    changeLoadingText(isLoading, popupEditProfilePhoto);
+  .then(profileData => {
+    setAvatar(profileAvatar, profileData.avatar);
     closePopup(popupEditProfilePhoto);
-    popupEditProfilePhoto.querySelector('.form__button-submit').textContent = "Сохранить";
     popupEditProfilePhotoForm.reset();
+    changeSubmitText(false, popupEditProfilePhoto);
     toggleButtonState(validationConfig, popupEditProfilePhotoForm, [popupEditProfilePhotoInput]);
   })
   .catch(err => {console.log(err)})
-
-  // closePopup(popupEditProfilePhoto);
 }
+
+  /* Установить новый аватар после получения с сервера */
 
 function setAvatar(profileAvatar, avatar) {
   profileAvatar.src = avatar;
 }
 
-
-
-export {fillPopupPhoto, popupEditProfile, popupNewPlace, popupNewPlaceForm, changePopupEditProfileData, setProfileData, submitFormEditProfile, submitCreateNewPlace, profileName, profileDescription, popupDeleteCard, deleteCardEveryWhere, popupEditProfilePhoto, popupEditProfilePhotoForm, submitEditProfilePhoto, setAvatar, profileAvatar};
+export {fillPopupPhoto, popupEditProfile, popupEditProfileForm, popupEditProfileInputs,
+  popupNewPlace, popupNewPlaceForm, changePopupEditProfileData, setProfileData, submitFormEditProfile,
+  submitCreateNewPlace, profileName, profileDescription, popupDeleteCard, popupDeleteCardForm,
+  popupEditProfilePhoto, popupEditProfilePhotoForm, submitEditProfilePhoto, setAvatar, profileAvatar};

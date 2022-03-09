@@ -1,66 +1,55 @@
 import '../index.css';
-import {renderCard} from './card.js';
+import {renderCard, deleteCardEveryWhere} from './card.js';
 import {openPopup, closePopup} from './utils.js';
 import {validationConfig, enableValidation, toggleButtonState, checkValidation} from './validate.js';
-import {popupEditProfile, popupNewPlace, popupNewPlaceForm, changePopupEditProfileData, setProfileData, submitFormEditProfile, submitCreateNewPlace, popupEditProfilePhoto, popupEditProfilePhotoForm, submitEditProfilePhoto, profileAvatar, setAvatar} from './modal.js';
-import {getCardsFromServer, getProfileDatafromServer} from './api.js';
+import {popupEditProfile, popupEditProfileForm, popupEditProfileInputs, popupNewPlace, popupNewPlaceForm,
+  changePopupEditProfileData, setProfileData, submitFormEditProfile, submitCreateNewPlace, popupDeleteCardForm,
+  popupEditProfilePhoto, popupEditProfilePhotoForm, submitEditProfilePhoto, setAvatar, profileAvatar} from './modal.js';
+import {getCardsFromServer, getProfileDataFromServer} from './api.js';
+
 
 /* ПЕРЕМЕННЫЕ */
+
   /* Кнопки открытия поп-апов */
 
 const profileEditButton = document.querySelector('.profile__edit-button');
 const profileAddButton = document.querySelector('.profile__add-button');
 const buttonEditProfilePhoto = document.querySelector('.profile__avatar-mask');
 
-  /* Форма внутри поп-апа редактирования профиля */
-
-const popupEditProfileForm = popupEditProfile.querySelector('.form');
-
   /* Все поп-апы на странице*/
 
 const popups = Array.from(document.querySelectorAll('.popup'));
-
-  /* Все поля поп-апа "Редактировать профиль" */
-
-const editProfileInputs = Array.from(popupEditProfile.querySelectorAll(validationConfig.inputSelector));
 
 
 /* ИСПОЛНЯЕМЫЙ КОД */
 
   /* Отрисовываем карточки */
 
-/* const initialCards = getInitialCards();
+getProfileDataFromServer()
+.then(profileData => {
+  setProfileData(profileData);
+  setAvatar(profileAvatar, profileData.avatar);
 
-console.log(initialCards);
-
-initialCards.forEach(function(item) {
-  renderCard(item.link, item.title);
-}) */
-
-// setProfileData();
-
-getProfileDatafromServer()
-.then(res => {
-  setProfileData(res);
-  setAvatar(profileAvatar, res.avatar)
-  getCardsFromServer(res);
-})
-
-/* getCardsFromServer()
-.then(function(res) {
-  return res.forEach(function(item) {
-    renderCard(item);
+  getCardsFromServer()
+  .then(function(cards) {
+    return cards.forEach(function(card) {
+      renderCard(card, profileData);
+    })
   })
-}) */
+  .catch(function(error) {
+    console.log(`Ошибка ${error}`);
+  })
+})
+.catch(error => {console.log(`Ошибка ${error}`)})
 
   /* Вешаем обработчик слушателя события для поп-апа "Редактировать профиль" */
 
 profileEditButton.addEventListener('click', function() {
   changePopupEditProfileData();
-  editProfileInputs.forEach(function(input) {
+  popupEditProfileInputs.forEach(function(input) {
     checkValidation(validationConfig, popupEditProfile, input);
   })
-  toggleButtonState(validationConfig, popupEditProfile, editProfileInputs);
+  toggleButtonState(validationConfig, popupEditProfile, popupEditProfileInputs);
 
   openPopup(popupEditProfile);
 });
@@ -77,13 +66,15 @@ buttonEditProfilePhoto.addEventListener('click', function () {
   openPopup(popupEditProfilePhoto);
 })
 
-popupEditProfilePhotoForm.addEventListener('submit', submitEditProfilePhoto);
-
   /* Отправляем формы */
 
 popupEditProfileForm.addEventListener('submit', submitFormEditProfile);
 
 popupNewPlaceForm.addEventListener('submit', submitCreateNewPlace);
+
+popupEditProfilePhotoForm.addEventListener('submit', submitEditProfilePhoto);
+
+popupDeleteCardForm.addEventListener('submit', deleteCardEveryWhere);
 
   /* Закрываем поп-апы по клику на оверлей и крестик */
 
@@ -99,4 +90,5 @@ popups.forEach(function(popup) {
 })
 
   /* Запускаем валидацию полей */
+
 enableValidation(validationConfig);
