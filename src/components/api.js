@@ -1,12 +1,27 @@
-import { renderCard } from "./card.js";
-import {profileName, profileDescription, setProfileData, profileAvatar, popupEditProfilePhotoForm, setAvatar} from './modal.js';
-
 const config = {
   baseUrl: 'https://nomoreparties.co/v1/plus-cohort7/',
   authorization: 'ecd6f0c2-01ba-4d99-a774-de79c1d44e1d',
+  contentType: 'application/json'
 }
 
-export function getCardsFromServer(me) {
+function getProfileDataFromServer() {
+  return fetch(`${config.baseUrl}/users/me`, {
+      method: 'GET',
+      headers: {
+        authorization: config.authorization,
+        'Content-Type': config.contentType
+      }
+    })
+    .then(function(res) {
+      if (res.ok) {
+        return res.json();
+      } else {
+        return Promise.reject(res.status);
+      }
+    })
+}
+
+function getCardsFromServer() {
   return fetch(`${config.baseUrl}/cards`, {
     method: 'GET',
     headers: {
@@ -20,25 +35,14 @@ export function getCardsFromServer(me) {
       return Promise.reject(res.status);
     }
   })
-  .then(function(res) {
-    return res.forEach(function(item) {
-      renderCard(item, me);
-    })
-  })
-  .catch(function(error) {
-    console.log(`Ошибка ${error}`);
-  })
 }
 
-/* Функцию renderInitialCards переписать так, чтобы GET-запрос можно было использовать повторно.
-В том числе для получения количества дайков у каждой из карточек */
-
-export function changeNameOnServer(inputName, inputDesc) {
+function changeNameOnServer(inputName, inputDesc) {
   return fetch(`${config.baseUrl}/users/me`, {
     method: 'PATCH',
     headers: {
       authorization: config.authorization,
-      'Content-Type': 'application/json'
+      'Content-Type': config.contentType
     },
     body: JSON.stringify({
       name:  inputName.value,
@@ -54,34 +58,12 @@ export function changeNameOnServer(inputName, inputDesc) {
   })
 }
 
-export function getProfileDatafromServer() {
-  return fetch(`${config.baseUrl}/users/me`, {
-      method: 'GET',
-      headers: {
-        authorization: config.authorization,
-        'Content-Type': 'application/json'
-      }
-    })
-    .then(function(res) {
-      if (res.ok) {
-        return res.json();
-      } else {
-        return Promise.reject(res.status);
-      }
-    })
-    /* .then(res => {
-      setProfileData(res);
-      getCardsFromServer();
-    }) */
-    .catch(error => {console.log(`Ошибка ${error}`)})
-}
-
-export function postNewPlaceOnServer(image, name) {
+function postNewPlaceOnServer(image, name) {
   return fetch(`${config.baseUrl}/cards`, {
     method: 'POST',
     headers: {
       authorization: config.authorization,
-      'Content-Type': 'application/json'
+      'Content-Type': config.contentType
     },
     body: JSON.stringify({
       name: name.value,
@@ -97,7 +79,7 @@ export function postNewPlaceOnServer(image, name) {
   })
 }
 
-export function deleteCardFromServer(cardId) {
+function deleteCardFromServer(cardId) {
   return fetch(`${config.baseUrl}cards/${cardId}`, {
     method: 'DELETE',
     headers: {
@@ -111,15 +93,10 @@ export function deleteCardFromServer(cardId) {
       return Promise.reject(res);
     }
   })
-  .then(res => {console.log(res)})
-  .catch((error) => {
-    console.log(`Ошибка:${error.status} ${error.statusText}`)
-  })
 }
 
-export function putLike(card) {
+function putLike(card) {
   const cardId = card._id;
-  console.log(cardId);
   return fetch(`${config.baseUrl}cards/likes/${cardId}`, {
     method: 'PUT',
     headers: {
@@ -133,14 +110,9 @@ export function putLike(card) {
       return Promise.reject(res);
     }
   })
-  .then(res => {
-    console.log(res);
-    getLikesAmount(res)
-  })
-  .catch(err => {console.log(err)})
 }
 
-export function deleteLike(card) {
+function deleteLike(card) {
   const cardId = card._id;
   return fetch(`${config.baseUrl}cards/likes/${cardId}`, {
     method: 'DELETE',
@@ -155,24 +127,14 @@ export function deleteLike(card) {
       return Promise.reject(res);
     }
   })
-  .then(res => {
-    console.log(res);
-    getLikesAmount(res)
-  })
-  .catch(err => {console.log(err)})
 }
 
-function getLikesAmount(card) {
-  const place = document.querySelector(`.element[data-card-id='${card._id}']`);
-  place.querySelector('.element__like-amount').textContent = card.likes.length;
-}
-
-export function changeAvatarOnServer(link) {
+function changeAvatarOnServer(link) {
   return fetch(`${config.baseUrl}users/me/avatar`, {
     method: 'PATCH',
     headers: {
       authorization: config.authorization,
-      'Content-Type': 'application/json'
+      'Content-Type': config.contentType
     },
     body: JSON.stringify({
       avatar: link
@@ -186,3 +148,6 @@ export function changeAvatarOnServer(link) {
     }
   })
 }
+
+export {getProfileDataFromServer, getCardsFromServer, changeNameOnServer,
+  postNewPlaceOnServer, deleteCardFromServer, putLike, deleteLike, changeAvatarOnServer}

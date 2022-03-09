@@ -1,38 +1,10 @@
-import {fillPopupPhoto, profileName, popupDeleteCard, deleteCardEveryWhere} from './modal.js';
-import {getCardsFromServer, getProfileDatafromServer, deleteCardFromServer, putLike, deleteLike} from './api.js';
-import { openPopup } from './utils.js';
-
-/* const initialCards = [
-  {
-    title: 'Архыз',
-    link: 'https://pictures.s3.yandex.net/frontend-developer/cards-compressed/arkhyz.jpg'
-  },
-  {
-    title: 'Челябинская область',
-    link: 'https://pictures.s3.yandex.net/frontend-developer/cards-compressed/chelyabinsk-oblast.jpg'
-  },
-  {
-    title: 'Иваново',
-    link: 'https://pictures.s3.yandex.net/frontend-developer/cards-compressed/ivanovo.jpg'
-  },
-  {
-    title: 'Камчатка',
-    link: 'https://pictures.s3.yandex.net/frontend-developer/cards-compressed/kamchatka.jpg'
-  },
-  {
-    title: 'Холмогорский район',
-    link: 'https://pictures.s3.yandex.net/frontend-developer/cards-compressed/kholmogorsky-rayon.jpg'
-  },
-  {
-    title: 'Байкал',
-    link: 'https://pictures.s3.yandex.net/frontend-developer/cards-compressed/baikal.jpg'
-  }
-]; */
+import {fillPopupPhoto, profileName, popupDeleteCard} from './modal.js';
+import {deleteCardFromServer, putLike, deleteLike} from './api.js';
+import {openPopup, closePopup} from './utils.js';
 
 const elements = document.querySelector('.elements');
 
   /* Отрисовать карточку */
-
 
 function renderCard(card, me = '') {
   const newCard = createNewPlace(card, me);
@@ -58,7 +30,7 @@ function createNewPlace(card, me) {
   });
 
   const newPlaceLikeAmount = newPlace.querySelector('.element__like-amount');
-  newPlaceLikeAmount.textContent = card.likes.length || 0;
+  newPlaceLikeAmount.textContent = card.likes.length;
 
   const newPlaceLike = newPlace.querySelector('.element__like');
   newPlaceLike.addEventListener('click', function() {
@@ -84,11 +56,28 @@ function createNewPlace(card, me) {
 function toggleLike(like, card) {
   like.classList.toggle('element__like_active');
   if (like.classList.contains('element__like_active')) {
-    putLike(card);
+    putLike(card)
+    .then(likes => {
+      setLikesAmount(likes)
+    })
+    .catch(err => {console.log(err)})
   } else {
-    deleteLike(card);
+    deleteLike(card)
+    .then(likes => {
+      setLikesAmount(likes)
+    })
+    .catch(err => {console.log(err)})
   }
 }
+
+  /* Установить на странице количество лайков карточки */
+
+function setLikesAmount(card) {
+  const place = document.querySelector(`.element[data-card-id='${card._id}']`);
+  place.querySelector('.element__like-amount').textContent = card.likes.length;
+}
+
+  /* Проверить, лайкнута ли эта карточка юзером до этого (в прошлое посещение сайта) */
 
 function checkLikes(card, me, newPlaceLike) {
   me = me._id;
@@ -99,4 +88,24 @@ function checkLikes(card, me, newPlaceLike) {
   })
 }
 
-export {renderCard};
+  /* Удалить карточку с серевера и со страницы */
+
+function deleteCardEveryWhere(evt) {
+  evt.preventDefault();
+  const id = popupDeleteCard.dataset.cardId;
+  deleteCardFromServer(id)
+  .catch((error) => {
+    console.log(`Ошибка:${error.status} ${error.statusText}`)
+  })
+  deletePlace(document.querySelector(`[data-card-id='${id}']`));
+  closePopup(popupDeleteCard);
+}
+
+    /* Удалить карточку со страницы */
+
+function deletePlace(place) {
+  place.remove();
+}
+
+
+export {renderCard, deleteCardEveryWhere};
