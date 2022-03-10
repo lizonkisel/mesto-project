@@ -1,7 +1,5 @@
-import {openPopup, closePopup, cleanTitle, changeSubmitText} from './utils.js';
-import {validationConfig, toggleButtonState} from './validate.js'
-import {renderCard} from './card.js';
-import {changeNameOnServer, postNewPlaceOnServer, changeAvatarOnServer} from './api.js';
+import {openPopup} from './utils.js';
+import {validationConfig} from './validate.js';
 
 const popupPhoto = document.querySelector('.popup_photo');
 const popupPhotoImage = popupPhoto.querySelector('.popup__image');
@@ -31,7 +29,6 @@ const profileAvatar = document.querySelector('.profile__avatar');
   /* Наполнить поп-ап с фото */
 
 function fillPopupPhoto(image, title) {
-  cleanTitle(popupPhotoTitle);
   changeImagePopupPhoto(image, title);
   changeTitlePopupPhoto(title);
   openPopup(popupPhoto);
@@ -47,7 +44,8 @@ function changeImagePopupPhoto(image, title) {
   /* Сменить подпись в поп-апе с фото */
 
 function changeTitlePopupPhoto(title) {
-  popupPhotoTitle.insertAdjacentText('afterbegin',  title);
+  // popupPhotoTitle.insertAdjacentText('afterbegin',  title);
+  popupPhotoTitle.textContent = title;
 }
 
   /* Подтянуть данные профиля в поп-ап с редактированием данных профиля */
@@ -60,74 +58,8 @@ function changePopupEditProfileData() {
   popupEditProfileDescription.value = profileDescription.textContent;
 }
 
-  /* Установить данные профиля после их получения с сервера */
 
-function setProfileData(newName) {
-  profileName.textContent = newName.name;
-  profileDescription.textContent = newName.about;
-}
-
-  /* Сохранить данные редактирования профиля */
-
-function submitFormEditProfile(evt) {
-  evt.preventDefault();
-
-  changeSubmitText(true, popupEditProfile);
-
-  changeNameOnServer(popupEditProfileName, popupEditProfileDescription)
-  .then((newName) => {
-    setProfileData(newName);
-    closePopup(popupEditProfile);
-    changeSubmitText(false, popupEditProfile);
-  })
-  .catch(error => console.log(`Ошибка ${error}`))
-}
-
-  /* Сохранить данные создания нового места */
-
-function submitCreateNewPlace(evt) {
-  evt.preventDefault();
-
-  changeSubmitText(true, popupNewPlace);
-
-  postNewPlaceOnServer(popupNewPlaceImage, popupNewPlaceTitle)
-  .then(card => {
-    renderCard(card);
-    closePopup(popupNewPlace);
-    popupNewPlaceForm.reset();
-    changeSubmitText(false, popupNewPlace);
-    toggleButtonState(validationConfig, popupNewPlaceForm, popupNewPlaceInputs);
-  })
-  .catch(error => console.log(`Ошибка:${error.status} ${error.statusText}`))
-}
-
-  /* Сохранить новое фото профиля */
-
-function submitEditProfilePhoto(evt) {
-  evt.preventDefault();
-
-  changeSubmitText(true, popupEditProfilePhoto);
-
-  const popupEditProfilePhotoLink = popupEditProfilePhotoInput.value;
-
-  changeAvatarOnServer(popupEditProfilePhotoLink)
-  .then(profileData => {
-    setAvatar(profileAvatar, profileData.avatar);
-    closePopup(popupEditProfilePhoto);
-    popupEditProfilePhotoForm.reset();
-    changeSubmitText(false, popupEditProfilePhoto);
-    toggleButtonState(validationConfig, popupEditProfilePhotoForm, [popupEditProfilePhotoInput]);
-  })
-  .catch(err => {console.log(err)})
-}
-
-  /* Установить новый аватар после получения с сервера */
-
-function setAvatar(profileAvatar, avatar) {
-  profileAvatar.src = avatar;
-}
-
-export {fillPopupPhoto, popupEditProfile, popupEditProfileForm, popupEditProfileInputs,
-  popupNewPlace, popupNewPlaceForm, changePopupEditProfileData, setProfileData, submitFormEditProfile,
-  submitCreateNewPlace, profileName, profileDescription, popupDeleteCard, popupDeleteCardForm,
-  popupEditProfilePhoto, popupEditProfilePhotoForm, submitEditProfilePhoto, setAvatar, profileAvatar};
+export {fillPopupPhoto, popupEditProfile, popupEditProfileForm, popupEditProfileInputs, popupEditProfileName,
+  popupEditProfileDescription, popupNewPlace, popupNewPlaceForm, popupNewPlaceInputs, popupNewPlaceImage,
+  popupNewPlaceTitle, changePopupEditProfileData, profileName, profileDescription, popupDeleteCard,
+  popupDeleteCardForm, popupEditProfilePhoto, popupEditProfilePhotoForm, popupEditProfilePhotoInput, profileAvatar};

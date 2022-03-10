@@ -4,6 +4,14 @@ const config = {
   contentType: 'application/json'
 }
 
+function processResponse(res) {
+  if (res.ok) {
+    return res.json();
+  } else {
+    return Promise.reject(res.status);
+  }
+}
+
 function getProfileDataFromServer() {
   return fetch(`${config.baseUrl}/users/me`, {
       method: 'GET',
@@ -12,13 +20,7 @@ function getProfileDataFromServer() {
         'Content-Type': config.contentType
       }
     })
-    .then(function(res) {
-      if (res.ok) {
-        return res.json();
-      } else {
-        return Promise.reject(res.status);
-      }
-    })
+    .then(processResponse)
 }
 
 function getCardsFromServer() {
@@ -28,13 +30,7 @@ function getCardsFromServer() {
       authorization: config.authorization
     }
   })
-  .then(function(res) {
-    if (res.ok) {
-      return res.json();
-    } else {
-      return Promise.reject(res.status);
-    }
-  })
+  .then(processResponse)
 }
 
 function changeNameOnServer(inputName, inputDesc) {
@@ -49,13 +45,7 @@ function changeNameOnServer(inputName, inputDesc) {
       about:  inputDesc.value
     })
   })
-  .then(function(res) {
-    if (res.ok) {
-      return res.json();
-    } else {
-      return Promise.reject(res.status);
-    }
-  })
+  .then(processResponse)
 }
 
 function postNewPlaceOnServer(image, name) {
@@ -70,13 +60,7 @@ function postNewPlaceOnServer(image, name) {
       link: image.value
     })
   })
-  .then(res => {
-    if (res.ok) {
-      return res.json()
-    } else {
-      return Promise.reject(res)
-    }
-  })
+  .then(processResponse)
 }
 
 function deleteCardFromServer(cardId) {
@@ -86,13 +70,7 @@ function deleteCardFromServer(cardId) {
       authorization: config.authorization
     }
   })
-  .then((res) => {
-    if (res.ok) {
-      return res.json();
-    } else {
-      return Promise.reject(res);
-    }
-  })
+  .then(processResponse)
 }
 
 function putLike(card) {
@@ -103,13 +81,7 @@ function putLike(card) {
       authorization: config.authorization,
     }
   })
-  .then(res => {
-    if (res.ok) {
-      return res.json();
-    } else {
-      return Promise.reject(res);
-    }
-  })
+  .then(processResponse)
 }
 
 function deleteLike(card) {
@@ -120,13 +92,7 @@ function deleteLike(card) {
       authorization: config.authorization,
     }
   })
-  .then(res => {
-    if (res.ok) {
-      return res.json();
-    } else {
-      return Promise.reject(res);
-    }
-  })
+  .then(processResponse)
 }
 
 function changeAvatarOnServer(link) {
@@ -140,14 +106,9 @@ function changeAvatarOnServer(link) {
       avatar: link
     })
   })
-  .then(res => {
-    if (res.ok) {
-      return res.json();
-    } else {
-      return Promise.reject(res);
-    }
-  })
+  .then(processResponse)
 }
+
 
 export {getProfileDataFromServer, getCardsFromServer, changeNameOnServer,
   postNewPlaceOnServer, deleteCardFromServer, putLike, deleteLike, changeAvatarOnServer}
