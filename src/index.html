@@ -17,16 +17,16 @@
       <main class="main page__main">
 
         <section class="profile main__profile">
-          <img class="profile__avatar" src="<%=require('./images/Custo.jpg')%>" alt="Жак-Ив Кусто">
+          <img class="profile__avatar" src="" alt="Жак-Ив Кусто">
           <div class="profile__avatar-mask">
             <img class="profile__avatar-edit-icon" src="<%=require('./images/Edit_photo_icon.svg')%>" alt="Иконка редактирования фото">
           </div>
           <div class="profile__profile-info">
             <div class="profile__wrapper">
-              <h1 class="profile__name">Жак-Ив Кусто</h1>
+              <h1 class="profile__name"></h1>
               <button class="profile__edit-button" type="button"></button>
             </div>
-            <p class="profile__description">Исследователь океана</p>
+            <p class="profile__description"></p>
           </div>
           <button class="profile__add-button" type="button">
           </button>
@@ -78,7 +78,10 @@
             <h2 class="form__title">Обновить аватар</h2>
             <button class="popup__button-close" type="button"></button>
             <fieldset class="form__fieldset">
-              <input class="form__item form__item_type_user-photo" type="text" name="user-photo" placeholder="Ссылка на фото" required>
+              <label class="form__field">
+                <input class="form__item form__item_type_user-photo" type="url" name="user-photo" placeholder="Ссылка на фото" required>
+                <span class="form__error user-photo-error"></span>
+              </label>
             </fieldset>
             <button class="form__button-submit" type="submit">Сохранить</button>
           </form>
@@ -91,6 +94,15 @@
             <h2 class="popup__title"></h2>
           </div>
         </section>
+
+        <section class="popup main__popup popup_delete-card">
+          <form class="form popup__form" name="delete-card">
+            <h2 class="form__title">Вы уверены?</h2>
+            <button class="popup__button-close" type="button"></button>
+            <button class="form__button-submit" type="submit">Да</button>
+          </form>
+        </section>
+
       </main>
 
       <footer class="footer page__footer">
@@ -105,7 +117,10 @@
         <img class="element__image" src="" alt="">
         <div class="element__description">
           <h2 class="element__title"></h2>
-          <button class="element__like" type="button"></button>
+          <div class="element__like-area">
+            <button class="element__like" type="button"></button>
+            <span class="element__like-amount">6</span>
+          </div>
         </div>
       </article>
     </template>

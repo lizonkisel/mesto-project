@@ -1,4 +1,6 @@
-  /* Открыть/закрыть поп-ап "Редактировать профиль" */
+import {popupNewPlace} from './modal.js';
+
+/* Открыть/закрыть поп-ап "Редактировать профиль" */
 
 function openPopup(popup) {
   popup.classList.add('popup_opened');
@@ -25,4 +27,20 @@ function closeByEscape(evt) {
   }
 }
 
-export {openPopup, closePopup, cleanTitle};
+  /* Изменить текст кнопки "Submit" */
+
+function changeSubmitText(isLoading, popup) {
+  const loadingText = 'Сохранение...';
+  const buttonSubmit = popup.querySelector('.form__button-submit');
+  if (isLoading === true) {
+    buttonSubmit.textContent = loadingText;
+  } else {
+    if (popup === popupNewPlace) {
+      buttonSubmit.textContent = "Создать";
+    } else {
+      buttonSubmit.textContent = "Сохранить";
+    }
+  }
+}
+
+export {openPopup, closePopup, cleanTitle, changeSubmitText};
