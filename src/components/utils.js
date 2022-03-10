@@ -12,12 +12,6 @@ function closePopup(popup) {
   document.removeEventListener("keydown", closeByEscape);
 }
 
-  /* Очистить название */
-
-function cleanTitle(title) {
-  title.textContent = '';
-}
-
   /* Закрыть поп-ап по нажатию на "Escape" */
 
 function closeByEscape(evt) {
@@ -43,4 +37,4 @@ function changeSubmitText(isLoading, popup) {
   }
 }
 
-export {openPopup, closePopup, cleanTitle, changeSubmitText};
+export {openPopup, closePopup, changeSubmitText};
