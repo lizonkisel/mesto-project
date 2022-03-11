@@ -161,22 +161,16 @@ function deleteCardEveryWhere(evt) {
 
   /* Отрисовываем карточки */
 
-getProfileDataFromServer()
-.then(profileData => {
+Promise.all([getProfileDataFromServer(), getCardsFromServer()])
+.then(function([profileData, cards]) {
   setProfileData(profileData);
   setAvatar(profileAvatar, profileData.avatar);
-
-  getCardsFromServer()
-  .then(function(cards) {
-    return cards.forEach(function(card) {
-      renderCard(card, profileData, 'append');
-    })
-  })
-  .catch(function(error) {
-    console.log(`Ошибка ${error}`);
+  cards.forEach(function(card) {
+    renderCard(card, profileData, 'append');
   })
 })
 .catch(error => {console.log(`Ошибка ${error}`)})
+
 
   /* Вешаем обработчик слушателя события для поп-апа "Редактировать профиль" */
 
