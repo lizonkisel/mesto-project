@@ -24,6 +24,10 @@ const buttonEditProfilePhoto = document.querySelector('.profile__avatar-mask');
 
 const popups = Array.from(document.querySelectorAll('.popup'));
 
+  /* Переменная, содержащая id пользователя*/
+
+let userId;
+
 
 /* ФУНКЦИИ */
 
@@ -32,13 +36,8 @@ const popups = Array.from(document.querySelectorAll('.popup'));
 
 const elements = document.querySelector('.elements');
 
-function renderCard(card, me, insertMethod) {
-  const newCard = createNewPlace(card, me);
-
-  const newPlaceLike = newCard.querySelector('.element__like');
-  newPlaceLike.addEventListener('click', function() {
-    return changeLikeState(card, newPlaceLike)
-  })
+function renderCard(card, userId, insertMethod) {
+  const newCard = createNewPlace(card, userId);
 
   if (insertMethod === 'append') {
     elements.append(newCard);
@@ -101,7 +100,7 @@ function submitCreateNewPlace(evt) {
 
   postNewPlaceOnServer(popupNewPlaceImage, popupNewPlaceTitle)
   .then(card => {
-    renderCard(card, card.owner, 'prepend');
+    renderCard(card, userId, 'prepend');
     closePopup(popupNewPlace);
     popupNewPlaceForm.reset();
     toggleButtonState(validationConfig, popupNewPlaceForm, popupNewPlaceInputs);
@@ -158,19 +157,20 @@ function deleteCardEveryWhere(evt) {
 
 /* ИСПОЛНЯЕМЫЙ КОД */
 
-
   /* Отрисовываем карточки */
 
 Promise.all([getProfileDataFromServer(), getCardsFromServer()])
 .then(function([profileData, cards]) {
+
+  userId = profileData._id;
+
   setProfileData(profileData);
   setAvatar(profileAvatar, profileData.avatar);
   cards.forEach(function(card) {
-    renderCard(card, profileData, 'append');
+    renderCard(card, userId, 'append');
   })
 })
 .catch(error => {console.log(`Ошибка ${error}`)})
-
 
   /* Вешаем обработчик слушателя события для поп-апа "Редактировать профиль" */
 
@@ -223,4 +223,4 @@ popups.forEach(function(popup) {
 
 enableValidation(validationConfig);
 
-export {renderCard};
+export {changeLikeState};

@@ -1,9 +1,10 @@
+import {changeLikeState} from './index.js';
 import {fillPopupPhoto, profileName, popupDeleteCard} from './modal.js';
 import {openPopup} from './utils.js';
 
   /* Создать карточку нового места */
 
-function createNewPlace(card, me) {
+function createNewPlace(card, userId) {
 
   const templateNewPlace = document.querySelector('#place-template').content;
   const newPlace = templateNewPlace.querySelector('.element').cloneNode(true);
@@ -23,10 +24,13 @@ function createNewPlace(card, me) {
   newPlaceLikeAmount.textContent = card.likes.length;
 
   const newPlaceLike = newPlace.querySelector('.element__like');
-  checkLikes(card, me, newPlaceLike);
+  newPlaceLike.addEventListener('click', function() {
+    return changeLikeState(card, newPlaceLike)
+  })
+  checkLikes(card, userId, newPlaceLike);
 
   const newPlaceDelete = newPlace.querySelector('.element__delete');
-  if (card.owner.name === profileName.textContent) {
+  if (card.owner._id === userId) {
     newPlaceDelete.addEventListener('click', function() {
       openPopup(popupDeleteCard);
       popupDeleteCard.setAttribute("data-card-id", card._id);
@@ -53,10 +57,9 @@ function setLikesAmount(card) {
 
   /* Проверить, лайкнута ли эта карточка юзером до этого (в прошлое посещение сайта) */
 
-function checkLikes(card, me, newPlaceLike) {
-  me = me._id;
+function checkLikes(card, userId, newPlaceLike) {
   card.likes.some(function(likeAuthor) {
-    if (likeAuthor._id === me) {
+    if (likeAuthor._id === userId) {
       newPlaceLike.classList.add('element__like_active');
     }
   })
