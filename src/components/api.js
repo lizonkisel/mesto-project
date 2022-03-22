@@ -112,3 +112,5 @@ function changeAvatarOnServer(link) {
 
 export {getProfileDataFromServer, getCardsFromServer, changeNameOnServer,
   postNewPlaceOnServer, deleteCardFromServer, putLike, deleteLike, changeAvatarOnServer}
+
+//import Api from './classes/Api.js';
