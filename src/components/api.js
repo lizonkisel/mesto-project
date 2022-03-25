@@ -73,8 +73,8 @@ function deleteCardFromServer(cardId) {
   .then(processResponse)
 }
 
-function putLike(card) {
-  const cardId = card._id;
+function putLike(cardId) {
+  // const cardId = card._id;
   return fetch(`${config.baseUrl}cards/likes/${cardId}`, {
     method: 'PUT',
     headers: {
@@ -84,8 +84,8 @@ function putLike(card) {
   .then(processResponse)
 }
 
-function deleteLike(card) {
-  const cardId = card._id;
+function deleteLike(cardId) {
+  // const cardId = card._id;
   return fetch(`${config.baseUrl}cards/likes/${cardId}`, {
     method: 'DELETE',
     headers: {
