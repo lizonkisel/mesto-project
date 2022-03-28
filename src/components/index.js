@@ -1,18 +1,36 @@
 import '../index.css';
 import {createNewPlace, toggleLike, setLikesAmount, deletePlace} from './card.js';
 import {openPopup, closePopup, changeSubmitText} from './utils.js';
-import {validationConfig, enableValidation, toggleButtonState, checkValidation} from './validate.js';
+import {validationConfig} from './validate.js';
 import {popupEditProfile, popupEditProfileForm, popupEditProfileInputs, popupEditProfileName,
   popupEditProfileDescription, popupNewPlace, popupNewPlaceForm, popupNewPlaceInputs,
   popupNewPlaceImage, popupNewPlaceTitle, changePopupEditProfileData, popupDeleteCard, popupDeleteCardForm,
   profileName, profileDescription, popupEditProfilePhoto, popupEditProfilePhotoForm,
   popupEditProfilePhotoInput, profileAvatar} from './modal.js';
-import {getCardsFromServer, getProfileDataFromServer, changeNameOnServer, postNewPlaceOnServer,
-  changeAvatarOnServer, putLike, deleteLike, deleteCardFromServer} from './api.js';
+// import {getCardsFromServer, getProfileDataFromServer, changeNameOnServer, postNewPlaceOnServer,
+//   changeAvatarOnServer, putLike, deleteLike, deleteCardFromServer} from './api.js';
+import Api from './classes/Api.js';
+import FormValidator from './classes/FormValidator.js';
+
+const api = new Api({
+  baseUrl: 'https://nomoreparties.co/v1/plus-cohort7',
+  authorization: 'ecd6f0c2-01ba-4d99-a774-de79c1d44e1d',
+  'Content-Type': 'application/json'
+
+  // headers: {
+  //   authorization: 'ecd6f0c2-01ba-4d99-a774-de79c1d44e1d',
+  //   'Content-Type': 'application/json'
+  // }
+});
+
+
+export const formValidator = new FormValidator({validationConfig});
+console.log(formValidator.validationConfig.inputSelector);
 
 import {Card} from './classes/Card.js';
 
 
+console.log(api);
 /* ПЕРЕМЕННЫЕ */
 
 
@@ -73,6 +91,25 @@ function renderCard(data, userId, insertMethod) {
 
   /* Изменить состояние лайка */
 
+
+function changeLikeState(card, likeElement) {
+  if (likeElement.classList.contains('element__like_active')) {
+    api.deleteLike(card)
+    .then(likes => {
+      toggleLike(likeElement);
+      setLikesAmount(likes)
+    })
+    .catch(err => {console.log(err)})
+  } else {
+    api.putLike(card)
+    .then(likes => {
+      toggleLike(likeElement);
+      setLikesAmount(likes)
+    })
+    .catch(err => {console.log(err)})
+  }
+}
+
 // function changeLikeState(id, likeElement) {
 //   if (likeElement.classList.contains('element__like_active')) {
 //     deleteLike(id)
@@ -94,6 +131,7 @@ function renderCard(data, userId, insertMethod) {
 //   }
 // }
 
+
   /* Установить данные профиля после их получения с сервера */
 
 function setProfileData(newName) {
@@ -108,12 +146,13 @@ function submitFormEditProfile(evt) {
 
   changeSubmitText(true, popupEditProfile);
 
-  changeNameOnServer(popupEditProfileName, popupEditProfileDescription)
+  api.changeNameOnServer(popupEditProfileName, popupEditProfileDescription)
   .then((newName) => {
     setProfileData(newName);
     closePopup(popupEditProfile);
+    console.log('Имя изменено');
   })
-  .catch(error => console.log(`Ошибка ${error}`))
+  .catch(error => console.log(`Ошибка смены имени пользователя ${error}`))
   .finally(() => {
     changeSubmitText(false, popupEditProfile);
   })
@@ -126,12 +165,12 @@ function submitCreateNewPlace(evt) {
 
   changeSubmitText(true, popupNewPlace);
 
-  postNewPlaceOnServer(popupNewPlaceImage, popupNewPlaceTitle)
+  api.postNewPlaceOnServer(popupNewPlaceImage, popupNewPlaceTitle)
   .then(card => {
     renderCard(card, userId, 'prepend');
     closePopup(popupNewPlace);
     popupNewPlaceForm.reset();
-    toggleButtonState(validationConfig, popupNewPlaceForm, popupNewPlaceInputs);
+    formValidator.toggleButtonState(popupNewPlaceForm, popupNewPlaceInputs);
   })
   .catch(error => console.log(`Ошибка:${error.status} ${error.statusText}`))
   .finally(() => {
@@ -148,12 +187,12 @@ function submitEditProfilePhoto(evt) {
 
   const popupEditProfilePhotoLink = popupEditProfilePhotoInput.value;
 
-  changeAvatarOnServer(popupEditProfilePhotoLink)
+  api.changeAvatarOnServer(popupEditProfilePhotoLink)
   .then(profileData => {
     setAvatar(profileAvatar, profileData.avatar);
     closePopup(popupEditProfilePhoto);
     popupEditProfilePhotoForm.reset();
-    toggleButtonState(validationConfig, popupEditProfilePhotoForm, [popupEditProfilePhotoInput]);
+    formValidator.toggleButtonState(popupEditProfilePhotoForm, [popupEditProfilePhotoInput]);
   })
   .catch(err => {console.log(err)})
   .finally(() => {
@@ -172,7 +211,7 @@ function setAvatar(profileAvatar, avatar) {
 function deleteCardEveryWhere(evt) {
   evt.preventDefault();
   const id = popupDeleteCard.dataset.cardId;
-  deleteCardFromServer(id)
+  api.deleteCardFromServer(id)
   .then(() => {
     deletePlace(document.querySelector(`[data-card-id='${id}']`));
     closePopup(popupDeleteCard)
@@ -181,13 +220,13 @@ function deleteCardEveryWhere(evt) {
     console.log(`Ошибка:${error.status} ${error.statusText}`)
   })
 }
-
+api.processResponse
 
 /* ИСПОЛНЯЕМЫЙ КОД */
 
   /* Отрисовываем карточки */
 
-Promise.all([getProfileDataFromServer(), getCardsFromServer()])
+Promise.all([api.getProfileDataFromServer(), api.getCardsFromServer()])
 .then(function([profileData, cards]) {
 
   userId = profileData._id;
@@ -205,9 +244,9 @@ Promise.all([getProfileDataFromServer(), getCardsFromServer()])
 profileEditButton.addEventListener('click', function() {
   changePopupEditProfileData();
   popupEditProfileInputs.forEach(function(input) {
-    checkValidation(validationConfig, popupEditProfile, input);
+    formValidator.checkValidation(popupEditProfile, input);
   })
-  toggleButtonState(validationConfig, popupEditProfile, popupEditProfileInputs);
+  formValidator.toggleButtonState(popupEditProfile, popupEditProfileInputs);
 
   openPopup(popupEditProfile);
 });
@@ -249,6 +288,16 @@ popups.forEach(function(popup) {
 
   /* Запускаем валидацию полей */
 
-enableValidation(validationConfig);
+  formValidator.enableValidation();
 
-// export {changeLikeState};
+
+export {changeLikeState};
+
+
+
+
+
+
+
+
+

@@ -1,6 +1,8 @@
 import {openPopup} from './utils.js';
-import {validationConfig} from './validate.js';
 
+// import {validationConfig} from './validate.js';
+import {formValidator} from '../components/index.js';
+console.log(formValidator.inputSelector);
 const popupPhoto = document.querySelector('.popup_photo');
 const popupPhotoImage = popupPhoto.querySelector('.popup__image');
 const popupPhotoTitle = popupPhoto.querySelector('.popup__title');
@@ -9,13 +11,13 @@ const popupEditProfile = document.querySelector('.popup_edit-profile');
 const popupEditProfileForm = popupEditProfile.querySelector('.form');
 const popupEditProfileName = popupEditProfile.querySelector('.form__item_type_name');
 const popupEditProfileDescription = popupEditProfile.querySelector('.form__item_type_work');
-const popupEditProfileInputs = Array.from(popupEditProfile.querySelectorAll(validationConfig.inputSelector));
+const popupEditProfileInputs = Array.from(popupEditProfile.querySelectorAll(formValidator.inputSelector));
 
 const popupNewPlace = document.querySelector('.popup_new-place');
 const popupNewPlaceForm = popupNewPlace.querySelector('.form');
 const popupNewPlaceImage = popupNewPlace.querySelector('.form__item_type_image');
 const popupNewPlaceTitle = popupNewPlace.querySelector('.form__item_type_title');
-const popupNewPlaceInputs = Array.from(popupNewPlaceForm.querySelectorAll(validationConfig.inputSelector));
+const popupNewPlaceInputs = Array.from(popupNewPlaceForm.querySelectorAll(formValidator.inputSelector));
 
 const popupDeleteCard = document.querySelector('.popup_delete-card');
 const popupDeleteCardForm = popupDeleteCard.querySelector('.form');
