@@ -23,8 +23,12 @@ const api = new Api({
   // }
 });
 
+
 export const formValidator = new FormValidator({validationConfig});
 console.log(formValidator.validationConfig.inputSelector);
+
+import {Card} from './classes/Card.js';
+
 
 console.log(api);
 /* ПЕРЕМЕННЫЕ */
@@ -52,8 +56,31 @@ let userId;
 
 const elements = document.querySelector('.elements');
 
-function renderCard(card, userId, insertMethod) {
-  const newCard = createNewPlace(card, userId);
+function renderCard(data, userId, insertMethod) {
+  // const newCard = createNewPlace(card, userId);
+  const newCardElement = new Card({
+    data,
+    handleLikeClick: (newCardElement) => {
+      if (newCardElement.isLiked()) {
+        deleteLike(newCardElement.getId())
+        .then(card => {
+          newCardElement.toggleLike();
+          newCardElement.checkLikesAmount(card)
+        })
+        .catch(err => {console.log(err)})
+      } else {
+        putLike(newCardElement.getId())
+        .then(card => {
+          newCardElement.toggleLike();
+          newCardElement.checkLikesAmount(card)
+        })
+        .catch(err => {console.log(err)})
+      }
+    }},
+    userId,
+    '#place-template');
+
+  const newCard = newCardElement.generate();
 
   if (insertMethod === 'append') {
     elements.append(newCard);
@@ -63,6 +90,7 @@ function renderCard(card, userId, insertMethod) {
 }
 
   /* Изменить состояние лайка */
+
 
 function changeLikeState(card, likeElement) {
   if (likeElement.classList.contains('element__like_active')) {
@@ -81,6 +109,28 @@ function changeLikeState(card, likeElement) {
     .catch(err => {console.log(err)})
   }
 }
+
+// function changeLikeState(id, likeElement) {
+//   if (likeElement.classList.contains('element__like_active')) {
+//     deleteLike(id)
+//     .then(likes => {
+//       this._toggleLike(likeElement);
+//       setLikesAmount(likes)
+//     })
+//     .catch(err => {console.log(err)})
+//   } else {
+
+//     console.log(likeElement);
+
+//     putLike(id)
+//     .then(likes => {
+//       this._toggleLike(likeElement);
+//       setLikesAmount(likes)
+//     })
+//     .catch(err => {console.log(err)})
+//   }
+// }
+
 
   /* Установить данные профиля после их получения с сервера */
 
@@ -240,7 +290,9 @@ popups.forEach(function(popup) {
 
   formValidator.enableValidation();
 
+
 export {changeLikeState};
+
 
 
 

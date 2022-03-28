@@ -80,6 +80,7 @@
 //   .then(processResponse)
 // }
 
+
 // function putLike(card) {
 //   const cardId = card._id;
 //   return fetch(`${config.baseUrl}cards/likes/${cardId}`, {
