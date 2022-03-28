@@ -1,7 +1,7 @@
 import '../index.css';
 import {createNewPlace, toggleLike, setLikesAmount, deletePlace} from './card.js';
 import {openPopup, closePopup, changeSubmitText} from './utils.js';
-import {validationConfig, enableValidation, toggleButtonState, checkValidation} from './validate.js';
+import {validationConfig} from './validate.js';
 import {popupEditProfile, popupEditProfileForm, popupEditProfileInputs, popupEditProfileName,
   popupEditProfileDescription, popupNewPlace, popupNewPlaceForm, popupNewPlaceInputs,
   popupNewPlaceImage, popupNewPlaceTitle, changePopupEditProfileData, popupDeleteCard, popupDeleteCardForm,
@@ -10,6 +10,8 @@ import {popupEditProfile, popupEditProfileForm, popupEditProfileInputs, popupEdi
 // import {getCardsFromServer, getProfileDataFromServer, changeNameOnServer, postNewPlaceOnServer,
 //   changeAvatarOnServer, putLike, deleteLike, deleteCardFromServer} from './api.js';
 import Api from './classes/Api.js';
+import FormValidator from './classes/FormValidator.js';
+
 const api = new Api({
   baseUrl: 'https://nomoreparties.co/v1/plus-cohort7',
   authorization: 'ecd6f0c2-01ba-4d99-a774-de79c1d44e1d',
@@ -20,6 +22,10 @@ const api = new Api({
   //   'Content-Type': 'application/json'
   // }
 });
+
+export const formValidator = new FormValidator({validationConfig});
+console.log(formValidator.validationConfig.inputSelector);
+
 console.log(api);
 /* ПЕРЕМЕННЫЕ */
 
@@ -92,7 +98,7 @@ function submitFormEditProfile(evt) {
 
   api.changeNameOnServer(popupEditProfileName, popupEditProfileDescription)
   .then((newName) => {
-    //setProfileData(newName);
+    setProfileData(newName);
     closePopup(popupEditProfile);
     console.log('Имя изменено');
   })
@@ -114,7 +120,7 @@ function submitCreateNewPlace(evt) {
     renderCard(card, userId, 'prepend');
     closePopup(popupNewPlace);
     popupNewPlaceForm.reset();
-    toggleButtonState(validationConfig, popupNewPlaceForm, popupNewPlaceInputs);
+    formValidator.toggleButtonState(popupNewPlaceForm, popupNewPlaceInputs);
   })
   .catch(error => console.log(`Ошибка:${error.status} ${error.statusText}`))
   .finally(() => {
@@ -136,7 +142,7 @@ function submitEditProfilePhoto(evt) {
     setAvatar(profileAvatar, profileData.avatar);
     closePopup(popupEditProfilePhoto);
     popupEditProfilePhotoForm.reset();
-    toggleButtonState(validationConfig, popupEditProfilePhotoForm, [popupEditProfilePhotoInput]);
+    formValidator.toggleButtonState(popupEditProfilePhotoForm, [popupEditProfilePhotoInput]);
   })
   .catch(err => {console.log(err)})
   .finally(() => {
@@ -188,9 +194,9 @@ Promise.all([api.getProfileDataFromServer(), api.getCardsFromServer()])
 profileEditButton.addEventListener('click', function() {
   changePopupEditProfileData();
   popupEditProfileInputs.forEach(function(input) {
-    checkValidation(validationConfig, popupEditProfile, input);
+    formValidator.checkValidation(popupEditProfile, input);
   })
-  toggleButtonState(validationConfig, popupEditProfile, popupEditProfileInputs);
+  formValidator.toggleButtonState(popupEditProfile, popupEditProfileInputs);
 
   openPopup(popupEditProfile);
 });
@@ -232,7 +238,7 @@ popups.forEach(function(popup) {
 
   /* Запускаем валидацию полей */
 
-enableValidation(validationConfig);
+  formValidator.enableValidation();
 
 export {changeLikeState};
 
