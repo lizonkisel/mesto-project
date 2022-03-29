@@ -11,7 +11,7 @@ import Api from './classes/Api.js';
 import FormValidator from './classes/FormValidator.js';
 import {Card} from './classes/Card.js';
 import {Section} from './classes/Section.js';
-
+import UserInfo from './classes/UserInfo.js';
 
 /* ПЕРЕМЕННЫЕ */
 
@@ -77,29 +77,30 @@ const cardList = new Section({
 
 
   /* Установить данные профиля после их получения с сервера */
-
-function setProfileData(newName) {
-  profileName.textContent = newName.name;
-  profileDescription.textContent = newName.about;
-}
+const userInfo = new UserInfo();
+// userInfo.setProfileData(newName);
+// function setProfileData(newName) {
+//   profileName.textContent = newName.name;
+//   profileDescription.textContent = newName.about;
+// }
 
   /* Сохранить данные редактирования профиля */
+// userInfo.submitFormEditProfile(evt)
+// function submitFormEditProfile(evt) {
+//   evt.preventDefault();
 
-function submitFormEditProfile(evt) {
-  evt.preventDefault();
+//   changeSubmitText(true, popupEditProfile);
 
-  changeSubmitText(true, popupEditProfile);
-
-  api.changeNameOnServer(popupEditProfileName, popupEditProfileDescription)
-  .then((newName) => {
-    setProfileData(newName);
-    closePopup(popupEditProfile);
-  })
-  .catch(error => console.log(`Ошибка смены имени пользователя ${error}`))
-  .finally(() => {
-    changeSubmitText(false, popupEditProfile);
-  })
-}
+//   api.changeNameOnServer(popupEditProfileName, popupEditProfileDescription)
+//   .then((newName) => {
+//     setProfileData(newName);
+//     closePopup(popupEditProfile);
+//   })
+//   .catch(error => console.log(`Ошибка смены имени пользователя ${error}`))
+//   .finally(() => {
+//     changeSubmitText(false, popupEditProfile);
+//   })
+// }
 
   /* Сохранить данные создания нового места */
 
@@ -127,31 +128,33 @@ function submitCreateNewPlace(evt) {
 
   /* Сохранить новое фото профиля */
 
-function submitEditProfilePhoto(evt) {
-  evt.preventDefault();
+// userInfo.submitEditProfilePhoto(evt);
+// function submitEditProfilePhoto(evt) {
+//   evt.preventDefault();
 
-  changeSubmitText(true, popupEditProfilePhoto);
+//   changeSubmitText(true, popupEditProfilePhoto);
 
-  const popupEditProfilePhotoLink = popupEditProfilePhotoInput.value;
+//   const popupEditProfilePhotoLink = popupEditProfilePhotoInput.value;
 
-  api.changeAvatarOnServer(popupEditProfilePhotoLink)
-  .then(profileData => {
-    setAvatar(profileAvatar, profileData.avatar);
-    closePopup(popupEditProfilePhoto);
-    popupEditProfilePhotoForm.reset();
-    formValidator.toggleButtonState(popupEditProfilePhotoForm, [popupEditProfilePhotoInput]);
-  })
-  .catch(err => {console.log(err)})
-  .finally(() => {
-    changeSubmitText(false, popupEditProfilePhoto);
-  })
-}
+//   api.changeAvatarOnServer(popupEditProfilePhotoLink)
+//   .then(profileData => {
+//     setAvatar(profileAvatar, profileData.avatar);
+//     closePopup(popupEditProfilePhoto);
+//     popupEditProfilePhotoForm.reset();
+//     formValidator.toggleButtonState(popupEditProfilePhotoForm, [popupEditProfilePhotoInput]);
+//   })
+//   .catch(err => {console.log(err)})
+//   .finally(() => {
+//     changeSubmitText(false, popupEditProfilePhoto);
+//   })
+// }
 
   /* Установить новый аватар после получения с сервера */
 
-function setAvatar(profileAvatar, avatar) {
-  profileAvatar.src = avatar;
-}
+// userInfo.setAvatar(profileAvatar, avatar)
+// function setAvatar(profileAvatar, avatar) {
+//   profileAvatar.src = avatar;
+// }
 
   /* Удалить карточку с серевера и со страницы */
 
@@ -178,8 +181,8 @@ Promise.all([api.getProfileDataFromServer(), api.getCardsFromServer()])
 
   userId = profileData._id;
 
-  setProfileData(profileData);
-  setAvatar(profileAvatar, profileData.avatar);
+  userInfo.setProfileData(profileData);
+  userInfo.setAvatar(profileAvatar, profileData.avatar);
 
   cardList.renderItems(cards);
 
@@ -212,11 +215,11 @@ buttonEditProfilePhoto.addEventListener('click', function () {
 
   /* Отправляем формы */
 
-popupEditProfileForm.addEventListener('submit', submitFormEditProfile);
+popupEditProfileForm.addEventListener('submit', userInfo.submitFormEditProfile);
 
 popupNewPlaceForm.addEventListener('submit', submitCreateNewPlace);
 
-popupEditProfilePhotoForm.addEventListener('submit', submitEditProfilePhoto);
+popupEditProfilePhotoForm.addEventListener('submit', userInfo.submitEditProfilePhoto);
 
 popupDeleteCardForm.addEventListener('submit', deleteCardEveryWhere);
 
@@ -238,7 +241,7 @@ popups.forEach(function(popup) {
   formValidator.enableValidation();
 
 
-export {formValidator};
+export {formValidator, api};
 
 
 
