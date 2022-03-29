@@ -1,5 +1,5 @@
 import '../index.css';
-import {createNewPlace, toggleLike, setLikesAmount, deletePlace} from './card.js';
+import {deletePlace} from './card.js';
 import {openPopup, closePopup, changeSubmitText} from './utils.js';
 import {validationConfig} from './validate.js';
 import {popupEditProfile, popupEditProfileForm, popupEditProfileInputs, popupEditProfileName,
@@ -11,26 +11,18 @@ import {popupEditProfile, popupEditProfileForm, popupEditProfileInputs, popupEdi
 //   changeAvatarOnServer, putLike, deleteLike, deleteCardFromServer} from './api.js';
 import Api from './classes/Api.js';
 import FormValidator from './classes/FormValidator.js';
+import {Card} from './classes/Card.js';
+
 
 const api = new Api({
   baseUrl: 'https://nomoreparties.co/v1/plus-cohort7',
   authorization: 'ecd6f0c2-01ba-4d99-a774-de79c1d44e1d',
-  'Content-Type': 'application/json'
-
-  // headers: {
-  //   authorization: 'ecd6f0c2-01ba-4d99-a774-de79c1d44e1d',
-  //   'Content-Type': 'application/json'
-  // }
+  contentType: 'application/json'
 });
 
-
-export const formValidator = new FormValidator({validationConfig});
-console.log(formValidator.validationConfig.inputSelector);
-
-import {Card} from './classes/Card.js';
+export const formValidator = new FormValidator({config: validationConfig});
 
 
-console.log(api);
 /* ПЕРЕМЕННЫЕ */
 
 
@@ -62,14 +54,14 @@ function renderCard(data, userId, insertMethod) {
     data,
     handleLikeClick: (newCardElement) => {
       if (newCardElement.isLiked()) {
-        deleteLike(newCardElement.getId())
+        api.deleteLike(newCardElement.getId())
         .then(card => {
           newCardElement.toggleLike();
           newCardElement.checkLikesAmount(card)
         })
         .catch(err => {console.log(err)})
       } else {
-        putLike(newCardElement.getId())
+        api.putLike(newCardElement.getId())
         .then(card => {
           newCardElement.toggleLike();
           newCardElement.checkLikesAmount(card)
@@ -90,25 +82,6 @@ function renderCard(data, userId, insertMethod) {
 }
 
   /* Изменить состояние лайка */
-
-
-function changeLikeState(card, likeElement) {
-  if (likeElement.classList.contains('element__like_active')) {
-    api.deleteLike(card)
-    .then(likes => {
-      toggleLike(likeElement);
-      setLikesAmount(likes)
-    })
-    .catch(err => {console.log(err)})
-  } else {
-    api.putLike(card)
-    .then(likes => {
-      toggleLike(likeElement);
-      setLikesAmount(likes)
-    })
-    .catch(err => {console.log(err)})
-  }
-}
 
 // function changeLikeState(id, likeElement) {
 //   if (likeElement.classList.contains('element__like_active')) {
@@ -150,7 +123,6 @@ function submitFormEditProfile(evt) {
   .then((newName) => {
     setProfileData(newName);
     closePopup(popupEditProfile);
-    console.log('Имя изменено');
   })
   .catch(error => console.log(`Ошибка смены имени пользователя ${error}`))
   .finally(() => {
@@ -291,7 +263,7 @@ popups.forEach(function(popup) {
   formValidator.enableValidation();
 
 
-export {changeLikeState};
+// export {changeLikeState};
 
 
 

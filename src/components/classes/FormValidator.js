@@ -19,8 +19,8 @@ export default class FormValidator {
 
   enableValidation() {
     const forms = Array.from(document.querySelectorAll(this.formSelector));
-    forms.forEach(function(form) {
-      setInputListeners(form);
+    forms.forEach((form) => {
+      this.setInputListeners(form);
       form.addEventListener('submit', function(evt) {
         evt.preventDefault();
       })
@@ -31,11 +31,11 @@ export default class FormValidator {
 
   setInputListeners(form) {
     const inputs = Array.from(form.querySelectorAll(this.inputSelector));
-    toggleButtonState(form, inputs);
-    inputs.forEach(function(input) {
-      input.addEventListener('input', function(evt) {
-        checkValidation(form, input);
-        toggleButtonState(form, inputs);
+    this.toggleButtonState(form, inputs);
+    inputs.forEach((input) => {
+      input.addEventListener('input', (evt) => {
+        this.checkValidation(form, input);
+        this.toggleButtonState(form, inputs);
       })
     })
   }
@@ -44,7 +44,7 @@ export default class FormValidator {
 
   toggleButtonState(form, inputs) {
     const submitButton = form.querySelector(this.submitButtonSelector);
-    if (hasInvalidInput(inputs)) {
+    if (this.hasInvalidInput(inputs)) {
       submitButton.classList.add(this.inactiveButtonClass);
       submitButton.disabled = true;
     } else {
@@ -75,8 +75,5 @@ export default class FormValidator {
       inputError.textContent = '';
     }
   }
-
-
-
 
 }

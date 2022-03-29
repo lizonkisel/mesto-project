@@ -20,7 +20,6 @@ export default class Api {
     }
   }
 
-
   getProfileDataFromServer() {
     return fetch(`${this.baseUrl}/users/me`, {
         method: 'GET',
@@ -73,24 +72,8 @@ export default class Api {
     .then(this.processResponse)
   }
 
-
-  postNewPlaceOnServer(image, name) {
-    return fetch(`${this.baseUrl}/cards`, {
-      method: 'POST',
-      headers: {
-        authorization: this.authorization,
-        'Content-Type': this.contentType
-      },
-      body: JSON.stringify({
-        name: name.value,
-        link: image.value
-      })
-    })
-    .then(this.processResponse)
-  }
-
   deleteCardFromServer(cardId) {
-    return fetch(`${this.baseUrl}cards/${cardId}`, {
+    return fetch(`${this.baseUrl}/cards/${cardId}`, {
       method: 'DELETE',
       headers: {
         authorization: this.authorization
@@ -99,9 +82,8 @@ export default class Api {
     .then(this.processResponse)
   }
 
-  putLike(card) {
-    const cardId = card._id;
-    return fetch(`${this.baseUrl}cards/likes/${cardId}`, {
+  putLike(cardId) {
+    return fetch(`${this.baseUrl}/cards/likes/${cardId}`, {
       method: 'PUT',
       headers: {
         authorization: this.authorization,
@@ -110,9 +92,8 @@ export default class Api {
     .then(this.processResponse)
   }
 
-  deleteLike(card) {
-    const cardId = card._id;
-    return fetch(`${this.baseUrl}cards/likes/${cardId}`, {
+  deleteLike(cardId) {
+    return fetch(`${this.baseUrl}/cards/likes/${cardId}`, {
       method: 'DELETE',
       headers: {
         authorization: this.authorization,
@@ -122,7 +103,7 @@ export default class Api {
   }
 
   changeAvatarOnServer(link) {
-    return fetch(`${this.baseUrl}users/me/avatar`, {
+    return fetch(`${this.baseUrl}/users/me/avatar`, {
       method: 'PATCH',
       headers: {
         authorization: this.authorization,
@@ -135,8 +116,6 @@ export default class Api {
     .then(this.processResponse)
   }
 
-
-
   getApi() {
     console.log('Дошел до Api');
 
@@ -144,11 +123,3 @@ export default class Api {
 
 
 }
-
-// const api = new Api({
-//   baseUrl: 'https://nomoreparties.co/v1/cohort-42',
-//   headers: {
-//     authorization: 'c56e30dc-2883-4270-a59e-b2f7bae969c6',
-//     'Content-Type': 'application/json'
-//   }
-// });
