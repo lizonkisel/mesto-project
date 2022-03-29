@@ -85,7 +85,6 @@ const userInfo = new UserInfo();
 // }
 
   /* Сохранить данные редактирования профиля */
-// userInfo.submitFormEditProfile(evt)
 // function submitFormEditProfile(evt) {
 //   evt.preventDefault();
 
@@ -128,7 +127,6 @@ function submitCreateNewPlace(evt) {
 
   /* Сохранить новое фото профиля */
 
-// userInfo.submitEditProfilePhoto(evt);
 // function submitEditProfilePhoto(evt) {
 //   evt.preventDefault();
 
@@ -151,7 +149,6 @@ function submitCreateNewPlace(evt) {
 
   /* Установить новый аватар после получения с сервера */
 
-// userInfo.setAvatar(profileAvatar, avatar)
 // function setAvatar(profileAvatar, avatar) {
 //   profileAvatar.src = avatar;
 // }

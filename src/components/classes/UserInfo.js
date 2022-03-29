@@ -13,13 +13,14 @@ export default class UserInfo {
 
     /* Установить данные профиля после их получения с сервера */
   setProfileData(newName) {
+    // return
     profileName.textContent = newName.name;
     profileDescription.textContent = newName.about;
   }
 
     /* Установить новый аватар после получения с сервера */
   setAvatar(profileAvatar, avatar) {
-    profileAvatar.src = avatar;
+    return profileAvatar.src = avatar;
   }
 
 
