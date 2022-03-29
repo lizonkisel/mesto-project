@@ -7,11 +7,13 @@ import {popupEditProfile, popupEditProfileForm, popupEditProfileInputs, popupEdi
   popupNewPlaceImage, popupNewPlaceTitle, changePopupEditProfileData, popupDeleteCard, popupDeleteCardForm,
   profileName, profileDescription, popupEditProfilePhoto, popupEditProfilePhotoForm,
   popupEditProfilePhotoInput, profileAvatar} from './modal.js';
-// import {getCardsFromServer, getProfileDataFromServer, changeNameOnServer, postNewPlaceOnServer,
-//   changeAvatarOnServer, putLike, deleteLike, deleteCardFromServer} from './api.js';
 import Api from './classes/Api.js';
 import FormValidator from './classes/FormValidator.js';
 import {Card} from './classes/Card.js';
+import {Section} from './classes/Section.js';
+
+
+/* ПЕРЕМЕННЫЕ */
 
 
 const api = new Api({
@@ -20,11 +22,7 @@ const api = new Api({
   contentType: 'application/json'
 });
 
-export const formValidator = new FormValidator({config: validationConfig});
-
-
-/* ПЕРЕМЕННЫЕ */
-
+const formValidator = new FormValidator({config: validationConfig});
 
   /* Кнопки открытия поп-апов */
 
@@ -40,69 +38,42 @@ const popups = Array.from(document.querySelectorAll('.popup'));
 
 let userId;
 
-
-/* ФУНКЦИИ */
-
-
   /* Отрисовать карточку */
 
 const elements = document.querySelector('.elements');
 
-function renderCard(data, userId, insertMethod) {
-  // const newCard = createNewPlace(card, userId);
-  const newCardElement = new Card({
-    data,
-    handleLikeClick: (newCardElement) => {
-      if (newCardElement.isLiked()) {
-        api.deleteLike(newCardElement.getId())
-        .then(card => {
-          newCardElement.toggleLike();
-          newCardElement.checkLikesAmount(card)
-        })
-        .catch(err => {console.log(err)})
-      } else {
-        api.putLike(newCardElement.getId())
-        .then(card => {
-          newCardElement.toggleLike();
-          newCardElement.checkLikesAmount(card)
-        })
-        .catch(err => {console.log(err)})
-      }
-    }},
-    userId,
-    '#place-template');
+const cardList = new Section({
+  renderer: (card, insertMethod) => {
+    const newCardElement = new Card({
+      card,
+      handleLikeClick: (newCardElement) => {
+        if (newCardElement.isLiked()) {
+          api.deleteLike(newCardElement.getId())
+          .then(card => {
+            newCardElement.toggleLike();
+            newCardElement.checkLikesAmount(card)
+          })
+          .catch(err => {console.log(err)})
+        } else {
+          api.putLike(newCardElement.getId())
+          .then(card => {
+            newCardElement.toggleLike();
+            newCardElement.checkLikesAmount(card)
+          })
+          .catch(err => {console.log(err)})
+        }
+      }},
+      userId,
+      '#place-template'
+    );
+    const newCard = newCardElement.generate();
+    cardList.addItem(newCard, insertMethod);
+  }},
+  '.elements'
+)
 
-  const newCard = newCardElement.generate();
 
-  if (insertMethod === 'append') {
-    elements.append(newCard);
-  } else {
-    elements.prepend(newCard);
-  }
-}
-
-  /* Изменить состояние лайка */
-
-// function changeLikeState(id, likeElement) {
-//   if (likeElement.classList.contains('element__like_active')) {
-//     deleteLike(id)
-//     .then(likes => {
-//       this._toggleLike(likeElement);
-//       setLikesAmount(likes)
-//     })
-//     .catch(err => {console.log(err)})
-//   } else {
-
-//     console.log(likeElement);
-
-//     putLike(id)
-//     .then(likes => {
-//       this._toggleLike(likeElement);
-//       setLikesAmount(likes)
-//     })
-//     .catch(err => {console.log(err)})
-//   }
-// }
+/* ФУНКЦИИ */
 
 
   /* Установить данные профиля после их получения с сервера */
@@ -139,7 +110,11 @@ function submitCreateNewPlace(evt) {
 
   api.postNewPlaceOnServer(popupNewPlaceImage, popupNewPlaceTitle)
   .then(card => {
-    renderCard(card, userId, 'prepend');
+    // renderCard(card, userId, 'prepend');
+    // cardList.addItem(card, 'prepend');
+
+    cardList.renderer(card, 'prepend');
+
     closePopup(popupNewPlace);
     popupNewPlaceForm.reset();
     formValidator.toggleButtonState(popupNewPlaceForm, popupNewPlaceInputs);
@@ -205,9 +180,9 @@ Promise.all([api.getProfileDataFromServer(), api.getCardsFromServer()])
 
   setProfileData(profileData);
   setAvatar(profileAvatar, profileData.avatar);
-  cards.forEach(function(card) {
-    renderCard(card, userId, 'append');
-  })
+
+  cardList.renderItems(cards);
+
 })
 .catch(error => {console.log(`Ошибка ${error}`)})
 
@@ -263,7 +238,7 @@ popups.forEach(function(popup) {
   formValidator.enableValidation();
 
 
-// export {changeLikeState};
+export {formValidator};
 
 
 

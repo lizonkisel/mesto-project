@@ -3,13 +3,13 @@ import {openPopup} from '../utils.js';
 
 class Card {
 
-  constructor({data, handleLikeClick}, userId, templateSelector) {
-    this.data = data;
-    this.name = data.name;
-    this._id = data._id;
-    this.link = data.link;
-    this.likes = data.likes;
-    this.owner = data.owner;
+  constructor({card, handleLikeClick}, userId, templateSelector) {
+    this.card = card;
+    this.name = card.name;
+    this._id = card._id;
+    this.link = card.link;
+    this.likes = card.likes;
+    this.owner = card.owner;
     this._handleLikeClick = handleLikeClick;
     this.userId = userId;
     this.templateSelector = templateSelector;
