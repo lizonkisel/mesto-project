@@ -1,7 +1,7 @@
 import {openPopup} from './utils.js';
 
 // import {validationConfig} from './validate.js';
-import {formValidator} from '../components/index.js';
+// import {formValidator} from '../components/index.js';
 // console.log(formValidator.inputSelector);
 const popupPhoto = document.querySelector('.popup_photo');
 const popupPhotoImage = popupPhoto.querySelector('.popup__image');
