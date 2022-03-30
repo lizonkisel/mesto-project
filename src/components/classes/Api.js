@@ -116,10 +116,4 @@ export default class Api {
     .then(this.processResponse)
   }
 
-  getApi() {
-    console.log('Дошел до Api');
-
-  }
-
-
 }
