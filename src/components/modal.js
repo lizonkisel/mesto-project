@@ -1,12 +1,3 @@
-import {openPopup} from './utils.js';
-
-// import {validationConfig} from './validate.js';
-// import {formValidator} from '../components/index.js';
-// console.log(formValidator.inputSelector);
-const popupPhoto = document.querySelector('.popup_photo');
-const popupPhotoImage = popupPhoto.querySelector('.popup__image');
-const popupPhotoTitle = popupPhoto.querySelector('.popup__title');
-
 const popupEditProfile = document.querySelector('.popup_edit-profile');
 const popupEditProfileForm = popupEditProfile.querySelector('.form');
 const popupEditProfileName = popupEditProfile.querySelector('.form__item_type_name');
@@ -27,29 +18,6 @@ const popupEditProfilePhotoForm = popupEditProfilePhoto.querySelector('.form');
 const popupEditProfilePhotoInput = popupEditProfilePhotoForm.querySelector('.form__item_type_user-photo');
 const profileAvatar = document.querySelector('.profile__avatar');
 
-
-  /* Наполнить поп-ап с фото */
-
-function fillPopupPhoto(image, title) {
-  changeImagePopupPhoto(image, title);
-  changeTitlePopupPhoto(title);
-  openPopup(popupPhoto);
-}
-
-  /* Сменить изображение в поп-апе с фото */
-
-function changeImagePopupPhoto(image, title) {
-  popupPhotoImage.setAttribute('src', image);
-  popupPhotoImage.setAttribute('alt',  title);
-}
-
-  /* Сменить подпись в поп-апе с фото */
-
-function changeTitlePopupPhoto(title) {
-  // popupPhotoTitle.insertAdjacentText('afterbegin',  title);
-  popupPhotoTitle.textContent = title;
-}
-
   /* Подтянуть данные профиля в поп-ап с редактированием данных профиля */
 
 const profileName = document.querySelector('.profile__name');
@@ -61,7 +29,7 @@ function changePopupEditProfileData() {
 }
 
 
-export {fillPopupPhoto, popupEditProfile, popupEditProfileForm, popupEditProfileInputs, popupEditProfileName,
+export {popupEditProfile, popupEditProfileForm, popupEditProfileInputs, popupEditProfileName,
   popupEditProfileDescription, popupNewPlace, popupNewPlaceForm, popupNewPlaceInputs, popupNewPlaceImage,
   popupNewPlaceTitle, changePopupEditProfileData, profileName, profileDescription, popupDeleteCard,
   popupDeleteCardForm, popupEditProfilePhoto, popupEditProfilePhotoForm, popupEditProfilePhotoInput, profileAvatar};

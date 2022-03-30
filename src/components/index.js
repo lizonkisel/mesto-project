@@ -11,7 +11,9 @@ import Api from './classes/Api.js';
 import FormValidator from './classes/FormValidator.js';
 import {Card} from './classes/Card.js';
 import {Section} from './classes/Section.js';
+import {PopupWithImage} from './classes/PopupWithImage.js';
 import UserInfo from './classes/UserInfo.js';
+
 
 /* ПЕРЕМЕННЫЕ */
 
@@ -38,14 +40,23 @@ const popups = Array.from(document.querySelectorAll('.popup'));
 
 let userId;
 
+const popupWithImage = new PopupWithImage('.popup_photo');
+
   /* Отрисовать карточку */
 
-const elements = document.querySelector('.elements');
+// const elements = document.querySelector('.elements');
 
 const cardList = new Section({
   renderer: (card, insertMethod) => {
     const newCardElement = new Card({
       card,
+      handleCardClick: (newCardElement) => {
+        const image = newCardElement.link;
+        const title = newCardElement.name;
+        // popupWithImage.setEventListeners();
+        popupWithImage.open(image, title);
+      },
+
       handleLikeClick: (newCardElement) => {
         if (newCardElement.isLiked()) {
           api.deleteLike(newCardElement.getId())
@@ -71,6 +82,7 @@ const cardList = new Section({
   }},
   '.elements'
 )
+
 
 
 /* ФУНКЦИИ */

@@ -3,13 +3,14 @@ import {openPopup} from '../utils.js';
 
 class Card {
 
-  constructor({card, handleLikeClick}, userId, templateSelector) {
+  constructor({card, handleCardClick, handleLikeClick}, userId, templateSelector) {
     this.card = card;
     this.name = card.name;
     this._id = card._id;
     this.link = card.link;
     this.likes = card.likes;
     this.owner = card.owner;
+    this.handleCardClick = handleCardClick;
     this._handleLikeClick = handleLikeClick;
     this.userId = userId;
     this.templateSelector = templateSelector;
@@ -86,7 +87,8 @@ class Card {
     // Здесь пишем стрелочные функции, чтобы контекст this был привязан к классу (к функции-конструктору)
 
     this._newCardImage.addEventListener('click', () => {
-      fillPopupPhoto(this.link, this.name);
+      // fillPopupPhoto(this.link, this.name);
+      this.handleCardClick(this);
     });
 
     this._newCardLike.addEventListener('click', () => {
