@@ -6,7 +6,7 @@
 //   errorClass: 'form__item_invalid'
 // }
 
-export default class FormValidator {
+export class FormValidator {
   constructor({config}) {
     this.formSelector = config.formSelector;
     this.inputSelector = config.inputSelector;

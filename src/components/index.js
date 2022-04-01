@@ -7,12 +7,13 @@ import {popupEditProfile, popupEditProfileForm, popupEditProfileInputs, popupEdi
   popupNewPlaceImage, popupNewPlaceTitle, changePopupEditProfileData, popupDeleteCard, popupDeleteCardForm,
   profileName, profileDescription, popupEditProfilePhoto, popupEditProfilePhotoForm,
   popupEditProfilePhotoInput, profileAvatar} from './modal.js';
-import Api from './classes/Api.js';
-import FormValidator from './classes/FormValidator.js';
+import {Api} from './classes/Api.js';
+import {FormValidator} from './classes/FormValidator.js';
 import {Card} from './classes/Card.js';
 import {Section} from './classes/Section.js';
 import {PopupWithImage} from './classes/PopupWithImage.js';
-import UserInfo from './classes/UserInfo.js';
+import {PopupWithForm} from './classes/PopupWithForm.js';
+import {UserInfo} from './classes/UserInfo.js';
 
 
 /* ПЕРЕМЕННЫЕ */
@@ -87,31 +88,45 @@ const cardList = new Section({
 
 /* ФУНКЦИИ */
 
+ /* Сохранить новое фото профиля */
+function submitEditProfilePhoto(evt) {
+  evt.preventDefault();
 
-  /* Установить данные профиля после их получения с сервера */
-const userInfo = new UserInfo();
-// userInfo.setProfileData(newName);
-// function setProfileData(newName) {
-//   profileName.textContent = newName.name;
-//   profileDescription.textContent = newName.about;
-// }
+  changeSubmitText(true, popupEditProfilePhoto);
 
-  /* Сохранить данные редактирования профиля */
-// function submitFormEditProfile(evt) {
-//   evt.preventDefault();
+  const popupEditProfilePhotoLink = popupEditProfilePhotoInput.value;
 
-//   changeSubmitText(true, popupEditProfile);
+  api.changeAvatarOnServer(popupEditProfilePhotoLink)
+  .then(profileData => {
+    userInfo.setUserInfo(profileData);
+    closePopup(popupEditProfilePhoto);
+    popupEditProfilePhotoForm.reset();
+    formValidator.toggleButtonState(popupEditProfilePhotoForm, [popupEditProfilePhotoInput]);
+  })
+  .catch(err => {console.log(err)})
+  .finally(() => {
+    changeSubmitText(false, popupEditProfilePhoto);
+  })
+}
 
-//   api.changeNameOnServer(popupEditProfileName, popupEditProfileDescription)
-//   .then((newName) => {
-//     setProfileData(newName);
-//     closePopup(popupEditProfile);
-//   })
-//   .catch(error => console.log(`Ошибка смены имени пользователя ${error}`))
-//   .finally(() => {
-//     changeSubmitText(false, popupEditProfile);
-//   })
-// }
+/* Сохранить данные редактирования профиля */
+
+function submitFormEditProfile(evt) {
+  evt.preventDefault();
+
+  changeSubmitText(true, popupEditProfile);
+
+  api.changeNameOnServer(popupEditProfileName, popupEditProfileDescription)
+  .then((newName) => {
+    userInfo.setUserInfo(newName);
+    closePopup(popupEditProfile);
+  })
+  .catch(error => console.log(`Ошибка смены имени пользователя ${error}`))
+  .finally(() => {
+    changeSubmitText(false, popupEditProfile);
+  })
+}
+
 
   /* Сохранить данные создания нового места */
 
@@ -137,33 +152,6 @@ function submitCreateNewPlace(evt) {
   })
 }
 
-  /* Сохранить новое фото профиля */
-
-// function submitEditProfilePhoto(evt) {
-//   evt.preventDefault();
-
-//   changeSubmitText(true, popupEditProfilePhoto);
-
-//   const popupEditProfilePhotoLink = popupEditProfilePhotoInput.value;
-
-//   api.changeAvatarOnServer(popupEditProfilePhotoLink)
-//   .then(profileData => {
-//     setAvatar(profileAvatar, profileData.avatar);
-//     closePopup(popupEditProfilePhoto);
-//     popupEditProfilePhotoForm.reset();
-//     formValidator.toggleButtonState(popupEditProfilePhotoForm, [popupEditProfilePhotoInput]);
-//   })
-//   .catch(err => {console.log(err)})
-//   .finally(() => {
-//     changeSubmitText(false, popupEditProfilePhoto);
-//   })
-// }
-
-  /* Установить новый аватар после получения с сервера */
-
-// function setAvatar(profileAvatar, avatar) {
-//   profileAvatar.src = avatar;
-// }
 
   /* Удалить карточку с серевера и со страницы */
 
@@ -184,17 +172,20 @@ api.processResponse
 /* ИСПОЛНЯЕМЫЙ КОД */
 
   /* Отрисовываем карточки */
+  const userInfo = new UserInfo({
+    profileName,
+    profileDescription,
+    profileAvatar
+  } );
+
+
+
 
 Promise.all([api.getProfileDataFromServer(), api.getCardsFromServer()])
 .then(function([profileData, cards]) {
-
+  userInfo.getUserInfo(profileData)
   userId = profileData._id;
-
-  userInfo.setProfileData(profileData);
-  userInfo.setAvatar(profileAvatar, profileData.avatar);
-
   cardList.renderItems(cards);
-
 })
 .catch(error => {console.log(`Ошибка ${error}`)})
 
@@ -224,11 +215,11 @@ buttonEditProfilePhoto.addEventListener('click', function () {
 
   /* Отправляем формы */
 
-popupEditProfileForm.addEventListener('submit', userInfo.submitFormEditProfile);
+popupEditProfileForm.addEventListener('submit', submitFormEditProfile);
 
 popupNewPlaceForm.addEventListener('submit', submitCreateNewPlace);
 
-popupEditProfilePhotoForm.addEventListener('submit', userInfo.submitEditProfilePhoto);
+popupEditProfilePhotoForm.addEventListener('submit', submitEditProfilePhoto);
 
 popupDeleteCardForm.addEventListener('submit', deleteCardEveryWhere);
 
