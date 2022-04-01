@@ -27,6 +27,14 @@ const api = new Api({
 
 const formValidator = new FormValidator({config: validationConfig});
 
+const userInfo = new UserInfo({
+  profileName,
+  profileDescription,
+  profileAvatar
+} );
+
+
+
   /* Кнопки открытия поп-апов */
 
 const profileEditButton = document.querySelector('.profile__edit-button');
@@ -120,6 +128,7 @@ function submitFormEditProfile(evt) {
   .then((newName) => {
     userInfo.setUserInfo(newName);
     closePopup(popupEditProfile);
+
   })
   .catch(error => console.log(`Ошибка смены имени пользователя ${error}`))
   .finally(() => {
@@ -172,11 +181,7 @@ api.processResponse
 /* ИСПОЛНЯЕМЫЙ КОД */
 
   /* Отрисовываем карточки */
-  const userInfo = new UserInfo({
-    profileName,
-    profileDescription,
-    profileAvatar
-  } );
+
 
 
 
@@ -214,6 +219,11 @@ buttonEditProfilePhoto.addEventListener('click', function () {
 })
 
   /* Отправляем формы */
+
+
+  // const popupWithForm = new PopupWithForm({
+
+  // });
 
 popupEditProfileForm.addEventListener('submit', submitFormEditProfile);
 

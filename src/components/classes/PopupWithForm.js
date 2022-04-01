@@ -1,8 +1,20 @@
 import {Popup} from './Popup.js';
 
+
+
+
+
+
+
+
+
+
 export default class PopupWithForm extends Popup {
   constructor() {
     super(popupSelector);
+
+    // колбэк сабмита формы
+
 
 
   }
@@ -20,6 +32,8 @@ export default class PopupWithForm extends Popup {
   }
 
   close() {
+
+    return super.close;
 
   }
 
