@@ -7,12 +7,13 @@ import {popupEditProfile, popupEditProfileForm, popupEditProfileInputs, popupEdi
   popupNewPlaceImage, popupNewPlaceTitle, changePopupEditProfileData, popupDeleteCard, popupDeleteCardForm,
   profileName, profileDescription, popupEditProfilePhoto, popupEditProfilePhotoForm,
   popupEditProfilePhotoInput, profileAvatar} from './modal.js';
-import Api from './classes/Api.js';
-import FormValidator from './classes/FormValidator.js';
+import {Api} from './classes/Api.js';
+import {FormValidator} from './classes/FormValidator.js';
 import {Card} from './classes/Card.js';
 import {Section} from './classes/Section.js';
 import {PopupWithImage} from './classes/PopupWithImage.js';
-import UserInfo from './classes/UserInfo.js';
+import {PopupWithForm} from './classes/PopupWithForm.js';
+import {UserInfo} from './classes/UserInfo.js';
 
 
 /* ПЕРЕМЕННЫЕ */
@@ -25,6 +26,12 @@ const api = new Api({
 });
 
 const formValidator = new FormValidator({config: validationConfig});
+
+const userInfo = new UserInfo({
+  profileName,
+  profileDescription,
+  profileAvatar
+} );
 
   /* Кнопки открытия поп-апов */
 
@@ -87,58 +94,7 @@ const cardList = new Section({
 
 /* ФУНКЦИИ */
 
-
-  /* Установить данные профиля после их получения с сервера */
-const userInfo = new UserInfo();
-// userInfo.setProfileData(newName);
-// function setProfileData(newName) {
-//   profileName.textContent = newName.name;
-//   profileDescription.textContent = newName.about;
-// }
-
-  /* Сохранить данные редактирования профиля */
-// function submitFormEditProfile(evt) {
-//   evt.preventDefault();
-
-//   changeSubmitText(true, popupEditProfile);
-
-//   api.changeNameOnServer(popupEditProfileName, popupEditProfileDescription)
-//   .then((newName) => {
-//     setProfileData(newName);
-//     closePopup(popupEditProfile);
-//   })
-//   .catch(error => console.log(`Ошибка смены имени пользователя ${error}`))
-//   .finally(() => {
-//     changeSubmitText(false, popupEditProfile);
-//   })
-// }
-
-  /* Сохранить данные создания нового места */
-
-function submitCreateNewPlace(evt) {
-  evt.preventDefault();
-
-  changeSubmitText(true, popupNewPlace);
-
-  api.postNewPlaceOnServer(popupNewPlaceImage, popupNewPlaceTitle)
-  .then(card => {
-    // renderCard(card, userId, 'prepend');
-    // cardList.addItem(card, 'prepend');
-
-    cardList.renderer(card, 'prepend');
-
-    closePopup(popupNewPlace);
-    popupNewPlaceForm.reset();
-    formValidator.toggleButtonState(popupNewPlaceForm, popupNewPlaceInputs);
-  })
-  .catch(error => console.log(`Ошибка:${error.status} ${error.statusText}`))
-  .finally(() => {
-    changeSubmitText(false, popupNewPlace);
-  })
-}
-
-  /* Сохранить новое фото профиля */
-
+ /* Сохранить новое фото профиля */
 // function submitEditProfilePhoto(evt) {
 //   evt.preventDefault();
 
@@ -148,7 +104,7 @@ function submitCreateNewPlace(evt) {
 
 //   api.changeAvatarOnServer(popupEditProfilePhotoLink)
 //   .then(profileData => {
-//     setAvatar(profileAvatar, profileData.avatar);
+//     userInfo.setUserInfo(profileData);
 //     closePopup(popupEditProfilePhoto);
 //     popupEditProfilePhotoForm.reset();
 //     formValidator.toggleButtonState(popupEditProfilePhotoForm, [popupEditProfilePhotoInput]);
@@ -159,42 +115,80 @@ function submitCreateNewPlace(evt) {
 //   })
 // }
 
-  /* Установить новый аватар после получения с сервера */
+/* Сохранить данные редактирования профиля */
 
-// function setAvatar(profileAvatar, avatar) {
-//   profileAvatar.src = avatar;
+// function submitFormEditProfile(evt) {
+//   evt.preventDefault();
+
+//   changeSubmitText(true, popupEditProfile);
+
+//   api.changeNameOnServer(popupEditProfileName, popupEditProfileDescription)
+//   .then((newName) => {
+//     userInfo.setUserInfo(newName);
+//     closePopup(popupEditProfile);
+
+//   })
+//   .catch(error => console.log(`Ошибка смены имени пользователя ${error}`))
+//   .finally(() => {
+//     changeSubmitText(false, popupEditProfile);
+//   })
 // }
+
+
+  /* Сохранить данные создания нового места */
+
+// function submitCreateNewPlace(evt) {
+//   evt.preventDefault();
+
+//   changeSubmitText(true, popupNewPlace);
+
+//   api.postNewPlaceOnServer(popupNewPlaceImage, popupNewPlaceTitle)
+//   .then(card => {
+//     // renderCard(card, userId, 'prepend');
+//     // cardList.addItem(card, 'prepend');
+
+//     cardList.renderer(card, 'prepend');
+
+//     closePopup(popupNewPlace);
+//     popupNewPlaceForm.reset();
+//     formValidator.toggleButtonState(popupNewPlaceForm, popupNewPlaceInputs);
+//   })
+//   .catch(error => console.log(`Ошибка:${error.status} ${error.statusText}`))
+//   .finally(() => {
+//     changeSubmitText(false, popupNewPlace);
+//   })
+// }
+
 
   /* Удалить карточку с серевера и со страницы */
 
-function deleteCardEveryWhere(evt) {
-  evt.preventDefault();
-  const id = popupDeleteCard.dataset.cardId;
-  api.deleteCardFromServer(id)
-  .then(() => {
-    deletePlace(document.querySelector(`[data-card-id='${id}']`));
-    closePopup(popupDeleteCard)
-  })
-  .catch((error) => {
-    console.log(`Ошибка:${error.status} ${error.statusText}`)
-  })
-}
+// function deleteCardEveryWhere(evt) {
+//   evt.preventDefault();
+//   const id = popupDeleteCard.dataset.cardId;
+//   api.deleteCardFromServer(id)
+//   .then(() => {
+//     deletePlace(document.querySelector(`[data-card-id='${id}']`));
+//     closePopup(popupDeleteCard)
+//   })
+//   .catch((error) => {
+//     console.log(`Ошибка:${error.status} ${error.statusText}`)
+//   })
+// }
 api.processResponse
 
 /* ИСПОЛНЯЕМЫЙ КОД */
 
   /* Отрисовываем карточки */
 
+
+
+
+
 Promise.all([api.getProfileDataFromServer(), api.getCardsFromServer()])
 .then(function([profileData, cards]) {
-
+  userInfo.getUserInfo(profileData)
   userId = profileData._id;
-
-  userInfo.setProfileData(profileData);
-  userInfo.setAvatar(profileAvatar, profileData.avatar);
-
   cardList.renderItems(cards);
-
 })
 .catch(error => {console.log(`Ошибка ${error}`)})
 
@@ -224,13 +218,85 @@ buttonEditProfilePhoto.addEventListener('click', function () {
 
   /* Отправляем формы */
 
-popupEditProfileForm.addEventListener('submit', userInfo.submitFormEditProfile);
 
-popupNewPlaceForm.addEventListener('submit', submitCreateNewPlace);
+  const popupWithForm = new PopupWithForm({
+    submitFormEditProfile: (evt) => {
+      evt.preventDefault();
 
-popupEditProfilePhotoForm.addEventListener('submit', userInfo.submitEditProfilePhoto);
+      changeSubmitText(true, popupEditProfile);
 
-popupDeleteCardForm.addEventListener('submit', deleteCardEveryWhere);
+      api.changeNameOnServer(popupEditProfileName, popupEditProfileDescription)
+      .then((newName) => {
+        userInfo.setUserInfo(newName);
+        closePopup(popupEditProfile);
+
+      })
+      .catch(error => console.log(`Ошибка смены имени пользователя ${error}`))
+      .finally(() => {
+        changeSubmitText(false, popupEditProfile);
+      })
+    },
+    submitCreateNewPlace: (evt) => {
+      evt.preventDefault();
+
+      changeSubmitText(true, popupNewPlace);
+
+      api.postNewPlaceOnServer(popupNewPlaceImage, popupNewPlaceTitle)
+      .then(card => {
+        // renderCard(card, userId, 'prepend');
+        // cardList.addItem(card, 'prepend');
+
+        cardList.renderer(card, 'prepend');
+
+        closePopup(popupNewPlace);
+        popupNewPlaceForm.reset();
+        formValidator.toggleButtonState(popupNewPlaceForm, popupNewPlaceInputs);
+      })
+      .catch(error => console.log(`Ошибка:${error.status} ${error.statusText}`))
+      .finally(() => {
+        changeSubmitText(false, popupNewPlace);
+      })
+    },
+    submitEditProfilePhoto: (evt) => {
+      evt.preventDefault();
+
+      changeSubmitText(true, popupEditProfilePhoto);
+
+      const popupEditProfilePhotoLink = popupEditProfilePhotoInput.value;
+
+      api.changeAvatarOnServer(popupEditProfilePhotoLink)
+      .then(profileData => {
+        userInfo.setUserInfo(profileData);
+        closePopup(popupEditProfilePhoto);
+        popupEditProfilePhotoForm.reset();
+        formValidator.toggleButtonState(popupEditProfilePhotoForm, [popupEditProfilePhotoInput]);
+      })
+      .catch(err => {console.log(err)})
+      .finally(() => {
+        changeSubmitText(false, popupEditProfilePhoto);
+      })
+    },
+    deleteCardEveryWhere: (evt) => {
+      evt.preventDefault();
+      const id = popupDeleteCard.dataset.cardId;
+      api.deleteCardFromServer(id)
+      .then(() => {
+        deletePlace(document.querySelector(`[data-card-id='${id}']`));
+        closePopup(popupDeleteCard)
+      })
+      .catch((error) => {
+        console.log(`Ошибка:${error.status} ${error.statusText}`)
+      })
+    }
+  });
+
+popupEditProfileForm.addEventListener('submit', popupWithForm.submitFormEditProfile);
+// popupWithForm.setEventListeners(popupEditProfileForm)
+popupNewPlaceForm.addEventListener('submit', popupWithForm.submitCreateNewPlace);
+
+popupEditProfilePhotoForm.addEventListener('submit', popupWithForm.submitEditProfilePhoto);
+
+popupDeleteCardForm.addEventListener('submit', popupWithForm.deleteCardEveryWhere);
 
   /* Закрываем поп-апы по клику на оверлей и крестик */
 

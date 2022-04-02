@@ -11,7 +11,7 @@ class Popup{
   }
 
   close() {
-    console.log('Это отрабатываю я');
+    console.log('Это отрабатываю я метод close in Popup');
     this.popup.classList.remove('popup_opened');
     document.removeEventListener("keydown", this._handleEscClose.bind(this));
   }

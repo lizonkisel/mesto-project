@@ -5,7 +5,7 @@
 //   contentType: 'application/json'
 // }
 
-export default class Api {
+export class Api {
   constructor({baseUrl, authorization, contentType}) {
     this.baseUrl = baseUrl,
     this.authorization = authorization;
