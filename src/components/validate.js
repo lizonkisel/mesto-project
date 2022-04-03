@@ -1,10 +1,10 @@
-export const validationConfig = {
-  formSelector: '.form',
-  inputSelector: '.form__item',
-  submitButtonSelector: '.form__button-submit',
-  inactiveButtonClass: 'form__button-submit_disabled',
-  errorClass: 'form__item_invalid'
-}
+// export const validationConfig = {
+//   formSelector: '.form',
+//   inputSelector: '.form__item',
+//   submitButtonSelector: '.form__button-submit',
+//   inactiveButtonClass: 'form__button-submit_disabled',
+//   errorClass: 'form__item_invalid'
+// }
 
   /* Запустить процесс выбора форм и добавления слушателей полям  */
 

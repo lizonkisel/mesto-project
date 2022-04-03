@@ -1,8 +1,8 @@
 
 export class UserInfo {
   constructor( { profileName, profileDescription, profileAvatar, profileData }) {
-    this._profileName = profileName;
-    this._profileDescription = profileDescription;
+    this.profileName = profileName;
+    this.profileDescription = profileDescription;
     this._profileAvatar = profileAvatar;
     this._profileData = profileData;
   }
@@ -12,8 +12,8 @@ export class UserInfo {
   }
 
   setUserInfo = (newDate) => {
-    this._profileName.textContent = newDate.name;
-    this._profileDescription.textContent = newDate.about;
+    this.profileName.textContent = newDate.name;
+    this.profileDescription.textContent = newDate.about;
     this._profileAvatar.src = newDate.avatar;
   }
 }

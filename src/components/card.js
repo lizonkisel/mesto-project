@@ -1,6 +1,6 @@
-import {changeLikeState} from './index.js';
-import {fillPopupPhoto, profileName, popupDeleteCard} from './modal.js';
-import {openPopup} from './utils.js';
+// import {changeLikeState} from './index.js';
+// import {fillPopupPhoto, profileName, popupDeleteCard} from './modal.js';
+// import {openPopup} from './utils.js';
 
 //   /* Создать карточку нового места */
 
@@ -67,11 +67,11 @@ import {openPopup} from './utils.js';
 
   /* Удалить карточку со страницы */
 
-function deletePlace(place) {
-  place.remove();
-  place = null;
-} // Это пока не вставили
+// function deletePlace(place) {
+//   place.remove();
+//   place = null;
+// } // Это пока не вставили
 
 
 // export {createNewPlace, toggleLike, setLikesAmount, deletePlace};
-export {deletePlace};
+// export {deletePlace};

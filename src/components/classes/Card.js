@@ -3,7 +3,7 @@ import {openPopup} from '../utils.js';
 
 class Card {
 
-  constructor({card, handleCardClick, handleLikeClick}, userId, templateSelector) {
+  constructor({card, handleCardClick, handleLikeClick, handleDeleteClick}, userId, templateSelector) {
     this.card = card;
     this.name = card.name;
     this._id = card._id;
@@ -12,6 +12,7 @@ class Card {
     this.owner = card.owner;
     this.handleCardClick = handleCardClick;
     this._handleLikeClick = handleLikeClick;
+    this.handleDeleteClick = handleDeleteClick;
     this.userId = userId;
     this.templateSelector = templateSelector;
   }
@@ -96,8 +97,7 @@ class Card {
     })
 
     this._newCardDelete.addEventListener('click', () => {
-      openPopup(popupDeleteCard);
-      popupDeleteCard.setAttribute("data-card-id", this._id);
+      this.handleDeleteClick(this);
     })
 
   }
