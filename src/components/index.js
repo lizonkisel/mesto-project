@@ -219,52 +219,139 @@ buttonEditProfilePhoto.addEventListener('click', function () {
   /* Отправляем формы */
 
 
-  const popupWithForm = new PopupWithForm({
-    submitFormEditProfile: (evt) => {
-      evt.preventDefault();
+  // const popupWithForm = new PopupWithForm({
+    // submitFormEditProfile: (evt) => {
+    //   evt.preventDefault();
 
-      changeSubmitText(true, popupEditProfile);
+    //   changeSubmitText(true, popupEditProfile);
 
-      api.changeNameOnServer(popupEditProfileName, popupEditProfileDescription)
-      .then((newName) => {
-        userInfo.setUserInfo(newName);
-        closePopup(popupEditProfile);
+    //   api.changeNameOnServer(popupEditProfileName, popupEditProfileDescription)
+    //   .then((newName) => {
+    //     userInfo.setUserInfo(newName);
+    //     closePopup(popupEditProfile);
 
-      })
-      .catch(error => console.log(`Ошибка смены имени пользователя ${error}`))
-      .finally(() => {
-        changeSubmitText(false, popupEditProfile);
-      })
-    },
-    submitCreateNewPlace: (evt) => {
-      evt.preventDefault();
+    //   })
+    //   .catch(error => console.log(`Ошибка смены имени пользователя ${error}`))
+    //   .finally(() => {
+    //     changeSubmitText(false, popupEditProfile);
+    //   })
+    // },
+    // submitCreateNewPlace: (evt) => {
+    //   evt.preventDefault();
 
-      changeSubmitText(true, popupNewPlace);
+    //   changeSubmitText(true, popupNewPlace);
 
-      api.postNewPlaceOnServer(popupNewPlaceImage, popupNewPlaceTitle)
-      .then(card => {
-        // renderCard(card, userId, 'prepend');
-        // cardList.addItem(card, 'prepend');
+    //   api.postNewPlaceOnServer(popupNewPlaceImage, popupNewPlaceTitle)
+    //   .then(card => {
+    //     // renderCard(card, userId, 'prepend');
+    //     // cardList.addItem(card, 'prepend');
 
-        cardList.renderer(card, 'prepend');
+    //     cardList.renderer(card, 'prepend');
 
-        closePopup(popupNewPlace);
-        popupNewPlaceForm.reset();
-        formValidator.toggleButtonState(popupNewPlaceForm, popupNewPlaceInputs);
-      })
-      .catch(error => console.log(`Ошибка:${error.status} ${error.statusText}`))
-      .finally(() => {
-        changeSubmitText(false, popupNewPlace);
-      })
-    },
-    submitEditProfilePhoto: (evt) => {
-      evt.preventDefault();
+    //     closePopup(popupNewPlace);
+    //     popupNewPlaceForm.reset();
+    //     formValidator.toggleButtonState(popupNewPlaceForm, popupNewPlaceInputs);
+    //   })
+    //   .catch(error => console.log(`Ошибка:${error.status} ${error.statusText}`))
+    //   .finally(() => {
+    //     changeSubmitText(false, popupNewPlace);
+    //   })
+    // },
+    // submitEditProfilePhoto: (evt) => {
+    //   evt.preventDefault();
 
-      changeSubmitText(true, popupEditProfilePhoto);
+    //   changeSubmitText(true, popupEditProfilePhoto);
 
-      const popupEditProfilePhotoLink = popupEditProfilePhotoInput.value;
+    //   const popupEditProfilePhotoLink = popupEditProfilePhotoInput.value;
 
-      api.changeAvatarOnServer(popupEditProfilePhotoLink)
+    //   api.changeAvatarOnServer(popupEditProfilePhotoLink)
+    //   .then(profileData => {
+    //     userInfo.setUserInfo(profileData);
+    //     closePopup(popupEditProfilePhoto);
+    //     popupEditProfilePhotoForm.reset();
+    //     formValidator.toggleButtonState(popupEditProfilePhotoForm, [popupEditProfilePhotoInput]);
+    //   })
+    //   .catch(err => {console.log(err)})
+    //   .finally(() => {
+    //     changeSubmitText(false, popupEditProfilePhoto);
+    //   })
+    // },
+    // deleteCardEveryWhere: (evt) => {
+    //   evt.preventDefault();
+    //   const id = popupDeleteCard.dataset.cardId;
+    //   api.deleteCardFromServer(id)
+    //   .then(() => {
+    //     deletePlace(document.querySelector(`[data-card-id='${id}']`));
+    //     closePopup(popupDeleteCard)
+    //   })
+    //   .catch((error) => {
+    //     console.log(`Ошибка:${error.status} ${error.statusText}`)
+    //   })
+    // }
+  // });
+
+
+const heandlerSubmitProfileForm = new PopupWithForm({
+  popupEditProfileForm,
+  submitFormEditProfile: (evt) => {
+    evt.preventDefault();
+
+    changeSubmitText(true, popupEditProfile);
+
+    api.changeNameOnServer(popupEditProfileName, popupEditProfileDescription)
+    .then((newName) => {
+      userInfo.setUserInfo(newName);
+      closePopup(popupEditProfile);
+
+    })
+    .catch(error => console.log(`Ошибка смены имени пользователя ${error}`))
+    .finally(() => {
+      changeSubmitText(false, popupEditProfile);
+    })
+  },
+})
+
+heandlerSubmitProfileForm.setEventListeners(popupEditProfileForm);
+// popupEditProfileForm.addEventListener('submit', heandlerSubmitProfileForm.submitFormEditProfile);
+
+
+const heandlerSubmitPlaceForm = new PopupWithForm({
+  popupNewPlaceForm,
+  submitCreateNewPlace: (evt) => {
+    evt.preventDefault();
+
+    changeSubmitText(true, popupNewPlace);
+
+    api.postNewPlaceOnServer(popupNewPlaceImage, popupNewPlaceTitle)
+    .then(card => {
+      // renderCard(card, userId, 'prepend');
+      // cardList.addItem(card, 'prepend');
+
+      cardList.renderer(card, 'prepend');
+
+      closePopup(popupNewPlace);
+      popupNewPlaceForm.reset();
+      formValidator.toggleButtonState(popupNewPlaceForm, popupNewPlaceInputs);
+    })
+    .catch(error => console.log(`Ошибка:${error.status} ${error.statusText}`))
+    .finally(() => {
+      changeSubmitText(false, popupNewPlace);
+    })
+  }
+})
+heandlerSubmitPlaceForm.setEventListeners(popupNewPlaceForm);
+// popupNewPlaceForm.addEventListener('submit', heandlerSubmitPlaceForm.submitCreateNewPlace);
+
+const heandlerSubmitPhotoForm = new PopupWithForm({
+  popupEditProfilePhotoForm,
+  submitEditProfilePhoto: (evt) => {
+    evt.preventDefault();
+
+    changeSubmitText(true, popupEditProfilePhoto);
+
+    const popupEditProfilePhotoLink = popupEditProfilePhotoInput.value;
+
+    api.changeAvatarOnServer(popupEditProfilePhotoLink)
       .then(profileData => {
         userInfo.setUserInfo(profileData);
         closePopup(popupEditProfilePhoto);
@@ -275,28 +362,30 @@ buttonEditProfilePhoto.addEventListener('click', function () {
       .finally(() => {
         changeSubmitText(false, popupEditProfilePhoto);
       })
-    },
-    deleteCardEveryWhere: (evt) => {
-      evt.preventDefault();
-      const id = popupDeleteCard.dataset.cardId;
-      api.deleteCardFromServer(id)
-      .then(() => {
-        deletePlace(document.querySelector(`[data-card-id='${id}']`));
-        closePopup(popupDeleteCard)
-      })
-      .catch((error) => {
-        console.log(`Ошибка:${error.status} ${error.statusText}`)
-      })
-    }
-  });
+      this.setEventListeners(popupEditProfilePhotoForm);
+  }
+})
+heandlerSubmitPhotoForm.setEventListeners(popupEditProfilePhotoForm);
+// popupEditProfilePhotoForm.addEventListener('submit', heandlerSubmitPhotoForm.submitEditProfilePhoto);
 
-popupEditProfileForm.addEventListener('submit', popupWithForm.submitFormEditProfile);
-// popupWithForm.setEventListeners(popupEditProfileForm)
-popupNewPlaceForm.addEventListener('submit', popupWithForm.submitCreateNewPlace);
 
-popupEditProfilePhotoForm.addEventListener('submit', popupWithForm.submitEditProfilePhoto);
-
-popupDeleteCardForm.addEventListener('submit', popupWithForm.deleteCardEveryWhere);
+const heandlerSubmitCardForm = new PopupWithForm({
+  popupDeleteCardForm,
+  deleteCardEveryWhere: (evt) => {
+    evt.preventDefault();
+    const id = popupDeleteCard.dataset.cardId;
+    api.deleteCardFromServer(id)
+    .then(() => {
+      deletePlace(document.querySelector(`[data-card-id='${id}']`));
+      closePopup(popupDeleteCard)
+    })
+    .catch((error) => {
+      console.log(`Ошибка:${error.status} ${error.statusText}`)
+    })
+  }
+})
+heandlerSubmitCardForm.setEventListeners(popupDeleteCardForm)
+// popupDeleteCardForm.addEventListener('submit', heandlerSubmitCardForm.deleteCardEveryWhere);
 
   /* Закрываем поп-апы по клику на оверлей и крестик */
 
