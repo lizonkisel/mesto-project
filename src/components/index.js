@@ -32,9 +32,9 @@ const profileDescription = document.querySelector('.profile__description');
 
 
 const userInfo = new UserInfo({
-  profileName,
-  profileDescription,
-  profileAvatar
+  userNameSelector: '.profile__name',
+  userDescriptionSelector: '.profile__description',
+  userAvatarSelector: '.profile__avatar'
 });
 
   /* Кнопки открытия поп-апов */
@@ -97,14 +97,14 @@ const popupWithImage = new PopupWithImage('.popup_photo');
 
 const popupEditProfile = new PopupWithForm({
   popupSelector: '.popup_edit-profile',
-  submitCallBack: (evt) => {
-    console.log('Submit 2');
+  handleSubmit: (evt) => {
     evt.preventDefault();
 
     popupEditProfile.changeSubmitText(true);
 
     api.changeNameOnServer(popupEditProfile.name, popupEditProfile.description)
     .then((newName) => {
+      console.log(newName);
       userInfo.setUserInfo(newName);
       popupEditProfile.close();
 
@@ -118,7 +118,7 @@ const popupEditProfile = new PopupWithForm({
 
 const popupNewPlace = new PopupWithForm({
   popupSelector:'.popup_new-place',
-  submitCallBack: (evt) => {
+  handleSubmit: (evt) => {
     evt.preventDefault();
 
     popupNewPlace.changeSubmitText(true);
@@ -139,7 +139,7 @@ const popupNewPlace = new PopupWithForm({
 
 const popupEditProfilePhoto = new PopupWithForm( {
   popupSelector: '.popup_edit-profile-photo',
-  submitCallBack: (evt) => {
+  handleSubmit: (evt) => {
     evt.preventDefault();
 
     popupEditProfilePhoto.changeSubmitText(true);
@@ -159,7 +159,7 @@ const popupEditProfilePhoto = new PopupWithForm( {
 
 const popupDeleteCard = new PopupWithForm({
   popupSelector: '.popup_delete-card',
-  submitCallBack: (evt) => {
+  handleSubmit: (evt) => {
     evt.preventDefault();
     const id = popupDeleteCard.popup.dataset.cardId;
     api.deleteCardFromServer(id)
@@ -195,7 +195,7 @@ function changePopupEditProfileData() {
 
 Promise.all([api.getProfileDataFromServer(), api.getCardsFromServer()])
 .then(function([profileData, cards]) {
-  userInfo.getUserInfo(profileData)
+  userInfo.getUserInfo(profileData);
   userId = profileData._id;
   cardList.renderItems(cards);
 })
