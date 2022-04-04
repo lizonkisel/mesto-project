@@ -1,77 +1,121 @@
-import {changeLikeState} from './index.js';
-import {fillPopupPhoto, profileName, popupDeleteCard} from './modal.js';
-import {openPopup} from './utils.js';
+class Card {
 
-//   /* Создать карточку нового места */
+  constructor({card, handleCardClick, handleLikeClick, handleDeleteClick}, userId, templateSelector) {
+    this.card = card;
+    this.name = card.name;
+    this._id = card._id;
+    this.link = card.link;
+    this.likes = card.likes;
+    this.owner = card.owner;
+    this.handleCardClick = handleCardClick;
+    this._handleLikeClick = handleLikeClick;
+    this.handleDeleteClick = handleDeleteClick;
+    this.userId = userId;
+    this.templateSelector = templateSelector;
+  }
 
-// function createNewPlace(card, userId) {
+  _getElement() {
+    const newCardElement = document.querySelector(this.templateSelector)
+    .content
+    .querySelector('.element')
+    .cloneNode(true);
 
-//   const templateNewPlace = document.querySelector('#place-template').content;
-//   const newPlace = templateNewPlace.querySelector('.element').cloneNode(true);
-//   newPlace.querySelector('.element__title').textContent = card.name;
+    return newCardElement;
+  }
 
-//   newPlace.setAttribute("data-card-id", card._id);
+  getId() {
+    return this._id;
+  }
 
+  _setTitle() {
+    this.element.querySelector('.element__title').textContent = this.name;
+    return this.element;
+  }
 
-//   const newPlaceImage = newPlace.querySelector('.element__image');
-//   newPlaceImage.src = card.link;
-//   newPlaceImage.alt = card.name;
-//   newPlaceImage.addEventListener('click', function(evt) {
-//     fillPopupPhoto(card.link, card.name);
-//   });
+  _setAttribute() {
+    this.element.setAttribute("data-card-id", this._id);
+  }
 
-//   const newPlaceLikeAmount = newPlace.querySelector('.element__like-amount');
-//   newPlaceLikeAmount.textContent = card.likes.length;
+  _setImage() {
+   this._newCardImage = this.element.querySelector('.element__image');
+   this._newCardImage.src = this.link;
+   this._newCardImage.alt = this.name;
+  }
 
-//   const newPlaceLike = newPlace.querySelector('.element__like');
-//   newPlaceLike.addEventListener('click', function() {
-//     return changeLikeState(card._id, newPlaceLike)
-//   })
-//   checkLikes(card, userId, newPlaceLike);
+  _setLike() {
+    this._newCardLike = this.element.querySelector('.element__like');
+  }
 
-//   const newPlaceDelete = newPlace.querySelector('.element__delete');
-//   if (card.owner._id === userId) {
-//     newPlaceDelete.addEventListener('click', function() {
-//       openPopup(popupDeleteCard);
-//       popupDeleteCard.setAttribute("data-card-id", card._id);
-//     })
-//   } else {
-//     newPlaceDelete.remove();
-//   }
+  _setLikesAmount() {
+    this._newCardLikeAmount = this.element.querySelector('.element__like-amount');
+  }
 
-//   return newPlace;
-// }
+  _checkLikes() {
+    this.likes.some(function(likeAuthor) {
+      if (likeAuthor._id === this.userId) {
+        this._newCardLike.classList.add('element__like_active');
+      }
+    }.bind(this));
+  }
 
-//   /* Переключить лайк */
+  checkLikesAmount(card) {
+    this._newCardLikeAmount.textContent = card.likes.length;
+  }
 
-// function toggleLike(like) {
-//   like.classList.toggle('element__like_active');
-// }
+  isLiked() {
+    return this._newCardLike.classList.contains('element__like_active');
+  }
 
-//   /* Установить на странице количество лайков карточки */
+  _setDelete() {
+    this._newCardDelete = this.element.querySelector('.element__delete');
+  }
 
-// function setLikesAmount(card) {
-//   const place = document.querySelector(`.element[data-card-id='${card._id}']`);
-//   place.querySelector('.element__like-amount').textContent = card.likes.length;
-// }
+  _checkDelete() {
+    if (this.owner._id != this.userId) {
+      this._newCardDelete.remove();
+    }
+  }
 
-//   /* Проверить, лайкнута ли эта карточка юзером до этого (в прошлое посещение сайта) */
+  toggleLike() {
+    this._newCardLike.classList.toggle('element__like_active');
+  }
 
-// function checkLikes(card, userId, newPlaceLike) {
-//   card.likes.some(function(likeAuthor) {
-//     if (likeAuthor._id === userId) {
-//       newPlaceLike.classList.add('element__like_active');
-//     }
-//   })
-// }
+  _setEventListeners() {
 
-  /* Удалить карточку со страницы */
+    // Здесь пишем стрелочные функции, чтобы контекст this был привязан к классу (к функции-конструктору)
 
-function deletePlace(place) {
-  place.remove();
-  place = null;
-} // Это пока не вставили
+    this._newCardImage.addEventListener('click', () => {
+      // fillPopupPhoto(this.link, this.name);
+      this.handleCardClick(this);
+    });
 
+    this._newCardLike.addEventListener('click', () => {
+      this._handleLikeClick(this);
+    })
 
-// export {createNewPlace, toggleLike, setLikesAmount, deletePlace};
-export {deletePlace};
+    this._newCardDelete.addEventListener('click', () => {
+      this.handleDeleteClick(this);
+    })
+
+  }
+
+  generate() {
+    this.element = this._getElement();
+    this._setTitle();
+    this._setAttribute();
+    this._setImage();
+    this._setLike();
+    this._setLikesAmount();
+    this._checkLikes();
+    this.checkLikesAmount(this);
+    this._setDelete();
+    this._checkDelete();
+
+    this._setEventListeners();
+
+    return this.element;
+  }
+
+};
+
+export {Card};
