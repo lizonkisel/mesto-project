@@ -1,41 +1,15 @@
 import '../index.css';
-import {Api} from './classes/Api.js';
-import {FormValidator} from './classes/FormValidator.js';
-import {Card} from './classes/Card.js';
-import {Section} from './classes/Section.js';
-import {PopupWithImage} from './classes/PopupWithImage.js';
-import {PopupWithForm} from './classes/PopupWithForm.js';
-import {UserInfo} from './classes/UserInfo.js';
+import {Api} from './Api.js';
+import {FormValidator} from './FormValidator.js';
+import {Card} from './Card.js';
+import {Section} from './Section.js';
+import {PopupWithImage} from './PopupWithImage.js';
+import {PopupWithForm} from './PopupWithForm.js';
+import {UserInfo} from './UserInfo.js';
 
 
 /* ПЕРЕМЕННЫЕ */
 
-
-const api = new Api({
-  baseUrl: 'https://nomoreparties.co/v1/plus-cohort7',
-  authorization: 'ecd6f0c2-01ba-4d99-a774-de79c1d44e1d',
-  contentType: 'application/json'
-});
-
-const formValidator = new FormValidator({config: {
-    formSelector: '.form',
-    inputSelector: '.form__item',
-    submitButtonSelector: '.form__button-submit',
-    inactiveButtonClass: 'form__button-submit_disabled',
-    errorClass: 'form__item_invalid'
-  }
-});
-
-const profileAvatar = document.querySelector('.profile__avatar');
-const profileName = document.querySelector('.profile__name');
-const profileDescription = document.querySelector('.profile__description');
-
-
-const userInfo = new UserInfo({
-  userNameSelector: '.profile__name',
-  userDescriptionSelector: '.profile__description',
-  userAvatarSelector: '.profile__avatar'
-});
 
   /* Кнопки открытия поп-апов */
 
@@ -46,9 +20,35 @@ const buttonEditProfilePhoto = document.querySelector('.profile__avatar-mask');
   /* Переменная, содержащая id пользователя*/
 
 let userId;
-console.log(userId);
 
-  /* Отрисовать карточку */
+  /* Экземпляр класса Api */
+
+const api = new Api({
+  baseUrl: 'https://nomoreparties.co/v1/plus-cohort7',
+  authorization: 'ecd6f0c2-01ba-4d99-a774-de79c1d44e1d',
+  contentType: 'application/json'
+});
+
+  /* Экземпляр класса UserInfo */
+
+const userInfo = new UserInfo({
+  userNameSelector: '.profile__name',
+  userDescriptionSelector: '.profile__description',
+  userAvatarSelector: '.profile__avatar'
+});
+
+
+const formValidator = new FormValidator({config: {
+  formSelector: '.form',
+  inputSelector: '.form__item',
+  submitButtonSelector: '.form__button-submit',
+  inactiveButtonClass: 'form__button-submit_disabled',
+  errorClass: 'form__item_invalid'
+}
+});
+
+
+  /* Экземпляр класса Section - контейнер для экземпляров класса Card */
 
 const cardList = new Section({
   renderer: (card, insertMethod) => {
@@ -91,9 +91,12 @@ const cardList = new Section({
   '.elements'
 )
 
+  /* Поп-ап с картинкой */
+
 const popupWithImage = new PopupWithImage('.popup_photo');
 
-  /* Отправляем формы */
+
+  /* Поп-ап редактирования профиля */
 
 const popupEditProfile = new PopupWithForm({
   popupSelector: '.popup_edit-profile',
@@ -103,9 +106,8 @@ const popupEditProfile = new PopupWithForm({
     popupEditProfile.changeSubmitText(true);
 
     api.changeNameOnServer(popupEditProfile.name, popupEditProfile.description)
-    .then((newName) => {
-      console.log(newName);
-      userInfo.setUserInfo(newName);
+    .then((name) => {
+      userInfo.setUserInfo(name);
       popupEditProfile.close();
 
     })
@@ -115,6 +117,8 @@ const popupEditProfile = new PopupWithForm({
     })
   }
 })
+
+  /* Поп-ап создания новой карточки */
 
 const popupNewPlace = new PopupWithForm({
   popupSelector:'.popup_new-place',
@@ -137,6 +141,8 @@ const popupNewPlace = new PopupWithForm({
   }
 })
 
+  /* Поп-ап редактирования фото профиля */
+
 const popupEditProfilePhoto = new PopupWithForm( {
   popupSelector: '.popup_edit-profile-photo',
   handleSubmit: (evt) => {
@@ -145,8 +151,8 @@ const popupEditProfilePhoto = new PopupWithForm( {
     popupEditProfilePhoto.changeSubmitText(true);
 
     api.changeAvatarOnServer(popupEditProfilePhoto.profilePhoto.value)
-    .then(profileData => {
-      userInfo.setUserInfo(profileData);
+    .then(avatar => {
+      userInfo.setUserInfo(avatar);
       popupEditProfilePhoto.close();
       formValidator.toggleButtonState(popupEditProfilePhoto.form, [popupEditProfilePhoto.profilePhoto]);
     })
@@ -157,6 +163,8 @@ const popupEditProfilePhoto = new PopupWithForm( {
   }
 });
 
+  /* Поп-ап удаления карточки */
+
 const popupDeleteCard = new PopupWithForm({
   popupSelector: '.popup_delete-card',
   handleSubmit: (evt) => {
@@ -166,8 +174,6 @@ const popupDeleteCard = new PopupWithForm({
     .then(() => {
       const cardForDelete = document.querySelector(`[data-card-id='${id}']`);
       cardForDelete.remove();
-      cardForDelete = null;
-      // deletePlace();
       popupDeleteCard.close();
     })
     .catch((error) => {
@@ -183,20 +189,20 @@ const popupDeleteCard = new PopupWithForm({
   /* Подтянуть данные профиля в поп-ап с редактированием данных профиля */
 
 function changePopupEditProfileData() {
-  popupEditProfile.name.value = profileName.textContent;
-  popupEditProfile.description.value = profileDescription.textContent;
+  popupEditProfile.name.value = userInfo.getUserInfo('name');
+  popupEditProfile.description.value = userInfo.getUserInfo('description');
 }
 
 
 /* ИСПОЛНЯЕМЫЙ КОД */
 
 
-  /* Отрисовываем карточки */
+  /* Записываем и отображаем информация о пользователе, отрисовываем карточки */
 
 Promise.all([api.getProfileDataFromServer(), api.getCardsFromServer()])
 .then(function([profileData, cards]) {
-  userInfo.getUserInfo(profileData);
-  userId = profileData._id;
+  userInfo.setUserInfo(profileData);
+  userId = userInfo.getUserInfo('id');
   cardList.renderItems(cards);
 })
 .catch(error => {console.log(`Ошибка ${error}`)})
@@ -205,9 +211,14 @@ Promise.all([api.getProfileDataFromServer(), api.getCardsFromServer()])
 
 profileEditButton.addEventListener('click', function() {
   changePopupEditProfileData();
-  popupEditProfile.inputs.forEach(function(input) {
-    formValidator.checkValidation(popupEditProfile.form, input);
-  })
+
+  // popupEditProfile.inputs.forEach(function(input) {
+  //   formValidator.checkValidation(popupEditProfile.form, input);
+  // })
+
+  /* По идее, вот этот код не нужен, так как данные, сохранённые в профиле, предварительно прошли валидацию */
+  /* Это выглядит как лишняя проверка */
+
   formValidator.toggleButtonState(popupEditProfile.form, popupEditProfile.inputs);
 
   popupEditProfile.open();
@@ -228,5 +239,3 @@ buttonEditProfilePhoto.addEventListener('click', function () {
   /* Запускаем валидацию полей */
 
 formValidator.enableValidation();
-
-// export {formValidator, api};

@@ -14,8 +14,6 @@ class PopupWithImage extends Popup {
     super.open();
   }
 
-}
-
-console.log('What is it?');
+};
 
 export {PopupWithImage};

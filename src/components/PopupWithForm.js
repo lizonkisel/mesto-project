@@ -1,6 +1,6 @@
 import {Popup} from './Popup.js';
 
-export class PopupWithForm extends Popup {
+class PopupWithForm extends Popup {
   constructor({popupSelector, handleSubmit}) {
     super(popupSelector);
     this._handleSubmit = handleSubmit;
@@ -15,24 +15,23 @@ export class PopupWithForm extends Popup {
   }
 
   changeSubmitText(isLoading) {
-    const loadingText = 'Сохранение...';
     if (isLoading === true) {
-      console.log(this);
-      this.buttonSubmit.textContent = loadingText;
-    } else {
+
       if (this.popupSelector === '.popup_new-place') {
-        console.log(this);
+        this.buttonSubmit.textContent = "Создание...";
+      } else {
+        this.buttonSubmit.textContent = "Сохранение...";
+      }
+
+    } else {
+
+      if (this.popupSelector === '.popup_new-place') {
         this.buttonSubmit.textContent = "Создать";
       } else {
         this.buttonSubmit.textContent = "Сохранить";
       }
+
     }
-  }
-
-
-  // собирает данные всех полей формы
-  _getInputValues() {
-
   }
 
   _setEventListeners() {
@@ -45,4 +44,6 @@ export class PopupWithForm extends Popup {
     super.close();
   }
 
-}
+};
+
+export {PopupWithForm};

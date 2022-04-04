@@ -18,6 +18,6 @@ class Section {
       this.renderer(item);
     })
   }
-}
+};
 
 export {Section};
