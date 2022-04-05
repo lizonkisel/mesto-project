@@ -37,16 +37,13 @@ const userInfo = new UserInfo({
   userAvatarSelector: '.profile__avatar'
 });
 
-
-const formValidator = new FormValidator({config: {
+const configForFormValidator = {
   formSelector: '.form',
   inputSelector: '.form__item',
   submitButtonSelector: '.form__button-submit',
   inactiveButtonClass: 'form__button-submit_disabled',
   errorClass: 'form__item_invalid'
 }
-});
-
 
   /* Экземпляр класса Section - контейнер для экземпляров класса Card */
 
@@ -118,6 +115,8 @@ const popupEditProfile = new PopupWithForm({
   }
 })
 
+
+
   /* Поп-ап создания новой карточки */
 
 const popupNewPlace = new PopupWithForm({
@@ -132,7 +131,7 @@ const popupNewPlace = new PopupWithForm({
       cardList.renderer(card, 'prepend');
 
       popupNewPlace.close();
-      formValidator.toggleButtonState(popupNewPlace.form, popupNewPlace.inputs);
+      // formValidator.toggleButtonState(popupNewPlace.form, popupNewPlace.inputs);
     })
     .catch(error => console.log(`Ошибка:${error.status} ${error.statusText}`))
     .finally(() => {
@@ -154,7 +153,7 @@ const popupEditProfilePhoto = new PopupWithForm( {
     .then(avatar => {
       userInfo.setUserInfo(avatar);
       popupEditProfilePhoto.close();
-      formValidator.toggleButtonState(popupEditProfilePhoto.form, [popupEditProfilePhoto.profilePhoto]);
+      // formValidator.toggleButtonState(popupEditProfilePhoto.form, [popupEditProfilePhoto.profilePhoto]);
     })
     .catch(err => {console.log(err)})
     .finally(() => {
@@ -181,6 +180,7 @@ const popupDeleteCard = new PopupWithForm({
     })
   }
 })
+
 
 
 /* ФУНКЦИИ */
@@ -219,23 +219,43 @@ profileEditButton.addEventListener('click', function() {
   /* По идее, вот этот код не нужен, так как данные, сохранённые в профиле, предварительно прошли валидацию */
   /* Это выглядит как лишняя проверка */
 
-  formValidator.toggleButtonState(popupEditProfile.form, popupEditProfile.inputs);
+  // formValidator.toggleButtonState(popupEditProfile.form, popupEditProfile.inputs);
+
 
   popupEditProfile.open();
+
+  const validatorEditProfile = new FormValidator(
+    configForFormValidator,
+    '.popup_edit-profile'
+    );
+  validatorEditProfile.enableValidation();
 });
 
   /* Вешаем обработчик слушателя события для поп-апа "Создать новое место" */
 
 profileAddButton.addEventListener('click', function() {
   popupNewPlace.open();
+
+  const validatorNewPlace = new FormValidator(
+    configForFormValidator,
+    '.popup_new-place'
+    );
+    validatorNewPlace.enableValidation();
+
 });
 
 /* Вешаем обработчик слушателя события для поп-апа "Редактировать фотографию профиля" */
 
 buttonEditProfilePhoto.addEventListener('click', function () {
   popupEditProfilePhoto.open();
+
+  const validatorEditProfilePhoto = new FormValidator(
+    configForFormValidator,
+    '.popup_edit-profile-photo'
+    );
+    validatorEditProfilePhoto.enableValidation();
 })
 
   /* Запускаем валидацию полей */
 
-formValidator.enableValidation();
+// formValidator.enableValidation();
