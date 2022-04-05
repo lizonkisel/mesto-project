@@ -1,33 +1,60 @@
 class FormValidator {
-  constructor({config}) {
+  constructor(config, popupSelector) {
     this.formSelector = config.formSelector;
     this.inputSelector = config.inputSelector;
     this.submitButtonSelector = config.submitButtonSelector;
     this.inactiveButtonClass = config.inactiveButtonClass;
     this.errorClass = config.errorClass;
+    this.popupSelector = popupSelector;
+  }
+
+  _getForm = () => {
+    const sectionForm = document.querySelector(this.popupSelector);
+    const form = sectionForm.querySelector('.form');
+    this.form = form;
+    // return this.form;
   }
 
     /* Запустить процесс выбора форм и добавления слушателей полям  */
 
+  // enableValidation() {
+  //   const forms = Array.from(document.querySelectorAll(this.formSelector));
+  //   forms.forEach((form) => {
+  //     this.setInputListeners(form);
+  //     form.addEventListener('submit', function(evt) {
+  //       evt.preventDefault();
+  //     })
+  //   })
+  // }
+
   enableValidation() {
-    const forms = Array.from(document.querySelectorAll(this.formSelector));
-    forms.forEach((form) => {
-      this.setInputListeners(form);
-      form.addEventListener('submit', function(evt) {
-        evt.preventDefault();
-      })
+
+    // console.log('Проверка ваидации' + this.submitButtonSelector);
+
+    this._getForm();
+    this.setInputListeners();
+    this.form.addEventListener('submit', function(evt) {
+      evt.preventDefault();
     })
-  }
+
+    //   const forms = Array.from(document.querySelectorAll(this.formSelector));
+    //   forms.forEach((form) => {
+    //     this.setInputListeners(form);
+    //     form.addEventListener('submit', function(evt) {
+    //       evt.preventDefault();
+    //     })
+    //   })
+    }
 
     /* Добавить слушатели полям ввода формы */
 
-  setInputListeners(form) {
-    const inputs = Array.from(form.querySelectorAll(this.inputSelector));
-    this.toggleButtonState(form, inputs);
+  setInputListeners() {
+    const inputs = Array.from(this.form.querySelectorAll(this.inputSelector));
+    this.toggleButtonState(this.form, inputs);
     inputs.forEach((input) => {
       input.addEventListener('input', (evt) => {
-        this.checkValidation(form, input);
-        this.toggleButtonState(form, inputs);
+        this.checkValidation(this.form, input);
+        this.toggleButtonState(this.form, inputs);
       })
     })
   }
@@ -39,6 +66,7 @@ class FormValidator {
     if (this.hasInvalidInput(inputs)) {
       submitButton.classList.add(this.inactiveButtonClass);
       submitButton.disabled = true;
+      // console.log(submitButton);
     } else {
       submitButton.classList.remove(this.inactiveButtonClass);
       submitButton.disabled = false;
