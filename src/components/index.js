@@ -105,7 +105,7 @@ const popupEditProfile = new PopupWithForm({
     api.changeNameOnServer(popupEditProfile.name, popupEditProfile.description)
     .then((name) => {
       userInfo.setUserInfo(name);
-      popupEditProfile.close();
+      popupEditProfile.closeWithReset();
 
     })
     .catch(error => console.log(`Ошибка смены имени пользователя ${error}`))
@@ -130,7 +130,7 @@ const popupNewPlace = new PopupWithForm({
     .then(card => {
       cardList.renderer(card, 'prepend');
 
-      popupNewPlace.close();
+      popupNewPlace.closeWithReset();
       // formValidator.toggleButtonState(popupNewPlace.form, popupNewPlace.inputs);
     })
     .catch(error => console.log(`Ошибка:${error.status} ${error.statusText}`))
@@ -152,7 +152,7 @@ const popupEditProfilePhoto = new PopupWithForm( {
     api.changeAvatarOnServer(popupEditProfilePhoto.profilePhoto.value)
     .then(avatar => {
       userInfo.setUserInfo(avatar);
-      popupEditProfilePhoto.close();
+      popupEditProfilePhoto.closeWithReset();
       // formValidator.toggleButtonState(popupEditProfilePhoto.form, [popupEditProfilePhoto.profilePhoto]);
     })
     .catch(err => {console.log(err)})
@@ -212,22 +212,20 @@ Promise.all([api.getProfileDataFromServer(), api.getCardsFromServer()])
 profileEditButton.addEventListener('click', function() {
   changePopupEditProfileData();
 
-  // popupEditProfile.inputs.forEach(function(input) {
-  //   formValidator.checkValidation(popupEditProfile.form, input);
-  // })
+  const validatorEditProfile = new FormValidator(
+    configForFormValidator,
+    '.popup_edit-profile'
+    );
 
-  /* По идее, вот этот код не нужен, так как данные, сохранённые в профиле, предварительно прошли валидацию */
-  /* Это выглядит как лишняя проверка */
+  popupEditProfile.inputs.forEach(function(input) {
+    validatorEditProfile.checkValidation(popupEditProfile.form, input);
+  })
 
   // formValidator.toggleButtonState(popupEditProfile.form, popupEditProfile.inputs);
 
 
   popupEditProfile.open();
 
-  const validatorEditProfile = new FormValidator(
-    configForFormValidator,
-    '.popup_edit-profile'
-    );
   validatorEditProfile.enableValidation();
 });
 
