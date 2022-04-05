@@ -212,8 +212,13 @@ Promise.all([api.getProfileDataFromServer(), api.getCardsFromServer()])
 profileEditButton.addEventListener('click', function() {
   changePopupEditProfileData();
 
+  const validatorEditProfile = new FormValidator(
+    configForFormValidator,
+    '.popup_edit-profile'
+    );
+
   popupEditProfile.inputs.forEach(function(input) {
-    formValidator.checkValidation(popupEditProfile.form, input);
+    validatorEditProfile.checkValidation(popupEditProfile.form, input);
   })
 
   // formValidator.toggleButtonState(popupEditProfile.form, popupEditProfile.inputs);
@@ -221,10 +226,6 @@ profileEditButton.addEventListener('click', function() {
 
   popupEditProfile.open();
 
-  const validatorEditProfile = new FormValidator(
-    configForFormValidator,
-    '.popup_edit-profile'
-    );
   validatorEditProfile.enableValidation();
 });
 
