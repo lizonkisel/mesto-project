@@ -23,11 +23,15 @@ let userId;
 
   /* Экземпляр класса Api */
 
-const api = new Api({
+const apiConfig = {
   baseUrl: 'https://nomoreparties.co/v1/plus-cohort7',
-  authorization: 'ecd6f0c2-01ba-4d99-a774-de79c1d44e1d',
-  contentType: 'application/json'
-});
+  headers: {
+    authorization: 'ecd6f0c2-01ba-4d99-a774-de79c1d44e1d',
+    'Content-Type': 'application/json'
+  }
+}
+
+const api = new Api(apiConfig);
 
   /* Экземпляр класса UserInfo */
 
@@ -152,6 +156,7 @@ const popupEditProfilePhoto = new PopupWithForm( {
     api.changeAvatarOnServer(popupEditProfilePhoto.profilePhoto.value)
     .then(avatar => {
       userInfo.setUserInfo(avatar);
+
       popupEditProfilePhoto.closeWithReset();
       // formValidator.toggleButtonState(popupEditProfilePhoto.form, [popupEditProfilePhoto.profilePhoto]);
     })
@@ -211,11 +216,8 @@ Promise.all([api.getProfileDataFromServer(), api.getCardsFromServer()])
 
 profileEditButton.addEventListener('click', function() {
   changePopupEditProfileData();
-
-  const validatorEditProfile = new FormValidator(
-    configForFormValidator,
-    '.popup_edit-profile'
-    );
+  popupEditProfile.open();
+  const validatorEditProfile = new FormValidator(configForFormValidator);
 
   popupEditProfile.inputs.forEach(function(input) {
     validatorEditProfile.checkValidation(popupEditProfile.form, input);
@@ -224,7 +226,7 @@ profileEditButton.addEventListener('click', function() {
   // formValidator.toggleButtonState(popupEditProfile.form, popupEditProfile.inputs);
 
 
-  popupEditProfile.open();
+
 
   validatorEditProfile.enableValidation();
 });
@@ -234,23 +236,26 @@ profileEditButton.addEventListener('click', function() {
 profileAddButton.addEventListener('click', function() {
   popupNewPlace.open();
 
-  const validatorNewPlace = new FormValidator(
-    configForFormValidator,
-    '.popup_new-place'
-    );
-    validatorNewPlace.enableValidation();
+  const validatorNewPlace = new FormValidator(configForFormValidator);
+  validatorNewPlace.enableValidation();
 
 });
 
 /* Вешаем обработчик слушателя события для поп-апа "Редактировать фотографию профиля" */
 
+
 buttonEditProfilePhoto.addEventListener('click', function () {
   popupEditProfilePhoto.open();
 
-  const validatorEditProfilePhoto = new FormValidator(
-    configForFormValidator,
-    '.popup_edit-profile-photo'
-    );
+  // const validatorEditProfilePhoto = new FormValidator( (configForFormValidator) => {
+  //   validatorEditProfilePhoto.enableValidation;
+  // }
+    // configForFormValidator,
+    // '.popup_edit-profile-photo'
+    // );
+
+
+    const validatorEditProfilePhoto = new FormValidator(configForFormValidator);
     validatorEditProfilePhoto.enableValidation();
 })
 
