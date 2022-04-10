@@ -35,7 +35,7 @@ class Api {
     .then(this.processResponse)
   }
 
-  changeNameOnServer(inputName, inputDesc) {
+  changeNameOnServer(inputName, inputWork) {
     return fetch(`${this.baseUrl}/users/me`, {
       method: 'PATCH',
       headers: {
@@ -43,8 +43,10 @@ class Api {
         'Content-Type': this.contentType
       },
       body: JSON.stringify({
-        name:  inputName.value,
-        about:  inputDesc.value
+        // name:  inputName.value,
+        // about:  inputDesc.value
+        name:  inputName,
+        about:  inputWork
       })
     })
     .then(this.processResponse)
@@ -58,8 +60,10 @@ class Api {
         'Content-Type': this.contentType
       },
       body: JSON.stringify({
-        name: name.value,
-        link: image.value
+        // name: name.value,
+        // link: image.value
+        name: name,
+        link: image
       })
     })
     .then(this.processResponse)

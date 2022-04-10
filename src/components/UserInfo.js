@@ -1,25 +1,26 @@
 class UserInfo {
   constructor({userNameSelector, userDescriptionSelector, userAvatarSelector}) {
-    this.profileNameElement = document.querySelector(userNameSelector);
-    this.profileDescriptionElement = document.querySelector(userDescriptionSelector);
-    this.profileAvatarElement = document.querySelector(userAvatarSelector);
-    this.userData = {};
+    this._profileNameElement = document.querySelector(userNameSelector);
+    this._profileDescriptionElement = document.querySelector(userDescriptionSelector);
+    this._profileAvatarElement = document.querySelector(userAvatarSelector);
+    this._userData = {};
   }
 
-  getUserInfo (parameter) {
-    return this.userData[parameter];
+  getUserInfo () {
+    // return this._userData[parameter];
+    return this._userData;
   }
 
   setUserInfo(data) {
 
-    this.profileNameElement.textContent = data.name;
-    this.profileDescriptionElement.textContent = data.about;
-    this.profileAvatarElement.src = data.avatar;
+    this._profileNameElement.textContent = data.name;
+    this._profileDescriptionElement.textContent = data.about;
+    this._profileAvatarElement.src = data.avatar;
 
-    this.userData.name = data.name;
-    this.userData.description = data.about;
-    this.userData.image = data.avatar;
-    this.userData.id = data._id;
+    this._userData.name = data.name;
+    this._userData.description = data.about;
+    this._userData.image = data.avatar;
+    this._userData.id = data._id;
   }
 };
 
