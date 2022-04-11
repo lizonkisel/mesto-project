@@ -49,6 +49,7 @@ const configForFormValidator = {
 
 const cardList = new Section({
   renderer: (card, insertMethod) => {
+    console.log('renederer');
     const newCardElement = new Card({
       card,
       handleCardClick: (newCardElement) => {
@@ -127,10 +128,15 @@ const popupNewPlace = new PopupWithForm({
     // evt.preventDefault();
 
     popupNewPlace.changeSubmitText(true);
+    console.log(`handleSubmit: ${inputs}`);
+    console.log(inputs);
 
-    api.postNewPlaceOnServer(inputs.image, inputs.title)
-    .then(card => {
+    api.postNewPlaceOnServer('https://www.kino-teatr.ru/movie/kadr/36023/960886.jpg', 'inputs.title')
+    .then((card) => {
+      console.log(card);
       cardList.renderer(card, 'prepend');
+      console.log('CardList');
+      console.log(cardList);
 
       popupNewPlace.close();
       // popupNewPlace.closeWithReset();
@@ -172,6 +178,7 @@ const popupDeleteCard = new PopupWithForm({
   handleSubmit: () => {
     // evt.preventDefault();
     const id = popupDeleteCard.popup.dataset.cardId;
+    console.log(id);
     api.deleteCardFromServer(id)
     .then(() => {
       const cardForDelete = document.querySelector(`[data-card-id='${id}']`);
