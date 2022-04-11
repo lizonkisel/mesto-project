@@ -33,8 +33,8 @@
 [Проект "Место"](https://lizonkisel.github.io/mesto-project/)
 
 
-# Co-worker
+### Co-worker
 
-Имя: Oleg_Malkov
-Почта: Zavrr@yandex.ru
-Гит: https://github.com/Mal-kov
+* Имя: Oleg_Malkov
+* Почта: Zavrr@yandex.ru
+* Гит: https://github.com/Mal-kov

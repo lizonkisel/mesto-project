@@ -1,7 +1,7 @@
 import '../index.css';
-import {Api} from './api.js';
+import {Api} from './Api.js';
 import {FormValidator} from './FormValidator.js';
-import {Card} from './card.js';
+import {Card} from './Card.js';
 import {Section} from './Section.js';
 import {PopupWithImage} from './PopupWithImage.js';
 import {PopupWithForm} from './PopupWithForm.js';
@@ -102,8 +102,6 @@ popupWithImage.setEventListeners();
 const popupEditProfile = new PopupWithForm({
   popupSelector: '.popup_edit-profile',
   handleSubmit: (inputs) => {
-    // evt.preventDefault();
-
     popupEditProfile.changeSubmitText(true);
 
     api.changeNameOnServer(inputs.name, inputs.description)
@@ -127,8 +125,6 @@ popupEditProfile.setEventListeners();
 const popupNewPlace = new PopupWithForm({
   popupSelector:'.popup_new-place',
   handleSubmit: (inputs) => {
-    // evt.preventDefault();
-    console.log(inputs);
     popupNewPlace.changeSubmitText(true);
 
     api.postNewPlaceOnServer(inputs.image, inputs.title)
@@ -137,7 +133,6 @@ const popupNewPlace = new PopupWithForm({
 
       popupNewPlace.close();
       // popupNewPlace.closeWithReset();
-      // formValidator.toggleButtonState(popupNewPlace.form, popupNewPlace.inputs);
     })
     .catch(error => console.log(`Ошибка:${error.status} ${error.statusText}`))
     .finally(() => {
@@ -153,8 +148,6 @@ popupNewPlace.setEventListeners();
 const popupEditProfilePhoto = new PopupWithForm( {
   popupSelector: '.popup_edit-profile-photo',
   handleSubmit: (inputs) => {
-    // evt.preventDefault();
-
     popupEditProfilePhoto.changeSubmitText(true);
 
     api.changeAvatarOnServer(inputs.avatar)
@@ -177,7 +170,6 @@ popupEditProfilePhoto.setEventListeners();
 const popupDeleteCard = new PopupWithForm({
   popupSelector: '.popup_delete-card',
   handleSubmit: () => {
-    // evt.preventDefault();
     const id = popupDeleteCard.popup.dataset.cardId;
     api.deleteCardFromServer(id)
     .then(() => {
@@ -223,7 +215,7 @@ Promise.all([api.getProfileDataFromServer(), api.getCardsFromServer()])
 
 profileEditButton.addEventListener('click', function() {
 
-  changePopupEditProfileData();
+  // changePopupEditProfileData();
   popupEditProfile.open();
 
   popupEditProfile.setInputValues(userInfo.getUserInfo());
@@ -231,8 +223,11 @@ profileEditButton.addEventListener('click', function() {
 
   // const validatorEditProfile = new FormValidator(configForFormValidator);
 
+  // const testValidator = new FormValidator(configForFormValidator);
+  // testValidator.enableValidation();
+
   // popupEditProfile.inputs.forEach(function(input) {
-  //   validatorEditProfile.checkValidation(popupEditProfile.form, input);
+  //   testValidator._checkValidation(popupEditProfile.form, input);
   // })
 
   // formValidator.toggleButtonState(popupEditProfile.form, popupEditProfile.inputs);
