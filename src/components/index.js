@@ -1,7 +1,7 @@
 import '../index.css';
-import {Api} from './Api.js';
+import {Api} from './api.js';
 import {FormValidator} from './FormValidator.js';
-import {Card} from './Card.js';
+import {Card} from './card.js';
 import {Section} from './Section.js';
 import {PopupWithImage} from './PopupWithImage.js';
 import {PopupWithForm} from './PopupWithForm.js';
@@ -62,21 +62,21 @@ const cardList = new Section({
           api.deleteLike(newCardElement.getId())
           .then(card => {
             newCardElement.toggleLike();
-            newCardElement.checkLikesAmount(card)
+            newCardElement.setLikesAmount(card)
           })
           .catch(err => {console.log(err)})
         } else {
           api.putLike(newCardElement.getId())
           .then(card => {
             newCardElement.toggleLike();
-            newCardElement.checkLikesAmount(card)
+            newCardElement.setLikesAmount(card)
           })
           .catch(err => {console.log(err)})
         }
       },
       handleDeleteClick: (newCardElement) => {
         popupDeleteCard.open();
-        popupDeleteCard.popup.setAttribute("data-card-id", newCardElement._id);
+        popupDeleteCard.popup.setAttribute("data-card-id", newCardElement.id);
       }
     },
       userId,
@@ -91,22 +91,22 @@ const cardList = new Section({
   /* Поп-ап с картинкой */
 
 const popupWithImage = new PopupWithImage('.popup_photo');
-
+popupWithImage.setEventListeners();
 
   /* Поп-ап редактирования профиля */
 
 const popupEditProfile = new PopupWithForm({
   popupSelector: '.popup_edit-profile',
-  handleSubmit: (evt) => {
-    evt.preventDefault();
+  handleSubmit: (inputs) => {
+    // evt.preventDefault();
 
     popupEditProfile.changeSubmitText(true);
 
-    api.changeNameOnServer(popupEditProfile.name, popupEditProfile.description)
+    api.changeNameOnServer(inputs.name, inputs.description)
     .then((name) => {
       userInfo.setUserInfo(name);
-      popupEditProfile.closeWithReset();
-
+      // popupEditProfile.closeWithReset();
+      popupEditProfile.close();
     })
     .catch(error => console.log(`Ошибка смены имени пользователя ${error}`))
     .finally(() => {
@@ -114,6 +114,7 @@ const popupEditProfile = new PopupWithForm({
     })
   }
 })
+popupEditProfile.setEventListeners();
 
 
 
@@ -121,16 +122,17 @@ const popupEditProfile = new PopupWithForm({
 
 const popupNewPlace = new PopupWithForm({
   popupSelector:'.popup_new-place',
-  handleSubmit: (evt) => {
-    evt.preventDefault();
-
+  handleSubmit: (inputs) => {
+    // evt.preventDefault();
+    console.log(inputs);
     popupNewPlace.changeSubmitText(true);
 
-    api.postNewPlaceOnServer(popupNewPlace.image, popupNewPlace.title)
-    .then(card => {
+    api.postNewPlaceOnServer(inputs.image, inputs.title)
+    .then((card) => {
       cardList.renderer(card, 'prepend');
 
-      popupNewPlace.closeWithReset();
+      popupNewPlace.close();
+      // popupNewPlace.closeWithReset();
       // formValidator.toggleButtonState(popupNewPlace.form, popupNewPlace.inputs);
     })
     .catch(error => console.log(`Ошибка:${error.status} ${error.statusText}`))
@@ -139,20 +141,22 @@ const popupNewPlace = new PopupWithForm({
     })
   }
 })
+popupNewPlace.setEventListeners();
+
 
   /* Поп-ап редактирования фото профиля */
 
 const popupEditProfilePhoto = new PopupWithForm( {
   popupSelector: '.popup_edit-profile-photo',
-  handleSubmit: (evt) => {
-    evt.preventDefault();
-
+  handleSubmit: (inputs) => {
+    // evt.preventDefault();
     popupEditProfilePhoto.changeSubmitText(true);
 
-    api.changeAvatarOnServer(popupEditProfilePhoto.profilePhoto.value)
+    api.changeAvatarOnServer(inputs.avatar)
     .then(avatar => {
       userInfo.setUserInfo(avatar);
-      popupEditProfilePhoto.closeWithReset();
+      popupEditProfilePhoto.close();
+      // popupEditProfilePhoto.closeWithReset();
       // formValidator.toggleButtonState(popupEditProfilePhoto.form, [popupEditProfilePhoto.profilePhoto]);
     })
     .catch(err => {console.log(err)})
@@ -161,13 +165,14 @@ const popupEditProfilePhoto = new PopupWithForm( {
     })
   }
 });
+popupEditProfilePhoto.setEventListeners();
 
   /* Поп-ап удаления карточки */
 
 const popupDeleteCard = new PopupWithForm({
   popupSelector: '.popup_delete-card',
-  handleSubmit: (evt) => {
-    evt.preventDefault();
+  handleSubmit: () => {
+    // evt.preventDefault();
     const id = popupDeleteCard.popup.dataset.cardId;
     api.deleteCardFromServer(id)
     .then(() => {
@@ -179,7 +184,8 @@ const popupDeleteCard = new PopupWithForm({
       console.log(`Ошибка:${error.status} ${error.statusText}`)
     })
   }
-})
+});
+popupDeleteCard.setEventListeners();
 
 
 
@@ -188,10 +194,10 @@ const popupDeleteCard = new PopupWithForm({
 
   /* Подтянуть данные профиля в поп-ап с редактированием данных профиля */
 
-function changePopupEditProfileData() {
-  popupEditProfile.name.value = userInfo.getUserInfo('name');
-  popupEditProfile.description.value = userInfo.getUserInfo('description');
-}
+// function changePopupEditProfileData() {
+//   popupEditProfile.inputsValues.name = userInfo.getUserInfo('name');
+//   popupEditProfile.description.value = userInfo.getUserInfo('description');
+// }
 
 
 /* ИСПОЛНЯЕМЫЙ КОД */
@@ -202,7 +208,8 @@ function changePopupEditProfileData() {
 Promise.all([api.getProfileDataFromServer(), api.getCardsFromServer()])
 .then(function([profileData, cards]) {
   userInfo.setUserInfo(profileData);
-  userId = userInfo.getUserInfo('id');
+  // userId = userInfo.getUserInfo('id');
+  userId = userInfo.getUserInfo().id;
   cardList.renderItems(cards);
 })
 .catch(error => {console.log(`Ошибка ${error}`)})
@@ -210,7 +217,8 @@ Promise.all([api.getProfileDataFromServer(), api.getCardsFromServer()])
   /* Вешаем обработчик слушателя события для поп-апа "Редактировать профиль" */
 
 profileEditButton.addEventListener('click', function() {
-  changePopupEditProfileData();
+  // changePopupEditProfileData();
+  popupEditProfile.setInputValues(userInfo.getUserInfo());
 
   const validatorEditProfile = new FormValidator(
     configForFormValidator,
