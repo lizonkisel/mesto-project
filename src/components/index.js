@@ -23,11 +23,15 @@ let userId;
 
   /* Экземпляр класса Api */
 
-const api = new Api({
+const apiConfig = {
   baseUrl: 'https://nomoreparties.co/v1/plus-cohort7',
-  authorization: 'ecd6f0c2-01ba-4d99-a774-de79c1d44e1d',
-  contentType: 'application/json'
-});
+  headers: {
+    authorization: 'ecd6f0c2-01ba-4d99-a774-de79c1d44e1d',
+    'Content-Type': 'application/json'
+  }
+}
+
+const api = new Api(apiConfig);
 
   /* Экземпляр класса UserInfo */
 
@@ -150,6 +154,7 @@ const popupEditProfilePhoto = new PopupWithForm( {
   popupSelector: '.popup_edit-profile-photo',
   handleSubmit: (inputs) => {
     // evt.preventDefault();
+
     popupEditProfilePhoto.changeSubmitText(true);
 
     api.changeAvatarOnServer(inputs.avatar)
@@ -157,13 +162,13 @@ const popupEditProfilePhoto = new PopupWithForm( {
       userInfo.setUserInfo(avatar);
       popupEditProfilePhoto.close();
       // popupEditProfilePhoto.closeWithReset();
-      // formValidator.toggleButtonState(popupEditProfilePhoto.form, [popupEditProfilePhoto.profilePhoto]);
     })
-    .catch(err => {console.log(err)})
+    .catch(err => {console.log('Ошибка смены фото' + err)})
     .finally(() => {
       popupEditProfilePhoto.changeSubmitText(false);
     })
   }
+
 });
 popupEditProfilePhoto.setEventListeners();
 
@@ -217,24 +222,26 @@ Promise.all([api.getProfileDataFromServer(), api.getCardsFromServer()])
   /* Вешаем обработчик слушателя события для поп-апа "Редактировать профиль" */
 
 profileEditButton.addEventListener('click', function() {
-  // changePopupEditProfileData();
+
+  changePopupEditProfileData();
+  popupEditProfile.open();
+
   popupEditProfile.setInputValues(userInfo.getUserInfo());
 
-  const validatorEditProfile = new FormValidator(
-    configForFormValidator,
-    '.popup_edit-profile'
-    );
 
-  popupEditProfile.inputs.forEach(function(input) {
-    validatorEditProfile.checkValidation(popupEditProfile.form, input);
-  })
+  // const validatorEditProfile = new FormValidator(configForFormValidator);
+
+  // popupEditProfile.inputs.forEach(function(input) {
+  //   validatorEditProfile.checkValidation(popupEditProfile.form, input);
+  // })
 
   // formValidator.toggleButtonState(popupEditProfile.form, popupEditProfile.inputs);
 
+  new FormValidator(configForFormValidator).enableValidation();
 
-  popupEditProfile.open();
 
-  validatorEditProfile.enableValidation();
+
+  // validatorEditProfile.enableValidation();
 });
 
   /* Вешаем обработчик слушателя события для поп-апа "Создать новое место" */
@@ -242,24 +249,30 @@ profileEditButton.addEventListener('click', function() {
 profileAddButton.addEventListener('click', function() {
   popupNewPlace.open();
 
-  const validatorNewPlace = new FormValidator(
-    configForFormValidator,
-    '.popup_new-place'
-    );
-    validatorNewPlace.enableValidation();
+  new FormValidator(configForFormValidator).enableValidation();
+  // const validatorNewPlace = new FormValidator(configForFormValidator);
+  // validatorNewPlace.enableValidation();
+
 
 });
 
 /* Вешаем обработчик слушателя события для поп-апа "Редактировать фотографию профиля" */
 
+
+
 buttonEditProfilePhoto.addEventListener('click', function () {
   popupEditProfilePhoto.open();
 
-  const validatorEditProfilePhoto = new FormValidator(
-    configForFormValidator,
-    '.popup_edit-profile-photo'
-    );
-    validatorEditProfilePhoto.enableValidation();
+
+  // validatorEditProfilePhoto.enableValidation();
+  // const validatorEditProfilePhoto = new FormValidator( (configForFormValidator) => {
+  //   validatorEditProfilePhoto.enableValidation();
+  // });
+  new FormValidator(configForFormValidator).enableValidation();
+
+    // const validatorEditProfilePhoto = new FormValidator(configForFormValidator);
+    // validatorEditProfilePhoto.enableValidation();
+
 })
 
   /* Запускаем валидацию полей */
