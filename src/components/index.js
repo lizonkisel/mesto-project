@@ -150,21 +150,53 @@ const popupEditProfilePhoto = new PopupWithForm( {
   popupSelector: '.popup_edit-profile-photo',
   handleSubmit: (evt) => {
     evt.preventDefault();
-
+    // popupEditProfilePhoto.submitHandler();
     popupEditProfilePhoto.changeSubmitText(true);
+    // popupEditProfilePhoto.changeSubmitText(true);
+
+    // console.log(popupEditProfilePhoto.profilePhoto)
 
     api.changeAvatarOnServer(popupEditProfilePhoto.profilePhoto.value)
+    // api.changeAvatarOnServer(popupEditProfilePhoto.profilePhoto)
     .then(avatar => {
       userInfo.setUserInfo(avatar);
 
+      // popupEditProfilePhoto.closeWithReset();
       popupEditProfilePhoto.closeWithReset();
+
       // formValidator.toggleButtonState(popupEditProfilePhoto.form, [popupEditProfilePhoto.profilePhoto]);
     })
-    .catch(err => {console.log(err)})
+    .catch(err => {console.log('Ошибка смены фото' + err)})
     .finally(() => {
       popupEditProfilePhoto.changeSubmitText(false);
+      // popupEditProfilePhoto.changeSubmitText(false);
     })
   }
+
+  // handleSubmit: (evt) => {
+  //   evt.preventDefault();
+  //   popupEditProfilePhoto.submitHandler();
+  //   popupEditProfilePhoto.changeSubmitText(true);
+
+  //   api.changeAvatarOnServer(popupEditProfilePhoto.profilePhoto)
+  //   .then(avatar => {
+  //     userInfo.setUserInfo(avatar);
+
+  //     popupEditProfilePhoto.closeWithReset();
+
+  //   })
+  //   .catch(err => {console.log(err)})
+  //   .finally(() => {
+  //     this.changeSubmitText(false);
+  //     popupEditProfilePhoto.changeSubmitText(false);
+  //   })
+  // }
+
+
+
+
+
+
 });
 
   /* Поп-ап удаления карточки */
@@ -217,18 +249,20 @@ Promise.all([api.getProfileDataFromServer(), api.getCardsFromServer()])
 profileEditButton.addEventListener('click', function() {
   changePopupEditProfileData();
   popupEditProfile.open();
-  const validatorEditProfile = new FormValidator(configForFormValidator);
 
-  popupEditProfile.inputs.forEach(function(input) {
-    validatorEditProfile.checkValidation(popupEditProfile.form, input);
-  })
+  // const validatorEditProfile = new FormValidator(configForFormValidator);
+
+  // popupEditProfile.inputs.forEach(function(input) {
+  //   validatorEditProfile.checkValidation(popupEditProfile.form, input);
+  // })
 
   // formValidator.toggleButtonState(popupEditProfile.form, popupEditProfile.inputs);
 
+  new FormValidator(configForFormValidator).enableValidation();
 
 
 
-  validatorEditProfile.enableValidation();
+  // validatorEditProfile.enableValidation();
 });
 
   /* Вешаем обработчик слушателя события для поп-апа "Создать новое место" */
@@ -236,27 +270,30 @@ profileEditButton.addEventListener('click', function() {
 profileAddButton.addEventListener('click', function() {
   popupNewPlace.open();
 
-  const validatorNewPlace = new FormValidator(configForFormValidator);
-  validatorNewPlace.enableValidation();
+  new FormValidator(configForFormValidator).enableValidation();
+  // const validatorNewPlace = new FormValidator(configForFormValidator);
+  // validatorNewPlace.enableValidation();
+
 
 });
 
 /* Вешаем обработчик слушателя события для поп-апа "Редактировать фотографию профиля" */
 
 
+
 buttonEditProfilePhoto.addEventListener('click', function () {
   popupEditProfilePhoto.open();
 
+
+  // validatorEditProfilePhoto.enableValidation();
   // const validatorEditProfilePhoto = new FormValidator( (configForFormValidator) => {
-  //   validatorEditProfilePhoto.enableValidation;
-  // }
-    // configForFormValidator,
-    // '.popup_edit-profile-photo'
-    // );
+  //   validatorEditProfilePhoto.enableValidation();
+  // });
+  new FormValidator(configForFormValidator).enableValidation();
 
+    // const validatorEditProfilePhoto = new FormValidator(configForFormValidator);
+    // validatorEditProfilePhoto.enableValidation();
 
-    const validatorEditProfilePhoto = new FormValidator(configForFormValidator);
-    validatorEditProfilePhoto.enableValidation();
 })
 
   /* Запускаем валидацию полей */

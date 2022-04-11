@@ -13,6 +13,8 @@ class Popup{
   close() {
     this.popup.classList.remove('popup_opened');
     document.removeEventListener("keydown", this._handleEscClose.bind(this));
+    // document.removeEventListener("mousedown", this.hendlerPopupListener.bind(this));
+
   }
 
   _handleEscClose(evt) {
@@ -22,6 +24,7 @@ class Popup{
   }
 
   _setEventListeners() {
+    // this.popup.addEventListener("mousedown", this.hendlerPopupListener.bind(this));
     this.popup.addEventListener("mousedown", (evt) => {
       if (evt.target.classList.contains('popup_opened')) {
         this.close(this.popup);
@@ -31,6 +34,20 @@ class Popup{
       }
     })
   }
+
+  // hendlerPopupListener(evt) {
+
+  //   if (evt.target.classList.contains('popup_opened')) {
+  //     this.close(this.popup);
+  //   }
+  //   if (evt.target.classList.contains('popup__button-close')) {
+  //     this.close(this.popup);
+  //   }
+  //   console.log('Настройка прослушки маусдаун');
+  //   this.popup.removeEventListener("mousedown", this.hendlerPopupListener.bind(this));
+  // }
+
+
 };
 
 export {Popup};

@@ -5,6 +5,7 @@ class FormValidator {
     this._submitButtonSelector = config.submitButtonSelector;
     this._inactiveButtonClass = config.inactiveButtonClass;
     this._errorClass = config.errorClass;
+    // this._hendler = hendler;
     // this.popupSelector = popupSelector;
 
     this._sectionForm = document.querySelector('.popup_opened');
@@ -12,6 +13,10 @@ class FormValidator {
     this._form = this._sectionForm.querySelector('.form');
     this._inputList = Array.from(this._form.querySelectorAll(this._inputSelector));
     this._submitButton = this._form.querySelector(this._submitButtonSelector);
+
+    // this._form.addEventListener('submit', function(evt) {
+    //   evt.preventDefault();
+    // })
   }
 
   // _getForm = () => {
@@ -23,15 +28,17 @@ class FormValidator {
 
     /* Запустить процесс выбора форм и добавления слушателей полям  */
 
-  enableValidation() {
+  enableValidation = () => {
 
-    // console.log('Проверка ваидации' + this.submitButtonSelector);
+    // console.log('Проверка валидации' + this.submitButtonSelector);
 
     // this._getForm();
     this.setInputListeners();
-    this._form.addEventListener('submit', function(evt) {
-      evt.preventDefault();
-    })
+    // this._form.addEventListener('submit', function(evt) {
+    //   evt.preventDefault();
+    // })
+
+
 
     //   const forms = Array.from(document.querySelectorAll(this.formSelector));
     //   forms.forEach((form) => {
@@ -42,9 +49,11 @@ class FormValidator {
     //   })
     }
 
+
+
     /* Добавить слушатели полям ввода формы */
 
-  setInputListeners() {
+  setInputListeners = () => {
     // const inputList = Array.from(this.form.querySelectorAll(this._inputSelector));
     this.toggleButtonState(this._inputList);
     this._inputList.forEach((input) => {
@@ -68,7 +77,7 @@ class FormValidator {
   //     submitButton.disabled = false;
   //   }
   // }
-  toggleButtonState(inputs) {
+  toggleButtonState = (inputs) => {
     // const submitButton = form.querySelector(this._submitButtonSelector);
     if (this.hasInvalidInput(inputs)) {
       this._submitButton.classList.add(this._inactiveButtonClass);
@@ -82,7 +91,7 @@ class FormValidator {
 
     /* Проверить, есть ли среди полей невалидные */
 
-  hasInvalidInput() {
+  hasInvalidInput = () => {
     return this._inputList.some(function(input) {
       return !input.validity.valid;
     })
@@ -103,7 +112,7 @@ class FormValidator {
   //   }
   // }
 
-  checkValidation(form, input) {
+  checkValidation = (form, input) => {
     const inputError = form.querySelector(`.${input.name}-error`);
     const inputErrorText = input.validationMessage;
     if(!input.validity.valid) {

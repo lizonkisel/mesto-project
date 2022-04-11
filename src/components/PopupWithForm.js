@@ -3,7 +3,7 @@ import {Popup} from './Popup.js';
 class PopupWithForm extends Popup {
   constructor({popupSelector, handleSubmit}) {
     super(popupSelector);
-    this._handleSubmit = handleSubmit;
+    this.handleSubmit = handleSubmit;
     this.form = this.popup.querySelector('.form');
     this.buttonSubmit = this.form.querySelector('.form__button-submit');
     this.inputs = Array.from(this.form.querySelectorAll('.form__item'));
@@ -13,6 +13,7 @@ class PopupWithForm extends Popup {
     this.title = this.form.querySelector('.form__item_type_title');
     this.profilePhoto = this.form.querySelector('.form__item_type_user-photo');
   }
+
 
   changeSubmitText(isLoading) {
     if (isLoading === true) {
@@ -36,7 +37,7 @@ class PopupWithForm extends Popup {
 
   _setEventListeners() {
     super._setEventListeners();
-    this.form.addEventListener('submit', this._handleSubmit);
+    this.form.addEventListener('submit', this.handleSubmit);
   }
 
   closeWithReset() {
