@@ -30,13 +30,15 @@ class Api {
     .catch((err) => Promise.reject( new Error (err)))
   }
 
-  changeNameOnServer(inputName, inputDesc) {
+  changeNameOnServer(inputName, inputWork) {
     return fetch(`${this.baseUrl}/users/me`, {
       method: 'PATCH',
       headers: this.headers,
       body: JSON.stringify({
-        name:  inputName.value,
-        about:  inputDesc.value
+        // name:  inputName.value,
+        // about:  inputDesc.value
+        name:  inputName,
+        about:  inputWork
       })
     })
     .then((res) => this._processResponse(res))
@@ -48,8 +50,10 @@ class Api {
       method: 'POST',
       headers: this.headers,
       body: JSON.stringify({
-        name: name.value,
-        link: image.value
+        // name: name.value,
+        // link: image.value
+        name: name,
+        link: image
       })
     })
     .then((res) => this._processResponse(res))

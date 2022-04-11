@@ -1,14 +1,14 @@
 class Section {
   constructor({renderer}, containerSelector) {
     this.renderer = renderer,
-    this.container = document.querySelector(containerSelector);
+    this._container = document.querySelector(containerSelector);
   }
 
   addItem(item, insertMethod = 'append') {
     if (insertMethod === 'append') {
-      this.container.append(item);
+      this._container.append(item);
     } else {
-      this.container.prepend(item);
+      this._container.prepend(item);
     }
   }
 
