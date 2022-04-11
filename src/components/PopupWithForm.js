@@ -5,15 +5,16 @@ class PopupWithForm extends Popup {
     super(popupSelector);
     this._handleSubmit = handleSubmit;
     this.form = this.popup.querySelector('.form');
-    this.buttonSubmit = this.form.querySelector('.form__button-submit');
+    this._buttonSubmit = this.form.querySelector('.form__button-submit');
     this.inputs = Array.from(this.form.querySelectorAll('.form__item'));
-    this.inputsValues = {};
+    // this.inputsValues = {};
+    // this.inputsValues = this._getInputValues();
   }
 
   changeSubmitText(isLoading) {
     if (isLoading === true) {
 
-      this.buttonSubmit.textContent = "Сохранение...";
+      this._buttonSubmit.textContent = "Сохранение...";
 
       // if (this.popupSelector === '.popup_new-place') {
       //   this.buttonSubmit.textContent = "Создание...";
@@ -23,7 +24,7 @@ class PopupWithForm extends Popup {
 
     } else {
 
-      this.buttonSubmit.textContent = "Сохранить";
+      this._buttonSubmit.textContent = "Сохранить";
 
       // if (this.popupSelector === '.popup_new-place') {
       //   this.buttonSubmit.textContent = "Создать";
@@ -36,19 +37,22 @@ class PopupWithForm extends Popup {
 
 
   _getInputValues() {
+    console.log(this.inputs);
+    this.inputsValues = {};
     this.inputs.forEach((input) => {
       this.inputsValues[input.name] = input.value;
     });
 
+    console.log('click 4');
     return this.inputsValues;
   }
 
-  _setEventListeners() {
-    super._setEventListeners();
+  setEventListeners() {
+    super.setEventListeners();
     this.form.addEventListener('submit', (evt) => {
       evt.preventDefault();
-      console.log('I am working');
       // this._handleSubmit();
+      console.log('click 3');
       this._handleSubmit(this._getInputValues());
     });
   }

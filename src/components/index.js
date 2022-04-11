@@ -49,7 +49,6 @@ const configForFormValidator = {
 
 const cardList = new Section({
   renderer: (card, insertMethod) => {
-    console.log('renederer');
     const newCardElement = new Card({
       card,
       handleCardClick: (newCardElement) => {
@@ -77,8 +76,6 @@ const cardList = new Section({
       },
       handleDeleteClick: (newCardElement) => {
         popupDeleteCard.open();
-        console.log('click');
-        console.log(popupDeleteCard);
         popupDeleteCard.popup.setAttribute("data-card-id", newCardElement.id);
       }
     },
@@ -94,7 +91,7 @@ const cardList = new Section({
   /* Поп-ап с картинкой */
 
 const popupWithImage = new PopupWithImage('.popup_photo');
-
+popupWithImage.setEventListeners();
 
   /* Поп-ап редактирования профиля */
 
@@ -117,6 +114,7 @@ const popupEditProfile = new PopupWithForm({
     })
   }
 })
+popupEditProfile.setEventListeners();
 
 
 
@@ -126,17 +124,12 @@ const popupNewPlace = new PopupWithForm({
   popupSelector:'.popup_new-place',
   handleSubmit: (inputs) => {
     // evt.preventDefault();
-
-    popupNewPlace.changeSubmitText(true);
-    console.log(`handleSubmit: ${inputs}`);
     console.log(inputs);
+    popupNewPlace.changeSubmitText(true);
 
-    api.postNewPlaceOnServer('https://www.kino-teatr.ru/movie/kadr/36023/960886.jpg', 'inputs.title')
+    api.postNewPlaceOnServer(inputs.image, inputs.title)
     .then((card) => {
-      console.log(card);
       cardList.renderer(card, 'prepend');
-      console.log('CardList');
-      console.log(cardList);
 
       popupNewPlace.close();
       // popupNewPlace.closeWithReset();
@@ -148,6 +141,8 @@ const popupNewPlace = new PopupWithForm({
     })
   }
 })
+popupNewPlace.setEventListeners();
+
 
   /* Поп-ап редактирования фото профиля */
 
@@ -170,6 +165,7 @@ const popupEditProfilePhoto = new PopupWithForm( {
     })
   }
 });
+popupEditProfilePhoto.setEventListeners();
 
   /* Поп-ап удаления карточки */
 
@@ -178,7 +174,6 @@ const popupDeleteCard = new PopupWithForm({
   handleSubmit: () => {
     // evt.preventDefault();
     const id = popupDeleteCard.popup.dataset.cardId;
-    console.log(id);
     api.deleteCardFromServer(id)
     .then(() => {
       const cardForDelete = document.querySelector(`[data-card-id='${id}']`);
@@ -189,7 +184,8 @@ const popupDeleteCard = new PopupWithForm({
       console.log(`Ошибка:${error.status} ${error.statusText}`)
     })
   }
-})
+});
+popupDeleteCard.setEventListeners();
 
 
 
@@ -258,7 +254,6 @@ profileAddButton.addEventListener('click', function() {
 
 buttonEditProfilePhoto.addEventListener('click', function () {
   popupEditProfilePhoto.open();
-  console.log(popupEditProfilePhoto.inputs);
 
   const validatorEditProfilePhoto = new FormValidator(
     configForFormValidator,
