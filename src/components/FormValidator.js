@@ -1,55 +1,22 @@
 class FormValidator {
-  constructor(config) {
+  constructor(config, formElement) {
     this._formSelector = config.formSelector;
     this._inputSelector = config.inputSelector;
     this._submitButtonSelector = config.submitButtonSelector;
     this._inactiveButtonClass = config.inactiveButtonClass;
     this._errorClass = config.errorClass;
-    // this._hendler = hendler;
-    // this.popupSelector = popupSelector;
-
-    this._sectionForm = document.querySelector('.popup_opened');
-    // this._sectionForm = document.querySelector(this._formSelector);
+    this._formElement = formElement;
+    this._sectionForm = document.querySelector(this._formElement);
     this._form = this._sectionForm.querySelector('.form');
     this._inputList = Array.from(this._form.querySelectorAll(this._inputSelector));
     this._submitButton = this._form.querySelector(this._submitButtonSelector);
-
-    // this._form.addEventListener('submit', function(evt) {
-    //   evt.preventDefault();
-    // })
   }
-
-  // _getForm = () => {
-    // const sectionForm = document.querySelector(this.popupSelector);
-    // const form = this._sectionForm.querySelector('.form');
-    // this._form = form;
-    // return this.form;
-  // }
 
     /* Запустить процесс выбора форм и добавления слушателей полям  */
 
   enableValidation = () => {
-
-    // console.log('Проверка валидации' + this.submitButtonSelector);
-
-    // this._getForm();
     this._setInputListeners();
-    // this._form.addEventListener('submit', function(evt) {
-    //   evt.preventDefault();
-    // })
-
-
-
-    //   const forms = Array.from(document.querySelectorAll(this.formSelector));
-    //   forms.forEach((form) => {
-    //     this.setInputListeners(form);
-    //     form.addEventListener('submit', function(evt) {
-    //       evt.preventDefault();
-    //     })
-    //   })
-    }
-
-
+  }
 
     /* Добавить слушатели полям ввода формы */
 

@@ -1,4 +1,5 @@
 import '../index.css';
+import {apiConfig, configForFormValidator} from './constants.js';
 import {Api} from './Api.js';
 import {FormValidator} from './FormValidator.js';
 import {Card} from './Card.js';
@@ -23,14 +24,6 @@ let userId;
 
   /* Экземпляр класса Api */
 
-const apiConfig = {
-  baseUrl: 'https://nomoreparties.co/v1/plus-cohort7',
-  headers: {
-    authorization: 'ecd6f0c2-01ba-4d99-a774-de79c1d44e1d',
-    'Content-Type': 'application/json'
-  }
-}
-
 const api = new Api(apiConfig);
 
   /* Экземпляр класса UserInfo */
@@ -40,14 +33,6 @@ const userInfo = new UserInfo({
   userDescriptionSelector: '.profile__description',
   userAvatarSelector: '.profile__avatar'
 });
-
-const configForFormValidator = {
-  formSelector: '.form',
-  inputSelector: '.form__item',
-  submitButtonSelector: '.form__button-submit',
-  inactiveButtonClass: 'form__button-submit_disabled',
-  errorClass: 'form__item_invalid'
-}
 
   /* Экземпляр класса Section - контейнер для экземпляров класса Card */
 
@@ -117,8 +102,6 @@ const popupEditProfile = new PopupWithForm({
   }
 })
 popupEditProfile.setEventListeners();
-
-
 
   /* Поп-ап создания новой карточки */
 
@@ -213,61 +196,31 @@ Promise.all([api.getProfileDataFromServer(), api.getCardsFromServer()])
 
   /* Вешаем обработчик слушателя события для поп-апа "Редактировать профиль" */
 
-profileEditButton.addEventListener('click', function() {
+const validatorProfileEdit = new FormValidator(configForFormValidator, '.popup_edit-profile');
+validatorProfileEdit.enableValidation();
 
+profileEditButton.addEventListener('click', function() {
   // changePopupEditProfileData();
   popupEditProfile.open();
-
   popupEditProfile.setInputValues(userInfo.getUserInfo());
-
-
-  // const validatorEditProfile = new FormValidator(configForFormValidator);
-
-  // const testValidator = new FormValidator(configForFormValidator);
-  // testValidator.enableValidation();
-
-  // popupEditProfile.inputs.forEach(function(input) {
-  //   testValidator._checkValidation(popupEditProfile.form, input);
-  // })
-
-  // formValidator.toggleButtonState(popupEditProfile.form, popupEditProfile.inputs);
-
-  new FormValidator(configForFormValidator).enableValidation();
-
-
-
-  // validatorEditProfile.enableValidation();
 });
 
   /* Вешаем обработчик слушателя события для поп-апа "Создать новое место" */
 
+const validatorNewPlace = new FormValidator(configForFormValidator, '.popup_new-place');
+validatorNewPlace.enableValidation();
+
 profileAddButton.addEventListener('click', function() {
   popupNewPlace.open();
-
-  new FormValidator(configForFormValidator).enableValidation();
-  // const validatorNewPlace = new FormValidator(configForFormValidator);
-  // validatorNewPlace.enableValidation();
-
-
 });
 
 /* Вешаем обработчик слушателя события для поп-апа "Редактировать фотографию профиля" */
 
-
+const validatorEditProfilePhoto = new FormValidator(configForFormValidator, '.popup_edit-profile-photo');
+validatorEditProfilePhoto.enableValidation();
 
 buttonEditProfilePhoto.addEventListener('click', function () {
   popupEditProfilePhoto.open();
-
-
-  // validatorEditProfilePhoto.enableValidation();
-  // const validatorEditProfilePhoto = new FormValidator( (configForFormValidator) => {
-  //   validatorEditProfilePhoto.enableValidation();
-  // });
-  new FormValidator(configForFormValidator).enableValidation();
-
-    // const validatorEditProfilePhoto = new FormValidator(configForFormValidator);
-    // validatorEditProfilePhoto.enableValidation();
-
 })
 
   /* Запускаем валидацию полей */

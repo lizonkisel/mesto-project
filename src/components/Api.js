@@ -18,7 +18,6 @@ class Api {
         headers: this.headers
       })
       .then((res) => this._processResponse(res))
-      .catch((err) => Promise.reject(err))
   }
 
   getCardsFromServer() {
@@ -27,7 +26,6 @@ class Api {
       headers: this.headers
     })
     .then((res) => this._processResponse(res))
-    .catch((err) => Promise.reject( new Error (err)))
   }
 
   changeNameOnServer(inputName, inputWork) {
@@ -42,7 +40,6 @@ class Api {
       })
     })
     .then((res) => this._processResponse(res))
-    .catch((err) => Promise.reject( new Error (err)))
   }
 
   postNewPlaceOnServer(image, name) {
@@ -57,7 +54,6 @@ class Api {
       })
     })
     .then((res) => this._processResponse(res))
-    .catch((err) => Promise.reject( new Error (err)))
   }
 
   deleteCardFromServer(cardId) {
@@ -74,7 +70,6 @@ class Api {
       headers: this.headers
     })
     .then((res) => this._processResponse(res))
-    .catch((err) => Promise.reject( new Error (err)))
   }
 
   deleteLike(cardId) {
@@ -83,7 +78,6 @@ class Api {
       headers: this.headers
     })
     .then((res) => this._processResponse(res))
-    .catch((err) => Promise.reject( new Error (err)))
   }
 
   changeAvatarOnServer(link) {
@@ -95,7 +89,6 @@ class Api {
       })
     })
     .then((res) => this._processResponse(res))
-    .catch((err) => Promise.reject( new Error (err)))
   }
 };
 
