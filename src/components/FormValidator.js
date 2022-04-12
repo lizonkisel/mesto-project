@@ -22,34 +22,21 @@ class FormValidator {
 
   _setInputListeners = () => {
     // const inputList = Array.from(this.form.querySelectorAll(this._inputSelector));
-    this._toggleButtonState(this._inputList);
+    this._toggleButtonState();
     this._inputList.forEach((input) => {
-      input.addEventListener('input', (evt) => {
-        this._checkValidation(this._form, input);
-        this._toggleButtonState(this._inputList);
+      input.addEventListener('input', () => {
+        this._checkValidation(input);
+        this._toggleButtonState();
       })
     })
   }
 
     /* Переключить состояние кнопки "Submit" */
 
-  // toggleButtonState(form, inputs) {
-  //   const submitButton = form.querySelector(this._submitButtonSelector);
-  //   if (this.hasInvalidInput(inputs)) {
-  //     submitButton.classList.add(this._inactiveButtonClass);
-  //     submitButton.disabled = true;
-  //     // console.log(submitButton);
-  //   } else {
-  //     submitButton.classList.remove(this._inactiveButtonClass);
-  //     submitButton.disabled = false;
-  //   }
-  // }
-  _toggleButtonState = (inputs) => {
-    // const submitButton = form.querySelector(this._submitButtonSelector);
-    if (this._hasInvalidInput(inputs)) {
+  _toggleButtonState = () => {
+    if (this._hasInvalidInput(this._inputList)) {
       this._submitButton.classList.add(this._inactiveButtonClass);
       this._submitButton.disabled = true;
-      // console.log(submitButton);
     } else {
       this._submitButton.classList.remove(this._inactiveButtonClass);
       this._submitButton.disabled = false;
@@ -66,30 +53,33 @@ class FormValidator {
 
     /* Проверить валидность поля */
 
-  // checkValidation(form, input) {
-  //   const inputError = form.querySelector(`.${input.name}-error`);
-  //   const inputErrorText = input.validationMessage;
-  //   if(!input.validity.valid) {
-  //     input.classList.add(this._errorClass);
-  //     inputError.textContent = inputErrorText;
-
-  //   } else {
-  //     input.classList.remove(this._errorClass);
-  //     inputError.textContent = '';
-  //   }
-  // }
-
-  _checkValidation = (form, input) => {
-    const inputError = form.querySelector(`.${input.name}-error`);
+  _checkValidation = (input) => {
+    const inputError = this._form.querySelector(`.${input.name}-error`);
     const inputErrorText = input.validationMessage;
     if(!input.validity.valid) {
       input.classList.add(this._errorClass);
       inputError.textContent = inputErrorText;
-
     } else {
       input.classList.remove(this._errorClass);
       inputError.textContent = '';
     }
+  }
+
+    /* Сбросить ошибки валидации после открытия поп-апа с формой */
+
+  resetValidationErrors() {
+    this._inputList.forEach((input) => {
+      this._hideError(input);
+    })
+    this._toggleButtonState();
+  }
+
+  /* Удалить ошибку и класс с ошибкой с поля */
+
+  _hideError(input) {
+    input.classList.remove(this._errorClass);
+    const inputError = this._form.querySelector(`.${input.name}-error`);
+    inputError.textContent = '';
   }
 
 };

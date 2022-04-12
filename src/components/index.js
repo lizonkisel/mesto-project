@@ -1,5 +1,5 @@
 import '../index.css';
-import {apiConfig, configForFormValidator} from './constants.js';
+import {apiConfig, configForFormValidator} from './utils/constants.js';
 import {Api} from './Api.js';
 import {FormValidator} from './FormValidator.js';
 import {Card} from './Card.js';
@@ -201,8 +201,9 @@ validatorProfileEdit.enableValidation();
 
 profileEditButton.addEventListener('click', function() {
   // changePopupEditProfileData();
-  popupEditProfile.open();
   popupEditProfile.setInputValues(userInfo.getUserInfo());
+  validatorProfileEdit.resetValidationErrors();
+  popupEditProfile.open();
 });
 
   /* Вешаем обработчик слушателя события для поп-апа "Создать новое место" */
@@ -211,6 +212,7 @@ const validatorNewPlace = new FormValidator(configForFormValidator, '.popup_new-
 validatorNewPlace.enableValidation();
 
 profileAddButton.addEventListener('click', function() {
+  validatorNewPlace.resetValidationErrors();
   popupNewPlace.open();
 });
 
@@ -220,6 +222,7 @@ const validatorEditProfilePhoto = new FormValidator(configForFormValidator, '.po
 validatorEditProfilePhoto.enableValidation();
 
 buttonEditProfilePhoto.addEventListener('click', function () {
+  validatorEditProfilePhoto.resetValidationErrors();
   popupEditProfilePhoto.open();
 })
 
