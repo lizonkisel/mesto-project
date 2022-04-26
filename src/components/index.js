@@ -1,14 +1,12 @@
 import '../index.css';
-import {createNewPlace, toggleLike, setLikesAmount, deletePlace} from './card.js';
-import {openPopup, closePopup, changeSubmitText} from './utils.js';
-import {validationConfig, enableValidation, toggleButtonState, checkValidation} from './validate.js';
-import {popupEditProfile, popupEditProfileForm, popupEditProfileInputs, popupEditProfileName,
-  popupEditProfileDescription, popupNewPlace, popupNewPlaceForm, popupNewPlaceInputs,
-  popupNewPlaceImage, popupNewPlaceTitle, changePopupEditProfileData, popupDeleteCard, popupDeleteCardForm,
-  profileName, profileDescription, popupEditProfilePhoto, popupEditProfilePhotoForm,
-  popupEditProfilePhotoInput, profileAvatar} from './modal.js';
-import {getCardsFromServer, getProfileDataFromServer, changeNameOnServer, postNewPlaceOnServer,
-  changeAvatarOnServer, putLike, deleteLike, deleteCardFromServer} from './api.js';
+import {apiConfig, configForFormValidator} from './utils/constants.js';
+import {Api} from './Api.js';
+import {FormValidator} from './FormValidator.js';
+import {Card} from './Card.js';
+import {Section} from './Section.js';
+import {PopupWithImage} from './PopupWithImage.js';
+import {PopupWithForm} from './PopupWithForm.js';
+import {UserInfo} from './UserInfo.js';
 
 
 /* ПЕРЕМЕННЫЕ */
@@ -20,207 +18,214 @@ const profileEditButton = document.querySelector('.profile__edit-button');
 const profileAddButton = document.querySelector('.profile__add-button');
 const buttonEditProfilePhoto = document.querySelector('.profile__avatar-mask');
 
-  /* Все поп-апы на странице*/
-
-const popups = Array.from(document.querySelectorAll('.popup'));
-
   /* Переменная, содержащая id пользователя*/
 
 let userId;
+
+  /* Экземпляр класса Api */
+
+const api = new Api(apiConfig);
+
+  /* Экземпляр класса UserInfo */
+
+const userInfo = new UserInfo({
+  userNameSelector: '.profile__name',
+  userDescriptionSelector: '.profile__description',
+  userAvatarSelector: '.profile__avatar'
+});
+
+  /* Экземпляр класса Section - контейнер для экземпляров класса Card */
+
+const cardList = new Section({
+  renderer: (card, insertMethod) => {
+    const newCardElement = new Card({
+      card,
+      handleCardClick: (newCardElement) => {
+        const image = newCardElement.link;
+        const title = newCardElement.name;
+        popupWithImage.open(image, title);
+      },
+
+      handleLikeClick: (newCardElement) => {
+        if (newCardElement.isLiked()) {
+          api.deleteLike(newCardElement.getId())
+          .then(card => {
+            newCardElement.toggleLike();
+            newCardElement.setLikesAmount(card)
+          })
+          .catch(err => {console.log(err)})
+        } else {
+          api.putLike(newCardElement.getId())
+          .then(card => {
+            newCardElement.toggleLike();
+            newCardElement.setLikesAmount(card)
+          })
+          .catch(err => {console.log(err)})
+        }
+      },
+      handleDeleteClick: (newCardElement) => {
+        popupDeleteCard.open();
+        popupDeleteCard.popup.setAttribute("data-card-id", newCardElement.id);
+      }
+    },
+      userId,
+      '#place-template'
+    );
+    const newCard = newCardElement.generate();
+    cardList.addItem(newCard, insertMethod);
+  }},
+  '.elements'
+)
+
+  /* Поп-ап с картинкой */
+
+const popupWithImage = new PopupWithImage('.popup_photo');
+popupWithImage.setEventListeners();
+
+  /* Поп-ап редактирования профиля */
+
+const popupEditProfile = new PopupWithForm({
+  popupSelector: '.popup_edit-profile',
+  handleSubmit: (inputs) => {
+    popupEditProfile.changeSubmitText(true);
+
+    api.changeNameOnServer(inputs.name, inputs.description)
+    .then((name) => {
+      userInfo.setUserInfo(name);
+      // popupEditProfile.closeWithReset();
+      popupEditProfile.close();
+    })
+    .catch(error => console.log(`Ошибка смены имени пользователя ${error}`))
+    .finally(() => {
+      popupEditProfile.changeSubmitText(false);
+    })
+  }
+})
+popupEditProfile.setEventListeners();
+
+  /* Поп-ап создания новой карточки */
+
+const popupNewPlace = new PopupWithForm({
+  popupSelector:'.popup_new-place',
+  handleSubmit: (inputs) => {
+    popupNewPlace.changeSubmitText(true);
+
+    api.postNewPlaceOnServer(inputs.image, inputs.title)
+    .then((card) => {
+      cardList.renderer(card, 'prepend');
+
+      popupNewPlace.close();
+      // popupNewPlace.closeWithReset();
+    })
+    .catch(error => console.log(`Ошибка:${error.status} ${error.statusText}`))
+    .finally(() => {
+      popupNewPlace.changeSubmitText(false);
+    })
+  }
+})
+popupNewPlace.setEventListeners();
+
+
+  /* Поп-ап редактирования фото профиля */
+
+const popupEditProfilePhoto = new PopupWithForm( {
+  popupSelector: '.popup_edit-profile-photo',
+  handleSubmit: (inputs) => {
+    popupEditProfilePhoto.changeSubmitText(true);
+
+    api.changeAvatarOnServer(inputs.avatar)
+    .then(avatar => {
+      userInfo.setUserInfo(avatar);
+      popupEditProfilePhoto.close();
+      // popupEditProfilePhoto.closeWithReset();
+    })
+    .catch(err => {console.log('Ошибка смены фото' + err)})
+    .finally(() => {
+      popupEditProfilePhoto.changeSubmitText(false);
+    })
+  }
+
+});
+popupEditProfilePhoto.setEventListeners();
+
+  /* Поп-ап удаления карточки */
+
+const popupDeleteCard = new PopupWithForm({
+  popupSelector: '.popup_delete-card',
+  handleSubmit: () => {
+    const id = popupDeleteCard.popup.dataset.cardId;
+    api.deleteCardFromServer(id)
+    .then(() => {
+      const cardForDelete = document.querySelector(`[data-card-id='${id}']`);
+      cardForDelete.remove();
+      popupDeleteCard.close();
+    })
+    .catch((error) => {
+      console.log(`Ошибка:${error.status} ${error.statusText}`)
+    })
+  }
+});
+popupDeleteCard.setEventListeners();
+
 
 
 /* ФУНКЦИИ */
 
 
-  /* Отрисовать карточку */
+  /* Подтянуть данные профиля в поп-ап с редактированием данных профиля */
 
-const elements = document.querySelector('.elements');
-
-function renderCard(card, userId, insertMethod) {
-  const newCard = createNewPlace(card, userId);
-
-  if (insertMethod === 'append') {
-    elements.append(newCard);
-  } else {
-    elements.prepend(newCard);
-  }
-}
-
-  /* Изменить состояние лайка */
-
-function changeLikeState(card, likeElement) {
-  if (likeElement.classList.contains('element__like_active')) {
-    deleteLike(card)
-    .then(likes => {
-      toggleLike(likeElement);
-      setLikesAmount(likes)
-    })
-    .catch(err => {console.log(err)})
-  } else {
-    putLike(card)
-    .then(likes => {
-      toggleLike(likeElement);
-      setLikesAmount(likes)
-    })
-    .catch(err => {console.log(err)})
-  }
-}
-
-  /* Установить данные профиля после их получения с сервера */
-
-function setProfileData(newName) {
-  profileName.textContent = newName.name;
-  profileDescription.textContent = newName.about;
-}
-
-  /* Сохранить данные редактирования профиля */
-
-function submitFormEditProfile(evt) {
-  evt.preventDefault();
-
-  changeSubmitText(true, popupEditProfile);
-
-  changeNameOnServer(popupEditProfileName, popupEditProfileDescription)
-  .then((newName) => {
-    setProfileData(newName);
-    closePopup(popupEditProfile);
-  })
-  .catch(error => console.log(`Ошибка ${error}`))
-  .finally(() => {
-    changeSubmitText(false, popupEditProfile);
-  })
-}
-
-  /* Сохранить данные создания нового места */
-
-function submitCreateNewPlace(evt) {
-  evt.preventDefault();
-
-  changeSubmitText(true, popupNewPlace);
-
-  postNewPlaceOnServer(popupNewPlaceImage, popupNewPlaceTitle)
-  .then(card => {
-    renderCard(card, userId, 'prepend');
-    closePopup(popupNewPlace);
-    popupNewPlaceForm.reset();
-    toggleButtonState(validationConfig, popupNewPlaceForm, popupNewPlaceInputs);
-  })
-  .catch(error => console.log(`Ошибка:${error.status} ${error.statusText}`))
-  .finally(() => {
-    changeSubmitText(false, popupNewPlace);
-  })
-}
-
-  /* Сохранить новое фото профиля */
-
-function submitEditProfilePhoto(evt) {
-  evt.preventDefault();
-
-  changeSubmitText(true, popupEditProfilePhoto);
-
-  const popupEditProfilePhotoLink = popupEditProfilePhotoInput.value;
-
-  changeAvatarOnServer(popupEditProfilePhotoLink)
-  .then(profileData => {
-    setAvatar(profileAvatar, profileData.avatar);
-    closePopup(popupEditProfilePhoto);
-    popupEditProfilePhotoForm.reset();
-    toggleButtonState(validationConfig, popupEditProfilePhotoForm, [popupEditProfilePhotoInput]);
-  })
-  .catch(err => {console.log(err)})
-  .finally(() => {
-    changeSubmitText(false, popupEditProfilePhoto);
-  })
-}
-
-  /* Установить новый аватар после получения с сервера */
-
-function setAvatar(profileAvatar, avatar) {
-  profileAvatar.src = avatar;
-}
-
-  /* Удалить карточку с серевера и со страницы */
-
-function deleteCardEveryWhere(evt) {
-  evt.preventDefault();
-  const id = popupDeleteCard.dataset.cardId;
-  deleteCardFromServer(id)
-  .then(() => {
-    deletePlace(document.querySelector(`[data-card-id='${id}']`));
-    closePopup(popupDeleteCard)
-  })
-  .catch((error) => {
-    console.log(`Ошибка:${error.status} ${error.statusText}`)
-  })
-}
+// function changePopupEditProfileData() {
+//   popupEditProfile.inputsValues.name = userInfo.getUserInfo('name');
+//   popupEditProfile.description.value = userInfo.getUserInfo('description');
+// }
 
 
 /* ИСПОЛНЯЕМЫЙ КОД */
 
-  /* Отрисовываем карточки */
 
-Promise.all([getProfileDataFromServer(), getCardsFromServer()])
+  /* Записываем и отображаем информация о пользователе, отрисовываем карточки */
+
+Promise.all([api.getProfileDataFromServer(), api.getCardsFromServer()])
 .then(function([profileData, cards]) {
-
-  userId = profileData._id;
-
-  setProfileData(profileData);
-  setAvatar(profileAvatar, profileData.avatar);
-  cards.forEach(function(card) {
-    renderCard(card, userId, 'append');
-  })
+  userInfo.setUserInfo(profileData);
+  // userId = userInfo.getUserInfo('id');
+  userId = userInfo.getUserInfo().id;
+  cardList.renderItems(cards);
 })
 .catch(error => {console.log(`Ошибка ${error}`)})
 
   /* Вешаем обработчик слушателя события для поп-апа "Редактировать профиль" */
 
-profileEditButton.addEventListener('click', function() {
-  changePopupEditProfileData();
-  popupEditProfileInputs.forEach(function(input) {
-    checkValidation(validationConfig, popupEditProfile, input);
-  })
-  toggleButtonState(validationConfig, popupEditProfile, popupEditProfileInputs);
+const validatorProfileEdit = new FormValidator(configForFormValidator, '.popup_edit-profile');
+validatorProfileEdit.enableValidation();
 
-  openPopup(popupEditProfile);
+profileEditButton.addEventListener('click', function() {
+  // changePopupEditProfileData();
+  popupEditProfile.setInputValues(userInfo.getUserInfo());
+  validatorProfileEdit.resetValidationErrors();
+  popupEditProfile.open();
 });
 
   /* Вешаем обработчик слушателя события для поп-апа "Создать новое место" */
 
+const validatorNewPlace = new FormValidator(configForFormValidator, '.popup_new-place');
+validatorNewPlace.enableValidation();
+
 profileAddButton.addEventListener('click', function() {
-  openPopup(popupNewPlace);
+  validatorNewPlace.resetValidationErrors();
+  popupNewPlace.open();
 });
 
 /* Вешаем обработчик слушателя события для поп-апа "Редактировать фотографию профиля" */
 
+const validatorEditProfilePhoto = new FormValidator(configForFormValidator, '.popup_edit-profile-photo');
+validatorEditProfilePhoto.enableValidation();
+
 buttonEditProfilePhoto.addEventListener('click', function () {
-  openPopup(popupEditProfilePhoto);
-})
-
-  /* Отправляем формы */
-
-popupEditProfileForm.addEventListener('submit', submitFormEditProfile);
-
-popupNewPlaceForm.addEventListener('submit', submitCreateNewPlace);
-
-popupEditProfilePhotoForm.addEventListener('submit', submitEditProfilePhoto);
-
-popupDeleteCardForm.addEventListener('submit', deleteCardEveryWhere);
-
-  /* Закрываем поп-апы по клику на оверлей и крестик */
-
-popups.forEach(function(popup) {
-  popup.addEventListener("mousedown", function(evt) {
-    if (evt.target.classList.contains('popup_opened')) {
-      closePopup(popup);
-    }
-    if (evt.target.classList.contains('popup__button-close')) {
-      closePopup(popup);
-    }
-  })
+  validatorEditProfilePhoto.resetValidationErrors();
+  popupEditProfilePhoto.open();
 })
 
   /* Запускаем валидацию полей */
 
-enableValidation(validationConfig);
-
-export {changeLikeState};
+// formValidator.enableValidation();

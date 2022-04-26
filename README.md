@@ -25,8 +25,16 @@
 * Валидация форм
 * Webpack
 * Promises
+* ООП
+
 
 ## Ссылка на проект
 
 [Проект "Место"](https://lizonkisel.github.io/mesto-project/)
 
+
+### Co-worker
+
+* Имя: Oleg_Malkov
+* Почта: Zavrr@yandex.ru
+* Гит: https://github.com/Mal-kov
