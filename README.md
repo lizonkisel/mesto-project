@@ -1,40 +1,31 @@
-# Проект: Место
+# Mesto project
 
-## Обзор
+Test the project: https://lizonkisel.github.io/mesto-project/
 
-* Описание проекта
-* Технологии проекта
-* Ссылка на проект
+## Description
 
-## Описание проекта
+Web-page of small social network for sharing pictures and impressions. It'a possible to add, delete, like card with interesting place. Also you can edit user's profile. Data exchange with the server is configured.
 
-Проект представляет собой веб-страницу небольшой социальной сети для обмена фотографиями и впечатлениями.
-Реализована возможность добавления, удаления, оценки (лайк) карточек, представляющих интересные георгафические места. Также возможно редактирование профиля юзера.
+This is study Project in [Yandex.Practicum](https://practicum.yandex.ru/)
 
-Настроен обмен данными с сервером.
+## Stack
 
+:heavy_check_mark: HTML, CSS, adaptive layout, JS, form validation, Webpack, OOP
 
-## Технологии проекта
+## Install and start-up
 
-* HTML
-* CSS
-* Адаптивная вёрстка
-* Резиновая вёрстка
-* Создание форм
-* JS
-* Валидация форм
-* Webpack
-* Promises
-* ООП
+This project will works correctly with **node v16.16.0**
 
+1. Copy this project to you machine, using `git clone`
 
-## Ссылка на проект
+2. Go to the folder with the project and do `npm ci` to set up all needed dependencies
 
-[Проект "Место"](https://lizonkisel.github.io/mesto-project/)
+3. Do `npm run dev` and the project gets up on localhost:8080 automatically
 
+4. That's great, you are incredible! :mechanical_arm:
 
 ### Co-worker
 
-* Имя: Oleg_Malkov
-* Почта: Zavrr@yandex.ru
-* Гит: https://github.com/Mal-kov
+* Name: Oleg_Malkov
+* E-mail: Zavrr@yandex.ru
+* Git: https://github.com/Mal-kov
